@@ -7,7 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 
-@Document("baskets")
+@Document("rewards")
 public class Reward {
 
     @Id

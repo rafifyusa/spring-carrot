@@ -8,6 +8,7 @@ import java.util.Optional;
 
 @Service
 public interface CarrotService {
-    List<Carrot> getAll();
-    void create(Carrot carrot);
+    List<Carrot> getAllCarrot();
+    void createCarrot(Carrot carrot);
+    void updateCarrot(Carrot carrot);
 }

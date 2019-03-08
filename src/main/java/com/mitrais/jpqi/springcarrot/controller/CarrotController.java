@@ -16,13 +16,19 @@ public class CarrotController {
     CarrotServiceUsingDB carrotServiceUsingDB;
 
     @GetMapping
-    public List<Carrot> getAll(){
-        List<Carrot>cr =carrotServiceUsingDB.getAll();
+    public List<Carrot> getCarrots(){
+        List<Carrot>cr =carrotServiceUsingDB.getAllCarrot();
         return cr;
     }
 
     @PostMapping
-    public void create(@RequestBody Carrot carrot) {
-        carrotServiceUsingDB.create(carrot);
+    void createCarrots(@RequestBody Carrot carrot) {
+        carrotServiceUsingDB.createCarrot(carrot);
     }
+
+    @PatchMapping
+    void updateCarrots(@RequestBody Carrot carrot){
+        carrotServiceUsingDB.updateCarrot(carrot);
+    }
+
 }

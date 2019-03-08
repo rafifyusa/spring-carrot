@@ -1,6 +1,7 @@
 package com.mitrais.jpqi.springcarrot.controller;
 
 import com.mitrais.jpqi.springcarrot.model.Basket;
+import com.mitrais.jpqi.springcarrot.model.Employee;
 import com.mitrais.jpqi.springcarrot.service.BasketService;
 import jdk.internal.dynalink.linker.LinkerServices;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,9 @@ public class BasketController {
     public Basket findBasketById(@PathVariable int id) {
         return basketService.findBasketById(id);
     }
+
+    @GetMapping("sortedEmp")
+    public List<Employee> findAllBasketSortedByCarrotAmt(){ return basketService.findEmployeeSortedByCarrotAmt();}
 
     @PostMapping
     public void insertBasketIntoDB(@RequestBody Basket basket) {
