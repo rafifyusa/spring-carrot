@@ -35,4 +35,7 @@ public class BasketController {
     public void updateBasket(@RequestBody Basket basket) {
         basketService.updateBasketIntoDB(basket);
     }
+
+    @DeleteMapping("{id}")
+    public void deleteBasket(@PathVariable int id) {basketService.deleteBasketById(id);}
 }

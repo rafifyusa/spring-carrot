@@ -57,4 +57,28 @@ public class Employee {
     public void setRole(String role) {
         this.role = role;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Employee employee = (Employee) o;
+
+        if (id != employee.id) return false;
+        if (name != null ? !name.equals(employee.name) : employee.name != null) return false;
+        if (dob != null ? !dob.equals(employee.dob) : employee.dob != null) return false;
+        if (address != null ? !address.equals(employee.address) : employee.address != null) return false;
+        return role != null ? role.equals(employee.role) : employee.role == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (dob != null ? dob.hashCode() : 0);
+        result = 31 * result + (address != null ? address.hashCode() : 0);
+        result = 31 * result + (role != null ? role.hashCode() : 0);
+        return result;
+    }
 }

@@ -34,4 +34,8 @@ public class BasketService {
         }
         return null;
     }
+
+    public void deleteBasketById (int id) {
+        basketRepository.deleteById(id);
+    }
 }

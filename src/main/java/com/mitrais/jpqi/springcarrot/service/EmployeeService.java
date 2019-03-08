@@ -4,6 +4,7 @@ import com.mitrais.jpqi.springcarrot.model.Employee;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface EmployeeService {
@@ -12,4 +13,5 @@ public interface EmployeeService {
     void updateEmployee(int id, Employee employee);
     List<Employee> getAllEmployee();
     Employee getEmployeeById(int id);
+    Map<String, String> findEmployeeByCredential (Map<String, String> body);
 }
