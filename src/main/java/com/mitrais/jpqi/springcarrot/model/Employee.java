@@ -14,18 +14,31 @@ public class Employee {
     private String name;
     private Date dob;
     private String address;
+    private String password;
+    private String profilePicture;
+    private String emailAddress;
+
     @Enumerated(EnumType.STRING)
-    private String role;
-    private enum roles{
+    private Roles role;
+
+    // Enum for roles or position
+    private enum Roles{
         STAFF, ADMIN, UNKNOWN, MANAGER, EMPLOYEE, ROOT_ADMIN, STAKEHOLDER, SENIOR_MANAGER;
     }
+
+    // Default Constructor
     public Employee() {}
-    public Employee(int id, String name, Date dob, String address, String role) {
+
+    public Employee(int id, String name, Date dob, String address, Roles role, String password,
+                    String profilePicture, String emailAddress) {
         this.id = id;
         this.name = name;
         this.dob = dob;
         this.address = address;
         this.role = role;
+        this.password = password;
+        this.profilePicture = profilePicture;
+        this.emailAddress = emailAddress;
     }
     public int getId() {
         return id;
@@ -51,10 +64,37 @@ public class Employee {
     public void setAddress(String address) {
         this.address = address;
     }
-    public String getRole() {
+
+    public Roles getRole() {
         return role;
     }
-    public void setRole(String role) {
+
+    public void setRole(Roles role) {
         this.role = role;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
 }
+
