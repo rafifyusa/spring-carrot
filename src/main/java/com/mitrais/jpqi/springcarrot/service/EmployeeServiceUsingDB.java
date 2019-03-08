@@ -42,7 +42,6 @@ public class EmployeeServiceUsingDB implements EmployeeService{
         Optional<Employee> temp = Optional.ofNullable(employeeRepository.findById(id));
         if(temp.isPresent()) {
             return temp.get();
-//            return null;
         }
         return null;
     }
