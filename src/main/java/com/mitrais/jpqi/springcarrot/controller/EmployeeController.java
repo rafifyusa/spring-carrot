@@ -40,7 +40,7 @@ public class EmployeeController {
         return employeeServiceUsingDB.getEmployeeById(id);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") int id) {
         employeeServiceUsingDB.deleteEmployee(id);
     }
