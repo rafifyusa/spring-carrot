@@ -5,6 +5,7 @@ import com.mitrais.jpqi.springcarrot.repository.FreezerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,10 @@ public class FreezerController {
 
     @GetMapping
     public List<Freezer> get(@RequestParam(required = false) Integer id){
+        if(id != null){
+            List<Freezer> fr = (List<Freezer>) freezerRepository.findAllById(Collections.singleton(id));
+            return fr;
+        }
         List<Freezer> fr = freezerRepository.findAll();
         return fr;
     }

@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import java.time.LocalDateTime;
 
 @Document("baskets")
-public class Basket {
+public class Reward {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,18 +16,16 @@ public class Basket {
     private String name;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
-    private Employee employee;
     private double carrot_amt;
 
-    public Basket() {
+    public Reward() {
     }
 
-    public Basket(int id, String name, LocalDateTime created_at, LocalDateTime updated_at, Employee employee) {
+    public Reward(int id, String name, LocalDateTime created_at, LocalDateTime updated_at) {
         this.id = id;
         this.name = name;
         this.created_at = created_at;
         this.updated_at = updated_at;
-        this.employee = employee;
     }
 
     public double getCarrot_amt() {
@@ -68,13 +66,5 @@ public class Basket {
 
     public void setUpdated_at(LocalDateTime updated_at) {
         this.updated_at = updated_at;
-    }
-
-    public Employee getEmployee() {
-        return employee;
-    }
-
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
     }
 }

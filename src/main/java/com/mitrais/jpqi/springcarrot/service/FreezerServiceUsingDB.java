@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FreezerServiceUsingDB {
@@ -23,5 +24,9 @@ public class FreezerServiceUsingDB {
 
     public void create(Freezer freezer){
         freezerRepository.save(freezer);
+    }
+
+    public List<Freezer> findAllById(Integer id){
+        return freezerRepository.findAll().stream().filter((f)-> f.getId() == id).collect(Collectors.toList());
     }
 }
