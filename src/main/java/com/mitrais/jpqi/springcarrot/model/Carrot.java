@@ -2,24 +2,38 @@ package com.mitrais.jpqi.springcarrot.model;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Document(collection = "carrots")
 public class Carrot {
+    public enum Type{
+        NORMAL, FROZEN
+    }
     @Id
     private int id;
-    private String type;
-    private String basketFrom;
-    private String basketTo;
-    private Employee employee;
+    @Enumerated(EnumType.STRING)
+    private Type type;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private Basket basket;
 
     public Carrot() {}
 
-    public Carrot(int id, String type) {
+    public Carrot(int id, Type type, LocalDateTime createdAt,
+                  LocalDateTime updatedAt, Basket basket) {
         this.id = id;
         this.type = type;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.basket = basket;
     }
 
+    //Getters & Setters
     public int getId() {
         return id;
     }
@@ -28,27 +42,19 @@ public class Carrot {
         this.id = id;
     }
 
-    public String getType() {
-        return type;
-    }
+    public Type getType() { return type; }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+    public void setType(Type type) { this.type = type; }
 
-    public String getBasketFrom() {
-        return basketFrom;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt;}
 
-    public void setBasketFrom(String basketFrom) {
-        this.basketFrom = basketFrom;
-    }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    public String getBasketTo() {
-        return basketTo;
-    }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
 
-    public void setBasketTo(String basketTo) {
-        this.basketTo = basketTo;
-    }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    public Basket getBasket() { return basket; }
+
+    public void setBasket(Basket basket) { this.basket = basket; }
 }
