@@ -8,5 +8,6 @@ import java.util.Optional;
 
 @Service
 public interface CarrotService {
+    List<Carrot> getAll();
     void create(Carrot carrot);
 }
