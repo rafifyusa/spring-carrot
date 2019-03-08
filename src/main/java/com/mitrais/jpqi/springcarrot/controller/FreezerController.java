@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/freezer")
@@ -17,15 +18,12 @@ public class FreezerController {
 
     @GetMapping
     public List<Freezer> get(@RequestParam(required = false) Integer id){
-        if (id != null){
-            List<Freezer> fr = freezerRepository.findById(id);
-            return fr;
-        } else {
-            List<Freezer> fr = freezerRepository.fetch();
-            return
-        }
+        List<Freezer> fr = freezerRepository.findAll();
+        return fr;
     }
 
-//    @PostMapping
-//    public void create(@RequestBody Freezer freezer){freezerRepository.save(freezer);}
+    @PostMapping
+    public void create(@RequestBody Freezer freezer){
+        freezerRepository.save(freezer);
+    }
 }
