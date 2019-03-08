@@ -18,18 +18,18 @@ public class Carrot {
     private int id;
     @Enumerated(EnumType.STRING)
     private Type type;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime created_at;
+    private LocalDateTime updated_at;
     private Basket basket;
 
     public Carrot() {}
 
-    public Carrot(int id, Type type, LocalDateTime createdAt,
-                  LocalDateTime updatedAt, Basket basket) {
+    public Carrot(int id, Type type, LocalDateTime created_at,
+                  LocalDateTime updated_at, Basket basket) {
         this.id = id;
         this.type = type;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
         this.basket = basket;
     }
 
@@ -46,13 +46,13 @@ public class Carrot {
 
     public void setType(Type type) { this.type = type; }
 
-    public LocalDateTime getCreatedAt() { return createdAt;}
+    public LocalDateTime getCreatedAt() { return created_at;}
 
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.created_at = createdAt; }
 
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public LocalDateTime getUpdatedAt() { return updated_at; }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updated_at = updatedAt; }
 
     public Basket getBasket() { return basket; }
 

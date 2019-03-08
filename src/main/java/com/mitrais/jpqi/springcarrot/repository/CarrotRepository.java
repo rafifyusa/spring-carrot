@@ -7,5 +7,4 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CarrotRepository extends MongoRepository<Carrot, Integer> {
-    public List<Carrot> findByType(String type);
 }

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/reward")
+@RequestMapping("api/rewards")
 public class RewardController {
     private RewardService rewardService;
 
