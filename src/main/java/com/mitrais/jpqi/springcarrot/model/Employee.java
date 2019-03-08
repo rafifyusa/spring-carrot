@@ -19,7 +19,7 @@ public class Employee {
     private String role;
 
     private enum roles{
-        Manager, Staff, Merchant;
+        STAFF, ADMIN, UNKNOWN, MANAGER, EMPLOYEE, ROOT_ADMIN, STAKEHOLDER, SENIOR_MANAGER;
     }
 
     public Employee() {}

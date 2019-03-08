@@ -1,13 +1,13 @@
 package com.mitrais.jpqi.springcarrot.service;
 
-import com.mitrais.jpqi.springcarrot.model.Carrot;
 import com.mitrais.jpqi.springcarrot.model.Employee;
-import com.mitrais.jpqi.springcarrot.repository.CarrotRepository;
 import com.mitrais.jpqi.springcarrot.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+import java.util.Optional;
+@Service
 public class EmployeeServiceUsingDB implements EmployeeService{
     @Autowired
     EmployeeRepository employeeRepository;
@@ -28,17 +28,22 @@ public class EmployeeServiceUsingDB implements EmployeeService{
 
     @Override
     public void updateEmployee(int id, Employee employee) {
-        List<Employee> updatedEmployee = employeeRepository.findById(id);
-
+        employee.setId(id);
+        employeeRepository.save(employee);
     }
 
     @Override
-    public void getAllEmployee() {
-
+    public List<Employee> getAllEmployee() {
+        return employeeRepository.findAll();
     }
 
     @Override
-    public void getEmployeeById(int id) {
-
+    public Employee getEmployeeById(int id) {
+        Optional<Employee> temp = Optional.ofNullable(employeeRepository.findById(id));
+        if(temp.isPresent()) {
+            return temp.get();
+//            return null;
+        }
+        return null;
     }
 }
