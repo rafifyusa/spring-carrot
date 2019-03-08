@@ -9,7 +9,6 @@ public class Employee {
     @Id
     private int id;
     private String name;
-    private String basket;
     private String status;
 
     public Employee() {}
@@ -17,7 +16,6 @@ public class Employee {
     public Employee(int id, String name, String basket, String status) {
         this.id = id;
         this.name = name;
-        this.basket = basket;
         this.status = status;
     }
 
@@ -35,14 +33,6 @@ public class Employee {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getBasket() {
-        return basket;
-    }
-
-    public void setBasket(String basket) {
-        this.basket = basket;
     }
 
     public String getStatus() {
