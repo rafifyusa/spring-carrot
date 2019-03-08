@@ -17,6 +17,7 @@ public class EmployeeController {
     public void create(@RequestBody Employee employee) {
         employeeServiceUsingDB.createEmployee(employee);
     }
+
     @PutMapping("/{id}")
     public void update(@PathVariable("id") int id, @RequestBody Employee employee) {
         employeeServiceUsingDB.updateEmployee(id, employee);
@@ -26,11 +27,13 @@ public class EmployeeController {
     public List<Employee> get() {
         return employeeServiceUsingDB.getAllEmployee();
     }
+
     // Get by Id
     @GetMapping("/{id}")
     public Employee getById(@PathVariable("id") int id) {
         return employeeServiceUsingDB.getEmployeeById(id);
     }
+
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") int id) {
         employeeServiceUsingDB.deleteEmployee(id);
