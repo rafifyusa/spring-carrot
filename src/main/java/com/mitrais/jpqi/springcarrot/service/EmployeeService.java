@@ -6,5 +6,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface EmployeeService {
-    void create(Employee employee);
+    void createEmployee(Employee employee);
+    void deleteEmployee(int id );
+    void updateEmployee(int id, Employee employee);
+    void getAllEmployee();
+    void getEmployeeById(int id);
 }
