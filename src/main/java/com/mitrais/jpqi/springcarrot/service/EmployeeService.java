@@ -14,4 +14,6 @@ public interface EmployeeService {
     List<Employee> getAllEmployee();
     Employee getEmployeeById(int id);
     Map<String, String> findEmployeeByCredential (Map<String, String> body);
+
+    void partialUpdateEmployee(int id, Employee employee);
 }

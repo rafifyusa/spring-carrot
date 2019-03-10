@@ -21,11 +21,6 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     private Roles role;
 
-    // Enum for roles or position
-    private enum Roles{
-        STAFF, ADMIN, UNKNOWN, MANAGER, EMPLOYEE, ROOT_ADMIN, STAKEHOLDER, SENIOR_MANAGER;
-    }
-
     // Default Constructor
     public Employee() {}
 
@@ -40,24 +35,28 @@ public class Employee {
         this.profilePicture = profilePicture;
         this.emailAddress = emailAddress;
     }
+
     public int getId() {
         return id;
     }
     public void setId(int id) {
         this.id = id;
     }
+
     public String getName() {
         return name;
     }
     public void setName(String name) {
         this.name = name;
     }
+
     public Date getDob() {
         return dob;
     }
     public void setDob(Date dob) {
         this.dob = dob;
     }
+
     public String getAddress() {
         return address;
     }
@@ -68,7 +67,6 @@ public class Employee {
     public Roles getRole() {
         return role;
     }
-
     public void setRole(Roles role) {
         this.role = role;
     }
@@ -76,7 +74,6 @@ public class Employee {
     public String getPassword() {
         return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }
@@ -84,7 +81,6 @@ public class Employee {
     public String getProfilePicture() {
         return profilePicture;
     }
-
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
     }
@@ -92,8 +88,20 @@ public class Employee {
     public String getEmailAddress() {
         return emailAddress;
     }
-
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
+    }
+
+
+    // Enum for roles or position
+    private enum Roles{
+        STAFF,
+        ADMIN,
+        UNKNOWN,
+        MANAGER,
+        EMPLOYEE,
+        ROOT_ADMIN,
+        STAKEHOLDER,
+        SENIOR_MANAGER;
     }
 }

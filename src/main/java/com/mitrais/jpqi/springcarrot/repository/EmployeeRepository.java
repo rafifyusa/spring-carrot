@@ -7,5 +7,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface EmployeeRepository extends MongoRepository<Employee, Integer>{
-    Employee findById(int id);
+//    Employee findById(int id);
 }
