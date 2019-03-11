@@ -41,12 +41,13 @@ public class EmployeeController {
         return employeeServiceUsingDB.getEmployeeById(id);
     }
 
-    // Delete
+    // Get employee group
     @GetMapping("groups")
     public List<GroupCount> getGroups() {
         return employeeServiceUsingDB.getAllEmployeeGroups();
     }
 
+    // Delete employee
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") int id) {
         employeeServiceUsingDB.deleteEmployee(id);

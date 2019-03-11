@@ -42,9 +42,6 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
     @Override
     public void deleteEmployee(int id) {
-//        employeeRepository.delete(employeeRepository.findById(id));
-//        Optional<Employee> temp = employeeRepository.findById(id);
-//        employeeRepository.delete(temp);
         employeeRepository.deleteById(id);
     }
 
@@ -61,7 +58,6 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
     @Override
     public Employee getEmployeeById(int id) {
-//        Optional<Employee> temp = Optional.ofNullable(employeeRepository.findById(id));
         Optional<Employee> temp = employeeRepository.findById(id);
         if (temp.isPresent()) {
             return temp.get();
@@ -168,7 +164,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
     }
 
-    // List all employee birhday
+    // List employee birthday by role
     @Override
     public List<Employee> getStaffRole(String role) {
         return employeeRepository.findByRole(role);
