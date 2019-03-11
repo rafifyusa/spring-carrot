@@ -18,8 +18,6 @@ public class CarrotServiceUsingDB implements CarrotService {
     @Autowired
     CarrotRepository carrotRepository;
 
-    private MongoTemplate mongoTemplate;
-
     public CarrotServiceUsingDB(CarrotRepository carrotRepository) {
         this.carrotRepository = carrotRepository;
     }
