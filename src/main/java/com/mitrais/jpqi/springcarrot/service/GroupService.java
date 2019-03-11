@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.Query;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -30,21 +31,16 @@ public class GroupService {
 
     public void deleteGroupById(int id) {groupRepository.deleteById(id);}
 
-    public void insertMemberToGroup(int id, Employee employee){
+    public void insertMemberToGroup(int id, List<Employee> employee){
         Optional<StaffGroup> group = groupRepository.findById(id);
 
         if (group.isPresent()) {
-
-            Employee e = new Employee();
-            e.setId(5);
-            e.setName("rrrr");
-
             StaffGroup sg = group.get();
-            sg.getMember().add(e);
-//            Set<Employee> members = sg.getMember();
-//            System.out.println(employee.getName());
-//            members.add(employee);
-//            sg.setMember(members);
+            if (sg.getMember() == null) {
+                sg.setMember(new HashSet<>());
+            }
+//            System.out.println(sg.getMember().size());
+            employee.forEach(e -> sg.getMember().add(e));
             groupRepository.save(sg);
         }
     }

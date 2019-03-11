@@ -4,6 +4,7 @@ import com.mitrais.jpqi.springcarrot.model.Basket;
 import com.mitrais.jpqi.springcarrot.model.Reward;
 import com.mitrais.jpqi.springcarrot.service.BasketService;
 import com.mitrais.jpqi.springcarrot.service.RewardService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,11 +12,8 @@ import java.util.List;
 @RestController
 @RequestMapping("api/rewards")
 public class RewardController {
+    @Autowired
     private RewardService rewardService;
-
-    public RewardController(RewardService rewardService) {
-        this.rewardService = rewardService;
-    }
 
     @GetMapping
     public List<Reward> findAllReward() {

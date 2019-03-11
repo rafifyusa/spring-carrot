@@ -4,6 +4,7 @@ import com.mitrais.jpqi.springcarrot.model.Basket;
 import com.mitrais.jpqi.springcarrot.model.Employee;
 import com.mitrais.jpqi.springcarrot.service.BasketService;
 //import jdk.internal.dynalink.linker.LinkerServices;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,11 +12,8 @@ import java.util.List;
 @RestController
 @RequestMapping("api/basket")
 public class BasketController {
+    @Autowired
     private BasketService basketService;
-
-    public BasketController(BasketService basketService) {
-        this.basketService = basketService;
-    }
 
     @GetMapping
     public List<Basket> findAllBasket() {

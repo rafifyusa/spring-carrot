@@ -15,8 +15,6 @@ public class FreezerController {
     @Autowired
     FreezerRepository freezerRepository;
 
-    public FreezerController(FreezerRepository freezerRepository){this.freezerRepository = freezerRepository;}
-
     @GetMapping
     public List<Freezer> get(@RequestParam(required = false) Integer id){
         if(id != null){

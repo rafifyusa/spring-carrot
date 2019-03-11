@@ -25,7 +25,7 @@ public class GroupController {
     }
 
     @PatchMapping("{id}")
-    public void insertMember(@RequestBody Employee employee, @PathVariable int id){
+    public void insertMember(@RequestBody List<Employee> employee, @PathVariable int id){
         groupService.insertMemberToGroup(id, employee);
     }
 }
