@@ -12,9 +12,18 @@ public class Achievement {
     private int id;
     private String title;
     private String description;
-    int carrot;
+    private int carrot;
     @Enumerated(EnumType.STRING)
     private Role role;
+    private boolean status;
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
 
     // Enum for roles or position
     private enum Role {
