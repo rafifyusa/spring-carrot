@@ -1,6 +1,8 @@
 package com.mitrais.jpqi.springcarrot.service;
 
 import com.mitrais.jpqi.springcarrot.model.Basket;
+import com.mitrais.jpqi.springcarrot.model.Carrot;
+import com.mitrais.jpqi.springcarrot.model.Employee;
 import com.mitrais.jpqi.springcarrot.model.Reward;
 import com.mitrais.jpqi.springcarrot.repository.BasketRepository;
 import com.mitrais.jpqi.springcarrot.repository.RewardRepository;
@@ -21,8 +23,13 @@ public class RewardService {
         rewardRepository.save(reward);
      }
 
-    public void updateRewardIntoDB (Reward reward) {
-        rewardRepository.save(reward);
+    public void updateRewardIntoDB (Reward reward, int id) {
+        Optional<Reward> cr = rewardRepository.findById(id);
+        if (cr.isPresent()) {
+            Reward rw = cr.get();
+            rw.setActive(reward.isActive());
+            rewardRepository.save(rw);
+        }
     }
 
     public List<Reward> findAllReward () {

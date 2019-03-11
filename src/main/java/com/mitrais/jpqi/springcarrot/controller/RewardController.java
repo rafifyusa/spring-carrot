@@ -32,9 +32,9 @@ public class RewardController {
         rewardService.insertRewardIntoDB(reward);
     }
 
-    @PatchMapping
-    public void updateReward(@RequestBody Reward reward) {
-        rewardService.updateRewardIntoDB(reward);
+    @PatchMapping("{id}")
+    public void updateReward(@RequestBody Reward reward, @PathVariable int id) {
+        rewardService.updateRewardIntoDB(reward, id);
     }
 
     @DeleteMapping("{id}")
