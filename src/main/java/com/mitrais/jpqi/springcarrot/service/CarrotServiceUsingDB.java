@@ -4,6 +4,9 @@ import com.mitrais.jpqi.springcarrot.model.Basket;
 import com.mitrais.jpqi.springcarrot.model.Carrot;
 import com.mitrais.jpqi.springcarrot.repository.CarrotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,6 +17,8 @@ import java.util.Optional;
 public class CarrotServiceUsingDB implements CarrotService {
     @Autowired
     CarrotRepository carrotRepository;
+
+    private MongoTemplate mongoTemplate;
 
     public CarrotServiceUsingDB(CarrotRepository carrotRepository) {
         this.carrotRepository = carrotRepository;
@@ -31,4 +36,9 @@ public class CarrotServiceUsingDB implements CarrotService {
 
     @Override
     public void updateCarrot(Carrot carrot) { carrotRepository.save(carrot);}
+
+    @Override
+    public List<Carrot> findByEmployeeId(int id) {
+        return carrotRepository.findByEmployeeId(id);
+    }
 }

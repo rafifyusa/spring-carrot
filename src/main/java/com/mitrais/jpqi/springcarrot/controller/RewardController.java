@@ -36,4 +36,7 @@ public class RewardController {
     public void updateReward(@RequestBody Reward reward) {
         rewardService.updateRewardIntoDB(reward);
     }
+
+    @DeleteMapping("{id}")
+    public void deleteReward(@PathVariable int id) {rewardService.removeRewardById(id);}
 }

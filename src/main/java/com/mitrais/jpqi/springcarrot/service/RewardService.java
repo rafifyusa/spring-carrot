@@ -36,4 +36,8 @@ public class RewardService {
         }
         return null;
     }
+
+    public void removeRewardById (int id) {
+        rewardRepository.deleteById(id);
+    }
 }
