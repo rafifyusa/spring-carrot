@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Document(collection = "employees")
@@ -12,7 +13,7 @@ public class Employee {
     @Id
     private int id;
     private String name;
-    private Date dob;
+    private LocalDate dob;
     private String address;
     private String password;
     private String profilePicture;
@@ -24,7 +25,7 @@ public class Employee {
     // Default Constructor
     public Employee() {}
 
-    public Employee(int id, String name, Date dob, String address, Roles role, String password,
+    public Employee(int id, String name, LocalDate dob, String address, Roles role, String password,
                     String profilePicture, String emailAddress) {
         this.id = id;
         this.name = name;
@@ -50,10 +51,10 @@ public class Employee {
         this.name = name;
     }
 
-    public Date getDob() {
+    public LocalDate getDob() {
         return dob;
     }
-    public void setDob(Date dob) {
+    public void setDob(LocalDate dob) {
         this.dob = dob;
     }
 
