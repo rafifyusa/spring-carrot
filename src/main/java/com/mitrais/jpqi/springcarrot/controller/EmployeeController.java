@@ -17,11 +17,13 @@ public class EmployeeController {
         this.employeeServiceUsingDB = employeeServiceUsingDB;
     }
 
+    // Create new
     @PostMapping
     public void create(@RequestBody Employee employee) {
         employeeServiceUsingDB.createEmployee(employee);
     }
 
+    // Update
     @PutMapping("/{id}")
     public void update(@PathVariable("id") int id, @RequestBody Employee employee) {
         employeeServiceUsingDB.updateEmployee(id, employee);
@@ -39,13 +41,18 @@ public class EmployeeController {
         return employeeServiceUsingDB.getEmployeeById(id);
     }
 
+    // Delete
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") int id) {
         employeeServiceUsingDB.deleteEmployee(id);
     }
 
+    // Patch
     @PatchMapping("/{id}")
     public void partialUpdate(@PathVariable("id") int id, @RequestBody Employee employee) {
         employeeServiceUsingDB.partialUpdateEmployee(id, employee);
     }
+
+    // Get birthday list of all employee
+
 }
