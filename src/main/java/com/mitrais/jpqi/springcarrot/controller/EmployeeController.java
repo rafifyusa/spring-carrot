@@ -41,15 +41,12 @@ public class EmployeeController {
         return employeeServiceUsingDB.getEmployeeById(id);
     }
 
-<<<<<<< HEAD
     // Delete
-=======
     @GetMapping("groups")
     public List<GroupCount> getGroups() {
         return employeeServiceUsingDB.getAllEmployeeGroups();
     }
 
->>>>>>> 1e9ab6fc232fe2b3e18f883446315aea93bb4ec2
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") int id) {
         employeeServiceUsingDB.deleteEmployee(id);
@@ -61,13 +58,15 @@ public class EmployeeController {
         employeeServiceUsingDB.partialUpdateEmployee(id, employee);
     }
 
-<<<<<<< HEAD
     // Get birthday list of all employee
+    @GetMapping("role")
+    public List<Employee> getBirthday(@RequestParam String role) {
+        return employeeServiceUsingDB.getStaffRole(role);
+    }
 
-=======
     @GetMapping("recentdob")
     public List<Employee> getByRecentDOB() {
         return employeeServiceUsingDB.getRecentDOB();
     }
->>>>>>> 1e9ab6fc232fe2b3e18f883446315aea93bb4ec2
+
 }

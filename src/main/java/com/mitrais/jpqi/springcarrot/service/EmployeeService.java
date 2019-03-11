@@ -19,5 +19,5 @@ public interface EmployeeService {
     List<Employee> getRecentDOB();
 
     void partialUpdateEmployee(int id, Employee employee);
-    List<Employee> getStaffBirthday(String role);
+    List<Employee> getStaffRole(String role);
 }

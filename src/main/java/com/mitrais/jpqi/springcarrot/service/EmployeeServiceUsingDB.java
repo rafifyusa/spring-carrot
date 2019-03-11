@@ -170,7 +170,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
     // List all employee birhday
     @Override
-    public List<Employee> getStaffBirthday(String role) {
+    public List<Employee> getStaffRole(String role) {
         return employeeRepository.findByRole(role);
     }
 }
