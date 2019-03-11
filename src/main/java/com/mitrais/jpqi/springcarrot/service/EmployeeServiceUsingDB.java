@@ -1,23 +1,40 @@
 package com.mitrais.jpqi.springcarrot.service;
 
 import com.mitrais.jpqi.springcarrot.model.Employee;
+import com.mitrais.jpqi.springcarrot.model.GroupCount;
 import com.mitrais.jpqi.springcarrot.repository.EmployeeRepository;
 //import jdk.vm.ci.meta.Local;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
+<<<<<<< HEAD
 import java.time.LocalDate;
+=======
+import java.util.ArrayList;
+>>>>>>> f4da9ffa1ae3c3c5c7e72b8180e06550a52ad2e3
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import java.util.stream.Collectors;
 
+
 @Service
-public class EmployeeServiceUsingDB implements EmployeeService{
+public class EmployeeServiceUsingDB implements EmployeeService {
 
     @Autowired
     EmployeeRepository employeeRepository;
+
+    @Autowired
+    MongoTemplate mongoTemplate;
+
     public EmployeeServiceUsingDB(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
@@ -50,23 +67,41 @@ public class EmployeeServiceUsingDB implements EmployeeService{
     public Employee getEmployeeById(int id) {
 //        Optional<Employee> temp = Optional.ofNullable(employeeRepository.findById(id));
         Optional<Employee> temp = employeeRepository.findById(id);
-        if(temp.isPresent()) {
+        if (temp.isPresent()) {
             return temp.get();
         }
         return null;
     }
 
     @Override
+    public List<GroupCount> getAllEmployeeGroups() {
+
+        Aggregation agg = newAggregation(
+                group("group").count().as("total"),
+                project("total").and("group").previousOperation(),
+                sort(Sort.Direction.DESC, "total")
+        );
+
+        //convert to agg result to list
+        AggregationResults<GroupCount> groupResult =
+                mongoTemplate.aggregate(agg, Employee.class, GroupCount.class);
+
+        List<GroupCount> groups = groupResult.getMappedResults();
+
+        return groups;
+
+    }
+
     public Map<String, String> findEmployeeByCredential(Map<String, String> body) {
         List<Employee> emp = employeeRepository.findAll().stream()
                 .filter(e -> e.getName().equals(body.get("name")))
-                .filter(e->e.getAddress().equals(body.get("address")))
+                .filter(e -> e.getAddress().equals(body.get("address")))
                 .collect(Collectors.toList());
 
         Map<String, String> kembalian = new HashMap<>();
         Map<String, String> pegawai = new HashMap<>();
 
-        if(emp.size() > 0) {
+        if (emp.size() > 0) {
             kembalian.put("status", "berhasil");
             kembalian.put("message", "employee ditemukan");
             emp.forEach(e -> {
@@ -106,15 +141,32 @@ public class EmployeeServiceUsingDB implements EmployeeService{
         Employee temp = employeeRepository.findById(id).orElse(null);
 
         if (temp != null) {
-            if (employee.getId() != 0) { temp.setId(employee.getId()); }
-            if (employee.getName() != null) { temp.setName(employee.getName()); }
-            if (employee.getDob() != null) { temp.setDob(employee.getDob()); }
-            if (employee.getAddress() != null) { temp.setAddress(employee.getAddress()); }
-            if (employee.getRole() != null) { temp.setRole(employee.getRole()); }
-            if (employee.getPassword() != null) { temp.setPassword(employee.getPassword()); }
-            if (employee.getProfilePicture() != null) { temp.setProfilePicture(employee.getProfilePicture()); }
-            if (employee.getEmailAddress() != null) { temp.setEmailAddress(employee.getEmailAddress()); }
+            if (employee.getId() != 0) {
+                temp.setId(employee.getId());
+            }
+            if (employee.getName() != null) {
+                temp.setName(employee.getName());
+            }
+            if (employee.getDob() != null) {
+                temp.setDob(employee.getDob());
+            }
+            if (employee.getAddress() != null) {
+                temp.setAddress(employee.getAddress());
+            }
+            if (employee.getRole() != null) {
+                temp.setRole(employee.getRole());
+            }
+            if (employee.getPassword() != null) {
+                temp.setPassword(employee.getPassword());
+            }
+            if (employee.getProfilePicture() != null) {
+                temp.setProfilePicture(employee.getProfilePicture());
+            }
+            if (employee.getEmailAddress() != null) {
+                temp.setEmailAddress(employee.getEmailAddress());
+            }
         }
         employeeRepository.save(temp);
+
     }
 }

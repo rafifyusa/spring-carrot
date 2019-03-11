@@ -1,6 +1,7 @@
 package com.mitrais.jpqi.springcarrot.controller;
 
 import com.mitrais.jpqi.springcarrot.model.Employee;
+import com.mitrais.jpqi.springcarrot.model.GroupCount;
 import com.mitrais.jpqi.springcarrot.service.EmployeeServiceUsingDB;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +37,11 @@ public class EmployeeController {
     @GetMapping("/{id}")
     public Employee getById(@PathVariable("id") int id) {
         return employeeServiceUsingDB.getEmployeeById(id);
+    }
+
+    @GetMapping("groups")
+    public List<GroupCount> getGroups() {
+        return employeeServiceUsingDB.getAllEmployeeGroups();
     }
 
     @DeleteMapping("/{id}")
