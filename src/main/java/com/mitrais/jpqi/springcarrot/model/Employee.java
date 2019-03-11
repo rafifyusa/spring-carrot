@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Document(collection = "employees")
@@ -12,7 +13,7 @@ public class Employee {
     @Id
     private int id;
     private String name;
-    private Date dob;
+    private LocalDate dob;
     private String address;
     private String password;
     private String profilePicture;
@@ -22,15 +23,10 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     private Roles role;
 
-    // Enum for roles or position
-    private enum Roles{
-        STAFF, ADMIN, UNKNOWN, MANAGER, EMPLOYEE, ROOT_ADMIN, STAKEHOLDER, SENIOR_MANAGER;
-    }
-
     // Default Constructor
     public Employee() {}
 
-    public Employee(int id, String name, Date dob, String address, Roles role, String password,
+    public Employee(int id, String name, LocalDate dob, String address, Roles role, String password,
                     String profilePicture, String emailAddress) {
         this.id = id;
         this.name = name;
@@ -41,24 +37,28 @@ public class Employee {
         this.profilePicture = profilePicture;
         this.emailAddress = emailAddress;
     }
+
     public int getId() {
         return id;
     }
     public void setId(int id) {
         this.id = id;
     }
+
     public String getName() {
         return name;
     }
     public void setName(String name) {
         this.name = name;
     }
-    public Date getDob() {
+
+    public LocalDate getDob() {
         return dob;
     }
-    public void setDob(Date dob) {
+    public void setDob(LocalDate dob) {
         this.dob = dob;
     }
+
     public String getAddress() {
         return address;
     }
@@ -69,7 +69,6 @@ public class Employee {
     public Roles getRole() {
         return role;
     }
-
     public void setRole(Roles role) {
         this.role = role;
     }
@@ -77,7 +76,6 @@ public class Employee {
     public String getPassword() {
         return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }
@@ -85,7 +83,6 @@ public class Employee {
     public String getProfilePicture() {
         return profilePicture;
     }
-
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
     }
@@ -93,9 +90,20 @@ public class Employee {
     public String getEmailAddress() {
         return emailAddress;
     }
-
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
     }
-}
 
+
+    // Enum for roles or position
+    private enum Roles{
+        STAFF,
+        ADMIN,
+        UNKNOWN,
+        MANAGER,
+        EMPLOYEE,
+        ROOT_ADMIN,
+        STAKEHOLDER,
+        SENIOR_MANAGER;
+    }
+}

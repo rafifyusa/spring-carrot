@@ -5,6 +5,7 @@ import com.mitrais.jpqi.springcarrot.model.GroupCount;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface EmployeeService {
@@ -14,4 +15,7 @@ public interface EmployeeService {
     List<Employee> getAllEmployee();
     Employee getEmployeeById(int id);
     List<GroupCount> getAllEmployeeGroups();
+    Map<String, String> findEmployeeByCredential (Map<String, String> body);
+
+    void partialUpdateEmployee(int id, Employee employee);
 }
