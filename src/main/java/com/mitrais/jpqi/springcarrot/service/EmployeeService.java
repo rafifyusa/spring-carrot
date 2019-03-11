@@ -16,4 +16,5 @@ public interface EmployeeService {
     Map<String, String> findEmployeeByCredential (Map<String, String> body);
 
     void partialUpdateEmployee(int id, Employee employee);
+    List<Employee> getStaffBirthday(String role);
 }

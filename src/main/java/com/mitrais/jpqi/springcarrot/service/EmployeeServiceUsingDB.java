@@ -97,4 +97,10 @@ public class EmployeeServiceUsingDB implements EmployeeService{
         }
         employeeRepository.save(temp);
     }
+
+    // List all employee birhday
+    @Override
+    public List<Employee> getStaffBirthday(String role) {
+        return employeeRepository.findByRole(role);
+    }
 }
