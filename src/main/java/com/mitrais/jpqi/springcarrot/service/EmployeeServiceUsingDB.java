@@ -57,8 +57,8 @@ public class EmployeeServiceUsingDB implements EmployeeService{
     @Override
     public Map<String, String> findEmployeeByCredential(Map<String, String> body) {
         List<Employee> emp = employeeRepository.findAll().stream()
-                .filter(e -> e.getName().equals(body.get("name")))
-                .filter(e->e.getAddress().equals(body.get("address")))
+                .filter(e -> e.getEmailAddress().equals(body.get("email")))
+                .filter(e->e.getPassword().equals(body.get("password")))
                 .collect(Collectors.toList());
 
         Map<String, String> kembalian = new HashMap<>();
@@ -68,9 +68,11 @@ public class EmployeeServiceUsingDB implements EmployeeService{
             kembalian.put("status", "berhasil");
             kembalian.put("message", "employee ditemukan");
             emp.forEach(e -> {
+                pegawai.put("id", String.valueOf(e.getId()));
                 pegawai.put("name", e.getName());
                 pegawai.put("alamat", e.getAddress());
-//                pegawai.put("role", e.getRole());
+                pegawai.put("emailAddress", e.getEmailAddress());
+                pegawai.put("profilePicture", e.getProfilePicture());
             });
             kembalian.put("employee", pegawai.toString());
         } else {
