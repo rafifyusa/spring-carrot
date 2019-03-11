@@ -6,7 +6,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import java.time.LocalDate;
-import java.util.Date;
+
 
 @Document(collection = "employees")
 public class Employee {

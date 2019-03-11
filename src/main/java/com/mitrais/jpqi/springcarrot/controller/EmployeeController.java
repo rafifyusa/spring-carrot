@@ -5,7 +5,6 @@ import com.mitrais.jpqi.springcarrot.service.EmployeeServiceUsingDB;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("api/employees")
@@ -49,6 +48,8 @@ public class EmployeeController {
         employeeServiceUsingDB.partialUpdateEmployee(id, employee);
     }
 
-//    @GetMapping("recentdob")
-//    public List<Employee> get()
+    @GetMapping("recentdob")
+    public List<Employee> getByRecentDOB() {
+        return employeeServiceUsingDB.getRecentDOB();
+    }
 }
