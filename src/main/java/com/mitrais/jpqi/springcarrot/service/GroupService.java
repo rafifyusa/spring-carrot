@@ -3,10 +3,15 @@ package com.mitrais.jpqi.springcarrot.service;
 import com.mitrais.jpqi.springcarrot.model.Employee;
 import com.mitrais.jpqi.springcarrot.model.StaffGroup;
 import com.mitrais.jpqi.springcarrot.repository.GroupRepository;
+import com.mongodb.BasicDBObject;
+import com.mongodb.Mongo;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Query;
 import java.util.HashSet;
@@ -18,6 +23,8 @@ import java.util.Set;
 public class GroupService {
     @Autowired
     private GroupRepository groupRepository;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     public void insertGroup(StaffGroup group) {
         groupRepository.save(group);
@@ -39,10 +46,23 @@ public class GroupService {
             if (sg.getMember() == null) {
                 sg.setMember(new HashSet<>());
             }
-//            System.out.println(sg.getMember().size());
+
             employee.forEach(e -> sg.getMember().add(e));
             groupRepository.save(sg);
         }
     }
+
+    public void deleteMemberFromGroup(int id, Employee employee){
+        Optional<StaffGroup> group = groupRepository.findById(id);
+        if (group.isPresent()) {
+           StaffGroup sg = group.get();
+            if (sg.getMember() != null) {
+                sg.getMember().remove(employee);
+            }
+            groupRepository.save(sg);
+        }
+
+    }
+
 
 }

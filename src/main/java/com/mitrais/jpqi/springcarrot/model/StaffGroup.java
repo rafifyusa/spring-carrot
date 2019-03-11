@@ -43,4 +43,19 @@ public class StaffGroup {
     public LocalDateTime getCreated_at() { return created_at; }
 
     public void setCreated_at(LocalDateTime created_at) { this.created_at = created_at; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        StaffGroup that = (StaffGroup) o;
+
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
 }
