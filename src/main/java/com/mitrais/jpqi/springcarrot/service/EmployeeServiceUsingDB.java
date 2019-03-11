@@ -42,9 +42,6 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
     @Override
     public void deleteEmployee(int id) {
-//        employeeRepository.delete(employeeRepository.findById(id));
-//        Optional<Employee> temp = employeeRepository.findById(id);
-//        employeeRepository.delete(temp);
         employeeRepository.deleteById(id);
     }
 
@@ -61,7 +58,6 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
     @Override
     public Employee getEmployeeById(int id) {
-//        Optional<Employee> temp = Optional.ofNullable(employeeRepository.findById(id));
         Optional<Employee> temp = employeeRepository.findById(id);
         if (temp.isPresent()) {
             return temp.get();
@@ -116,7 +112,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     }
 
     @Override
-    public List<Employee> getRecentDOB() {
+    public List<Employee> getRecentDOB() { // get the matching employee's dob with last 2 days.
         LocalDate localDate = LocalDate.now();
         LocalDate recentDOB1 = localDate.minusDays(1);
         LocalDate recentDOB2 = localDate.minusDays(2);
@@ -124,9 +120,6 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         String date0 = localDate.toString().substring(5);
         String date1 = recentDOB1.toString().substring(5);
         String date2 = recentDOB2.toString().substring(5);
-        System.out.println("0" + date0);
-        System.out.println("1" +date1);
-        System.out.println("2" +date2);
         List<Employee> emp = employeeRepository.findAll().stream()
                 .filter(e -> e.getDob().toString().substring(5).equals(date1) || e.getDob().toString().substring(5).equals(date2)|| e.getDob().toString().substring(5).equals(date0))
                 .collect(Collectors.toList());
@@ -167,4 +160,11 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         employeeRepository.save(temp);
 
     }
+
+    // List employee birthday by role
+    @Override
+    public List<Employee> getStaffRole(String role) {
+        return employeeRepository.findByRole(role);
+    }
 }
+

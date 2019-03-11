@@ -7,7 +7,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import java.time.LocalDate;
 
-
 @Document(collection = "employees")
 public class Employee {
     @Id
@@ -21,12 +20,12 @@ public class Employee {
     private String group;
 
     @Enumerated(EnumType.STRING)
-    private Roles role;
+    private Role role;
 
     // Default Constructor
     public Employee() {}
 
-    public Employee(int id, String name, LocalDate dob, String address, Roles role, String password,
+    public Employee(int id, String name, LocalDate dob, String address, Role role, String password,
                     String profilePicture, String emailAddress) {
         this.id = id;
         this.name = name;
@@ -66,10 +65,10 @@ public class Employee {
         this.address = address;
     }
 
-    public Roles getRole() {
+    public Role getRole() {
         return role;
     }
-    public void setRole(Roles role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
@@ -96,7 +95,7 @@ public class Employee {
 
 
     // Enum for roles or position
-    private enum Roles{
+    private enum Role {
         STAFF,
         ADMIN,
         UNKNOWN,
