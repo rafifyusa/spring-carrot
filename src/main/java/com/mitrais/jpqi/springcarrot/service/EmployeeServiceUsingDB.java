@@ -3,23 +3,23 @@ package com.mitrais.jpqi.springcarrot.service;
 import com.mitrais.jpqi.springcarrot.model.Employee;
 import com.mitrais.jpqi.springcarrot.model.GroupCount;
 import com.mitrais.jpqi.springcarrot.repository.EmployeeRepository;
-//import jdk.vm.ci.meta.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
-import java.util.stream.Collectors;
+
+//import jdk.vm.ci.meta.Local;
 
 
 @Service
@@ -112,7 +112,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     }
 
     @Override
-    public List<Employee> getRecentDOB() {
+    public List<Employee> getRecentDOB() { // get the matching employee's dob with last 2 days.
         LocalDate localDate = LocalDate.now();
         LocalDate recentDOB1 = localDate.minusDays(1);
         LocalDate recentDOB2 = localDate.minusDays(2);
@@ -120,9 +120,6 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         String date0 = localDate.toString().substring(5);
         String date1 = recentDOB1.toString().substring(5);
         String date2 = recentDOB2.toString().substring(5);
-        System.out.println("0" + date0);
-        System.out.println("1" +date1);
-        System.out.println("2" +date2);
         List<Employee> emp = employeeRepository.findAll().stream()
                 .filter(e -> e.getDob().toString().substring(5).equals(date1) || e.getDob().toString().substring(5).equals(date2)|| e.getDob().toString().substring(5).equals(date0))
                 .collect(Collectors.toList());
