@@ -67,7 +67,11 @@ public class EmployeeController {
 
     // Get employee group
     @GetMapping("groups")
-    public List<GroupCount> getGroups() {
+    public List<GroupCount> getAllGroups() {
         return employeeServiceUsingDB.getAllEmployeeGroups();
     }
+
+    // Get employee groups with param
+    @GetMapping("group")
+    public List<Employee> getEmployeeByGroup(@RequestParam String group) {return employeeServiceUsingDB.getEmployeeByGroup(group);}
 }

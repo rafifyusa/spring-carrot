@@ -1,7 +1,6 @@
 package com.mitrais.jpqi.springcarrot.controller;
 
-import com.mitrais.jpqi.springcarrot.model.Employee;
-import com.mitrais.jpqi.springcarrot.model.StaffGroup;
+import com.mitrais.jpqi.springcarrot.model.Group;
 import com.mitrais.jpqi.springcarrot.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,16 +14,16 @@ public class GroupController {
     private GroupService groupService;
 
     @GetMapping
-    public List<StaffGroup> getGroups(){
+    public List<Group> getGroups(){
         return groupService.findAllGroup();
     }
 
     @PostMapping
-    public void insertGroup(@RequestBody StaffGroup group){
+    public void insertGroup(@RequestBody Group group){
         groupService.insertGroup(group);
     }
 
-    @PatchMapping("{id}")
+/*    @PatchMapping("{id}")
     public void insertMember(@RequestBody List<Employee> employee, @PathVariable int id){
         groupService.insertMemberToGroup(id, employee);
     }
@@ -32,5 +31,5 @@ public class GroupController {
     @PatchMapping("/delete/{id}")
     public void deleteMember(@RequestBody Employee employee, @PathVariable int id){
         groupService.deleteMemberFromGroup(id, employee);
-    }
+    }*/
 }
