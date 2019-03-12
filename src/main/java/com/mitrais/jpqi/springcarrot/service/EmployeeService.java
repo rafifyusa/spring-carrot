@@ -20,4 +20,6 @@ public interface EmployeeService {
 
     void partialUpdateEmployee(int id, Employee employee);
     List<Employee> getStaffRole(String role);
+
+    List<Employee> getEmployeeByGroup(String group);
 }

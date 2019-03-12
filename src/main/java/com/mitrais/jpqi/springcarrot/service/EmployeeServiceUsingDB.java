@@ -156,6 +156,9 @@ public class EmployeeServiceUsingDB implements EmployeeService {
             if (employee.getEmailAddress() != null) {
                 temp.setEmailAddress(employee.getEmailAddress());
             }
+            if (employee.getGroup() != null) {
+                temp.setGroup(employee.getGroup());
+            }
         }
         employeeRepository.save(temp);
 
@@ -166,5 +169,12 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     public List<Employee> getStaffRole(String role) {
         return employeeRepository.findByRole(role);
     }
+
+    @Override
+    public List<Employee> getEmployeeByGroup(String group){
+        return employeeRepository.findByGroup(group);
+    }
+
+
 }
 
