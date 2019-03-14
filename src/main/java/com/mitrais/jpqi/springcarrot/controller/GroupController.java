@@ -18,6 +18,11 @@ public class GroupController {
         return groupService.findAllGroup();
     }
 
+    @GetMapping ("staff")
+    public List<Group> getStaffGroups() {
+        return groupService.findAllStaffGroup();
+    }
+
     @PostMapping
     public void insertGroup(@RequestBody Group group){
         groupService.insertGroup(group);
