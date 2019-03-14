@@ -23,7 +23,7 @@ public class BasketService {
          basketRepository.save(basket);
      }
 
-    public void updateBasketIntoDB (Basket basket) {
+    public void updateBasketIntoDB (int id, Basket basket) {
         basketRepository.save(basket);
     }
 
@@ -52,5 +52,9 @@ public class BasketService {
         });
 
         return sortedEmployee;
+    }
+
+    public List<Basket> findByEmployee(int id) {
+        return basketRepository.findByEmployee(id);
     }
 }

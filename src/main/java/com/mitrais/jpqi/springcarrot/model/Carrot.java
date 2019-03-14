@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.model;
 
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.EnumType;
@@ -20,6 +21,7 @@ public class Carrot {
     private Type type;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
+    @DBRef
     private Basket basket;
 
     public Carrot() {}

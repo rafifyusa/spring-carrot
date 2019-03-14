@@ -1,6 +1,5 @@
 package com.mitrais.jpqi.springcarrot.repository;
 
-import com.mitrais.jpqi.springcarrot.model.Basket;
 import com.mitrais.jpqi.springcarrot.model.Reward;
 import org.springframework.data.mongodb.repository.MongoRepository;
 

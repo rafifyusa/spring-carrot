@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 
 @Document("rewards")
 public class Reward {
-    private enum Type {ALL, EMPLOYEE, MANAGER}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -19,15 +18,11 @@ public class Reward {
     private boolean active;
     private LocalDate expired_date;
     private String note;
-    @Enumerated(EnumType.STRING)
-    private Type type;
 
-    public Reward() {
-        this.type = Type.ALL;
-    }
+    public Reward(){}
 
     public Reward(int id, String name, LocalDateTime created_at, LocalDateTime updated_at, boolean active,
-                  LocalDate expired_date, String note, Type type) {
+                  LocalDate expired_date, String note) {
         this.id = id;
         this.name = name;
         this.created_at = created_at;
@@ -35,7 +30,6 @@ public class Reward {
         this.active = active;
         this.expired_date = expired_date;
         this.note = note;
-        this.type = type;
     }
 
     public String getNote() {
@@ -44,14 +38,6 @@ public class Reward {
 
     public void setNote(String note) {
         this.note = note;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
     }
 
     public boolean isActive() {

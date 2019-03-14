@@ -6,48 +6,89 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ItemService {
+
     private ItemRepository itemRepository;
 
     public ItemService(ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
     }
 
-    // Create new reward item
-    public void insertItem(Item item) {
+    // Create new item
+    public void createItem(Item item) {
         itemRepository.save(item);
     }
 
-    // Update
-    public void updateItem(Item item) {
+    // Edit/Update
+    public void updateItem(int id, Item item) {
+        item.setId(id);
         itemRepository.save(item);
     }
 
-    // Find All
-    public List<Item> findAllItem() {
-        return itemRepository.findAll();
-    }
-
-    // Find By Id
-    public Item findItemById(int id) {
-        Optional<Item> item = itemRepository.findById(id);
-        if(!item.isPresent()) {
-            return null;
-        }
-        return item.get();
-    }
-
-    // Delete Item
-    public void deleteItemById(int id) {
+    // Delete
+    public void deleteItem(int id) {
         itemRepository.deleteById(id);
     }
 
-    // Sorting based on amount
-    public List<Item> sortByAmount() {
-        List<Item> sortedItem = itemRepository.findAll(new Sort(Sort.Direction.DESC, "amount"));
+    // Show All
+    public List<Item> getAll() {
+        return itemRepository.findAll();
+    }
+
+    // Patch
+    public void updatePartialItem(int id, Item item) {
+        // Create item object
+        Item temp = itemRepository.findById(id).orElse(null);
+
+        // Check if empty or not
+        if (temp != null) {
+            // Fixed id
+            temp.setId(temp.getId());
+
+            if (temp.getItemName() != null) {
+                temp.setItemName(item.getItemName());
+            }
+
+            if (temp.getItemDescription() != null) {
+                temp.setItemDescription(item.getItemDescription());
+            }
+
+            if (temp.getPictureUrl() != null) {
+                temp.setPictureUrl(item.getPictureUrl());
+            }
+
+            if (temp.getExchangeRate() != 0) {
+                temp.setExchangeRate(item.getExchangeRate());
+            }
+
+            if (temp.getTotalItem() != 0) {
+                temp.setTotalItem(item.getTotalItem());
+            }
+
+            if (temp.isApprovalStatus() || !temp.isApprovalStatus()) {
+                temp.setApprovalStatus(item.isApprovalStatus());
+            }
+
+            if (temp.isSaleStatus() || !temp.isSaleStatus()) {
+                temp.setSaleStatus(item.isSaleStatus());
+            }
+
+            if (temp.getItemSold() != 0 ) {
+                temp.setItemSold(item.getItemSold());
+            }
+
+            if (temp.getBazaar() != null) {
+                temp.setBazaar(item.getBazaar());
+            }
+        }
+        itemRepository.save(temp);
+    }
+
+    // Sort by exchange rate
+    public List<Item> sortByExchangeRate() {
+        List<Item> sortedItem = itemRepository.findAll(new Sort(Sort.Direction.DESC, "exchangeRate"));
         return sortedItem;
     }
 }

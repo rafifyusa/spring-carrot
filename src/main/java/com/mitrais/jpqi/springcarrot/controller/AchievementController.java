@@ -38,4 +38,15 @@ public class AchievementController {
     public void delete(@PathVariable("id") int id){
         achievementService.deleteAchievement(id);
     }
+
+    @PutMapping("{id}")
+    public void update(@PathVariable("id") int id, @RequestBody Achievement achievement){
+        achievementService.updateAchievement(id, achievement);
+    }
+
+    @PatchMapping("{id}")
+    public void partialUpdate(@PathVariable("id") int id, @RequestBody Achievement achievement){
+        achievementService.partialUpdateAchievement(id, achievement);
+    }
+
 }

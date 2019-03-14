@@ -11,7 +11,7 @@
 	<groupId>com.mitrais.jpqi</groupId>
 	<artifactId>spring-carrot</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>spring-carrot</name>
+	<itemName>spring-carrot</itemName>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>

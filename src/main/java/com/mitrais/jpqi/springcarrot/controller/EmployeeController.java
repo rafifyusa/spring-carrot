@@ -1,6 +1,7 @@
 package com.mitrais.jpqi.springcarrot.controller;
 
 import com.mitrais.jpqi.springcarrot.model.Employee;
+import com.mitrais.jpqi.springcarrot.model.Group;
 import com.mitrais.jpqi.springcarrot.model.GroupCount;
 import com.mitrais.jpqi.springcarrot.service.EmployeeServiceUsingDB;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,16 @@ public class EmployeeController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") int id) {
         employeeServiceUsingDB.deleteEmployee(id);
+    }
+
+    // Delete employee's group
+    @DeleteMapping("{id}/delgroup")
+    public void deleteGroupFromEmployee (@PathVariable int id, @RequestBody Group group) {
+        employeeServiceUsingDB.deleteEmployeeGroup( id, group);}
+    //inserting groups to an employee
+    @PatchMapping("{id}/updgroup")
+    public void insertGroup(@RequestBody List<Group> group, @PathVariable int id){
+        employeeServiceUsingDB.insertMemberToGroup(id, group);
     }
 
     // Patch
@@ -74,4 +85,15 @@ public class EmployeeController {
     // Get employee groups with param
     @GetMapping("group")
     public List<Employee> getEmployeeByGroup(@RequestParam String group) {return employeeServiceUsingDB.getEmployeeByGroup(group);}
+
+    @GetMapping("nostaffgroup")
+    public List<Employee> getAllEmployeeWithoutGroup() {
+        return employeeServiceUsingDB.findAllEmployeeWithoutStaffGroup();
+    }
+
+    @GetMapping("nomanagementgroup")
+    public List<Employee> getAllManagerWithoutGroup() {
+        return employeeServiceUsingDB.findAllManagerWithoutManagementGroup();
+    }
+
 }

@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class GroupService {
@@ -27,6 +28,13 @@ public class GroupService {
     public List<Group> findAllGroup() { return groupRepository.findAll(); }
 
     public void deleteGroupById(int id) {groupRepository.deleteById(id);}
+
+    public List<Group> findAllStaffGroup() {
+        List<Group> groups = groupRepository.findAll();
+        List<Group>result = groups.stream().filter(grp -> grp.getType() == Group.Type.STAFF)
+                .collect((Collectors.toList()));
+        return result;
+    }
 
 /*    public void insertMemberToGroup(int id, List<Employee> employee){
         Optional<Group> group = groupRepository.findById(id);

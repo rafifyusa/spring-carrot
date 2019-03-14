@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("api/freezer")
-public class FreezerController {
+public class    FreezerController {
     @Autowired
     FreezerRepository freezerRepository;
 
