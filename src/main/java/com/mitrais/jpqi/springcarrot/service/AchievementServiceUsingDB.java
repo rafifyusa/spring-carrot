@@ -71,6 +71,9 @@ public class AchievementServiceUsingDB implements AchievementService{
             if (achievement.isStatus() || !achievement.isStatus()){
                 temp.setStatus(achievement.isStatus());
             }
+            if (achievement.getReasoning() != null){
+                temp.setReasoning(achievement.getReasoning());
+            }
         }
         achievementRepository.save(temp);
     }
