@@ -42,6 +42,7 @@ public class BasketService {
     public void deleteBasketById (int id) {
         basketRepository.deleteById(id);
     }
+
     public List<Employee> findEmployeeSortedByCarrotAmt(){
         List<Basket> sortedBasketByCarrotAmt = basketRepository.findAll(new Sort(Sort.Direction.DESC, "carrot_amt"));
         List<Employee> sortedEmployee = new ArrayList<>();

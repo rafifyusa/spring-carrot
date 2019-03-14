@@ -26,7 +26,7 @@ public class Employee {
     public Employee() {}
 
     public Employee(int id, String name, LocalDate dob, String address, Role role, String password,
-                    String profilePicture, String emailAddress) {
+                    String profilePicture, String emailAddress, String group) {
         this.id = id;
         this.name = name;
         this.dob = dob;
@@ -35,6 +35,7 @@ public class Employee {
         this.password = password;
         this.profilePicture = profilePicture;
         this.emailAddress = emailAddress;
+        this.group = group;
     }
 
     public int getId() {
@@ -93,6 +94,8 @@ public class Employee {
         this.emailAddress = emailAddress;
     }
 
+    public String getGroup() { return group; }
+    public void setGroup(String group) { this.group = group; }
 
     // Enum for roles or position
     private enum Role {
@@ -104,5 +107,20 @@ public class Employee {
         ROOT_ADMIN,
         STAKEHOLDER,
         SENIOR_MANAGER;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Employee employee = (Employee) o;
+
+        return id == employee.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }

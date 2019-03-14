@@ -29,24 +29,6 @@ public class EmployeeController {
         employeeServiceUsingDB.updateEmployee(id, employee);
     }
 
-    // Get All
-    @GetMapping
-    public List<Employee> get() {
-        return employeeServiceUsingDB.getAllEmployee();
-    }
-
-    // Get by Id
-    @GetMapping("/{id}")
-    public Employee getById(@PathVariable("id") int id) {
-        return employeeServiceUsingDB.getEmployeeById(id);
-    }
-
-    // Get employee group
-    @GetMapping("groups")
-    public List<GroupCount> getGroups() {
-        return employeeServiceUsingDB.getAllEmployeeGroups();
-    }
-
     // Delete employee
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") int id) {
@@ -57,6 +39,19 @@ public class EmployeeController {
     @PatchMapping("/{id}")
     public void partialUpdate(@PathVariable("id") int id, @RequestBody Employee employee) {
         employeeServiceUsingDB.partialUpdateEmployee(id, employee);
+    }
+
+    //-----------------------------------------GET MAPPING GROUP----------------------//
+    // Get All
+    @GetMapping
+    public List<Employee> get() {
+        return employeeServiceUsingDB.getAllEmployee();
+    }
+
+    // Get by Id
+    @GetMapping("/{id}")
+    public Employee getById(@PathVariable("id") int id) {
+        return employeeServiceUsingDB.getEmployeeById(id);
     }
 
     // Get birthday list of all employee
@@ -70,4 +65,13 @@ public class EmployeeController {
         return employeeServiceUsingDB.getRecentDOB();
     }
 
+    // Get employee group
+    @GetMapping("groups")
+    public List<GroupCount> getAllGroups() {
+        return employeeServiceUsingDB.getAllEmployeeGroups();
+    }
+
+    // Get employee groups with param
+    @GetMapping("group")
+    public List<Employee> getEmployeeByGroup(@RequestParam String group) {return employeeServiceUsingDB.getEmployeeByGroup(group);}
 }
