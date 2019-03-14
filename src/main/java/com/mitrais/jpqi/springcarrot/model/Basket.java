@@ -1,18 +1,21 @@
 package com.mitrais.jpqi.springcarrot.model;
 
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.springframework.data.annotation.Id;
 import java.time.LocalDateTime;
 
 @Document("baskets")
 public class Basket {
+//    @Autowired
+//    SequenceService sequenceService;
+
+    @Transient
+    public static final String SEQUENCE_NAME = "basket_sequence";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+  //  @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
     private String name;
     private LocalDateTime created_at;
@@ -21,6 +24,15 @@ public class Basket {
     private Employee employee;
     private double carrot_amt;
 
+/*
+    @Override
+    public void onBeforeConvert(BeforeConvertEvent<Basket> event) {
+        event.getSource().setId(sequenceService.generateSequence(Basket.SEQUENCE_NAME));
+    }
+*/
+
+
+    //Constructors
     public Basket() {
     }
 
@@ -30,6 +42,7 @@ public class Basket {
         this.created_at = created_at;
         this.updated_at = updated_at;
     }
+
 
     public double getCarrot_amt() {
         return carrot_amt;
