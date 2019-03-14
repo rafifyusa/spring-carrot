@@ -16,7 +16,10 @@ public class BasketController {
     private BasketService basketService;
 
     @GetMapping
-    public List<Basket> findAllBasket() {
+    public List<Basket> findAllBasket(@RequestParam(required = false) Integer userid) {
+        if (userid != null) {
+            return basketService.findByEmployee(userid);
+        }
         return basketService.findAllBasket();
     }
 
@@ -33,9 +36,9 @@ public class BasketController {
         basketService.insertBasketIntoDB(basket);
     }
 
-    @PatchMapping
-    public void updateBasket(@RequestBody Basket basket) {
-        basketService.updateBasketIntoDB(basket);
+    @PatchMapping("{id}")
+    public void updateBasket(@RequestBody Basket basket, @PathVariable int id) {
+        basketService.updateBasketIntoDB(id, basket);
     }
 
     @DeleteMapping("{id}")
