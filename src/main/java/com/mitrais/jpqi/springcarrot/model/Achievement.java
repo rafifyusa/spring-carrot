@@ -16,6 +16,7 @@ public class Achievement {
     @Enumerated(EnumType.STRING)
     private Role role;
     private boolean status;
+    private String reasoning;
 
     public boolean isStatus() {
         return status;
@@ -23,6 +24,14 @@ public class Achievement {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public String getReasoning() {
+        return reasoning;
+    }
+
+    public void setReasoning(String reasoning) {
+        this.reasoning = reasoning;
     }
 
     // Enum for roles or position
@@ -39,12 +48,13 @@ public class Achievement {
 
     public Achievement(){}
 
-    public Achievement(int id, String title, String description, int carrot, Role role) {
+    public Achievement(int id, String title, String description, int carrot, Role role, String reasoning) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.carrot = carrot;
         this.role = role;
+        this.reasoning = reasoning;
     }
 
     public int getId() {return id;}
