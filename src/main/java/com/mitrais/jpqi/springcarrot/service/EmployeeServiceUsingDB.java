@@ -1,6 +1,7 @@
 package com.mitrais.jpqi.springcarrot.service;
 
 import com.mitrais.jpqi.springcarrot.model.Employee;
+import com.mitrais.jpqi.springcarrot.model.Group;
 import com.mitrais.jpqi.springcarrot.model.GroupCount;
 import com.mitrais.jpqi.springcarrot.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +11,11 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Service;
 
+
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.HashSet;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
@@ -172,9 +172,74 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
     @Override
     public List<Employee> getEmployeeByGroup(String group){
-        return employeeRepository.findByGroup(group);
+        return employeeRepository.findByGroupName(group);
     }
 
+    ///delete if group is only one for each employee
+/*    @Override
+    public void deleteEmployeeGroup(int id) {
+        Employee temp = employeeRepository.findById(id).orElse(null);
+
+        if (temp != null) {
+            temp.setGroup(null);
+            employeeRepository.save(temp);
+        }
+    }*/
+
+    public void insertMemberToGroup(int id, List<Group> group) {
+        Optional<Employee> employee = employeeRepository.findById(id);
+        if (employee.isPresent()) {
+            Employee emp = employee.get();
+            if (emp.getGroup() == null) {
+                emp.setGroup(new HashSet<>());
+            }
+
+            group.forEach(e -> emp.getGroup().add(e));
+            employeeRepository.save((emp));
+        }
+    }
+
+    public void deleteEmployeeGroup(int id, Group group){
+        Optional<Employee> employee = employeeRepository.findById(id);
+        if (employee.isPresent()) {
+            Employee emp = employee.get();
+            if (emp.getGroup() != null) {
+                emp.getGroup().remove(group);
+            }
+            employeeRepository.save(emp);
+        }
+    }
+
+    public List<Employee> findAllEmployeeWithoutStaffGroup() {
+        List<Employee> employee = employeeRepository.findAll();
+        List<Employee> employeeWithoutGroup = new ArrayList<>();
+
+        employee.stream().filter(emp -> emp.getRole() == Employee.Role.STAFF)
+                .forEach(emp1 -> {
+                    if (emp1.getGroup() == null) {
+                        employeeWithoutGroup.add(emp1);
+                    }
+                });
+        return employeeWithoutGroup;
+    }
+
+    public List<Employee> findAllManagerWithoutManagementGroup() {
+        List<Employee> employee = employeeRepository.findAll();
+        List<Employee> employeeWithoutGroup = new ArrayList<>();
+
+        employee.stream().filter(emp -> emp.getRole() == Employee.Role.MANAGER)
+                .forEach(emp1 -> {
+                    if (emp1.getGroup() == null) {
+                        employeeWithoutGroup.add(emp1);
+                    }
+                });
+        return employeeWithoutGroup;
+    }
+
+/*        employee.forEach(emp -> {
+            if (emp.getGroup() == null);
+            employeeWithoutGroup.add(emp);
+        });*/
 
 }
 

@@ -1,11 +1,14 @@
 package com.mitrais.jpqi.springcarrot.model;
 
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
 
 @Document(collection = "employees")
 public class Employee {
@@ -17,16 +20,17 @@ public class Employee {
     private String password;
     private String profilePicture;
     private String emailAddress;
-    private String group;
+    @DBRef
+    private Set<Group> group;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    // Default Constructor
+    // Constructor
     public Employee() {}
 
     public Employee(int id, String name, LocalDate dob, String address, Role role, String password,
-                    String profilePicture, String emailAddress, String group) {
+                    String profilePicture, String emailAddress, Set<Group> group) {
         this.id = id;
         this.name = name;
         this.dob = dob;
@@ -94,11 +98,11 @@ public class Employee {
         this.emailAddress = emailAddress;
     }
 
-    public String getGroup() { return group; }
-    public void setGroup(String group) { this.group = group; }
+    public Set<Group> getGroup() { return group; }
+    public void setGroup(Set<Group> group) { this.group = group; }
 
     // Enum for roles or position
-    private enum Role {
+    public enum Role {
         STAFF,
         ADMIN,
         UNKNOWN,
