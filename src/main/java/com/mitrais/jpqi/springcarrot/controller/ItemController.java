@@ -15,39 +15,39 @@ public class ItemController {
         this.itemService = itemService;
     }
 
-    // List all item
-    @GetMapping
-    public List<Item> findAllItem() {
-        return itemService.findAllItem();
-    }
-
-    // List by Item Id
-    @GetMapping("{id}")
-    public Item findItemById(@PathVariable int id) {
-        return itemService.findItemById(id);
-    }
-
-    // List of sorted item by amount
-    @GetMapping("sortedItem")
-    public List<Item> sortItemByAmount() {
-        return itemService.sortByAmount();
-    }
-
-    // Create new Item
+    // Create
     @PostMapping
-    public void insertItem(@RequestBody Item item) {
-        itemService.insertItem(item);
+    public void create(@RequestBody Item item) {
+        itemService.createItem(item);
     }
 
-    // Update
-    @PutMapping
-    public void updateItem(@RequestBody Item item) {
-        itemService.updateItem(item);
+    // Edit or Update
+    @PutMapping("{id}")
+    public void update(@PathVariable int id, @RequestBody Item item) {
+        itemService.updateItem(id, item);
     }
 
-    // Delete mapping
+    // Delete
     @DeleteMapping("{id}")
-    public void deleteItemById(@PathVariable int id) {
-        itemService.deleteItemById(id);
+    public void delete(@PathVariable int id) {
+        itemService.deleteItem(id);
+    }
+
+    // Get all
+    @GetMapping
+    public List<Item> get() {
+        return itemService.getAll();
+    }
+
+    // Partial Update or Patch
+    @PatchMapping("{id}")
+    public void patch(@PathVariable int id, @RequestBody Item item) {
+        itemService.updatePartialItem(id, item);
+    }
+
+    // Sorting list by number of exchange rate
+    @GetMapping("sortByExchangeRate")
+    public List<Item> sortByExchangeRate() {
+        return itemService.sortByExchangeRate();
     }
 }
