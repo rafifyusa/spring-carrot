@@ -2,8 +2,6 @@ package com.mitrais.jpqi.springcarrot.model;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Document(collection = "items")
