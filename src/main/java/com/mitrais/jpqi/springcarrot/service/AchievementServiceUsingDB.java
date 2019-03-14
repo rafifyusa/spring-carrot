@@ -47,4 +47,31 @@ public class AchievementServiceUsingDB implements AchievementService{
     public void deleteAchievement(int id) {
         achievementRepository.deleteById(id);
     }
+
+    @Override
+    public void partialUpdateAchievement(int id, Achievement achievement) {
+        Achievement temp = achievementRepository.findById(id).orElse(null);
+
+        if (temp != null){
+            if (achievement.getId() != 0){
+                temp.setId(achievement.getId());
+            }
+            if (achievement.getTitle() != null){
+                temp.setTitle(achievement.getTitle());
+            }
+            if (achievement.getDescription() != null){
+                temp.setDescription(achievement.getDescription());
+            }
+            if (achievement.getCarrot() != 0){
+                temp.setCarrot(achievement.getCarrot());
+            }
+            if (achievement.getRole() != null){
+                temp.setRole(achievement.getRole());
+            }
+            if (achievement.isStatus() || !achievement.isStatus()){
+                temp.setStatus(achievement.isStatus());
+            }
+        }
+        achievementRepository.save(temp);
+    }
 }

@@ -14,4 +14,5 @@ public interface AchievementService {
     List<Achievement> createAchievement(Achievement achievement);
     List<Achievement> updateAchievement(int id, Achievement achievement);
     void deleteAchievement(int id);
+    void partialUpdateAchievement(int id, Achievement achievement);
 }
