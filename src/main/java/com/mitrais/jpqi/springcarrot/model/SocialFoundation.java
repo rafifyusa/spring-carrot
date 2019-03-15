@@ -7,7 +7,7 @@ import javax.persistence.Id;
 @Document("socialFoundation")
 public class SocialFoundation {
     @Id
-    private int id;
+    private String id;
     private String name;
     private Boolean status; //TRUE if available, FALSE if closed
     private double total_carrot;
@@ -16,7 +16,7 @@ public class SocialFoundation {
 
     public SocialFoundation(){}
 
-    public SocialFoundation(int id, String name, Boolean status, double total_carrot, double min_carrot, String description){
+    public SocialFoundation(String id, String name, Boolean status, double total_carrot, double min_carrot, String description){
         this.id = id;
         this.name = name;
         this.status = status;
@@ -25,11 +25,11 @@ public class SocialFoundation {
         this.description = description;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

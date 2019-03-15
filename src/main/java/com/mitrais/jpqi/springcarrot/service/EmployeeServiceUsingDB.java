@@ -130,7 +130,6 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     @Override
     public void partialUpdateEmployee(String id, Employee employee) {
         Employee temp = employeeRepository.findById(id).orElse(null);
-
         if (temp != null) {
             if (employee.getId() != null) {
                 temp.setId(employee.getId());
@@ -167,7 +166,6 @@ public class EmployeeServiceUsingDB implements EmployeeService {
             }
         }
         employeeRepository.save(temp);
-
     }
 
     // List employee birthday by role

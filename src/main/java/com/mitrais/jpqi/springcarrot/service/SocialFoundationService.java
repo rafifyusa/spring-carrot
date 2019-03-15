@@ -8,8 +8,10 @@ import java.util.List;
 @Service
 public interface SocialFoundationService {
     void createSocialFoundation(SocialFoundation socialFoundation);
-    void deleteSocialFoundation(int id );
-    void updateSocialFoundation(int id, SocialFoundation socialFoundation);
+    void deleteSocialFoundation(String id );
+    void updateSocialFoundation(String id, SocialFoundation socialFoundation);
     List<SocialFoundation> getAllSocialFoundation();
-    List<SocialFoundation> getSocialFoundationById(int id);
+    List<SocialFoundation> getSocialFoundationById(String id);
+
+    void partialUpdate(String id, SocialFoundation socialFoundation);
 }
