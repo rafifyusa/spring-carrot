@@ -12,7 +12,7 @@ import java.util.Set;
 @Document(collection = "employees")
 public class Employee {
     @Id
-    private int id;
+    private String id;
     private String name;
     private LocalDate dob;
     private String address;
@@ -33,7 +33,7 @@ public class Employee {
     // Constructor
     public Employee() {}
 
-    public Employee(int id, String name, LocalDate dob, String address, Role role, String password,
+    public Employee(String id, String name, LocalDate dob, String address, Role role, String password,
                     String profilePicture, String emailAddress, Set<Group> group, Employee supervisor, SpvLevel spvLevel) {
         this.id = id;
         this.name = name;
@@ -48,10 +48,10 @@ public class Employee {
         this.spvLevel = spvLevel;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -146,10 +146,5 @@ public class Employee {
     public SpvLevel getSpvLevel() {return spvLevel;}
 
     public void setSpvLevel(SpvLevel spvLevel) {this.spvLevel = spvLevel;}
-
-    @Override
-    public int hashCode() {
-        return id;
-    }
 
 }
