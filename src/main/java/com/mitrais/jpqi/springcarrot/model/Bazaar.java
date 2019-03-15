@@ -10,6 +10,7 @@ public class Bazaar {
     @Id
     private String id;
     private String bazaarName;
+    private String bazaarDescription;
     private LocalDate startPeriod;
     private LocalDate endPeriod;
     private boolean status;
@@ -18,11 +19,13 @@ public class Bazaar {
 
     public Bazaar() { }
 
-    public Bazaar(String id, String bazaarName, LocalDate startPeriod, LocalDate endPeriod, Employee owner) {
+    public Bazaar(String id, String bazaarName, String bazaarDescription, LocalDate startPeriod, LocalDate endPeriod, boolean status, Employee owner) {
         this.id = id;
         this.bazaarName = bazaarName;
+        this.bazaarDescription = bazaarDescription;
         this.startPeriod = startPeriod;
         this.endPeriod = endPeriod;
+        this.status = status;
         this.owner = owner;
     }
 
@@ -72,5 +75,13 @@ public class Bazaar {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public String getBazaarDescription() {
+        return bazaarDescription;
+    }
+
+    public void setBazaarDescription(String bazaarDescription) {
+        this.bazaarDescription = bazaarDescription;
     }
 }
