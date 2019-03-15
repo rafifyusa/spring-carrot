@@ -5,6 +5,7 @@ import com.mitrais.jpqi.springcarrot.repository.BazaarRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BazaarService {
@@ -47,5 +48,14 @@ public class BazaarService {
             temp.setStatus(!temp.isStatus());
         }
         bazaarRepository.save(temp);
+    }
+
+    // Find Bazaar by Id
+    public Bazaar findById(String id) {
+        Optional<Bazaar> temp = bazaarRepository.findById(id);
+        if (temp.isPresent()) {
+            return temp.get();
+        }
+        return null;
     }
 }

@@ -57,7 +57,6 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
     @Override
     public Employee getEmployeeById(String id) {
-        Integer halo = 2;
         Optional<Employee> temp = employeeRepository.findById(id);
         if (temp.isPresent()) {
             return temp.get();
