@@ -16,7 +16,9 @@ public class AwardService {
 
     public void createAward (Award award) {awardRepository.save(award);}
 
-    public void updateAward (int id, Award award) {awardRepository.save(award);}
+    public void updateAward (String id, Award award) {
+        award.setId(id);
+        awardRepository.save(award);}
 
-    public void deleteAward (int id) { awardRepository.deleteById(id);}
+    public void deleteAward (String id) { awardRepository.deleteById(id);}
 }
