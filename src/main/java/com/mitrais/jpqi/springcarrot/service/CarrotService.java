@@ -12,6 +12,6 @@ public interface CarrotService {
     List<Carrot> getAllCarrot();
     void createCarrot(Carrot carrot);
     void updateCarrot(Carrot carrot);
-    List<Carrot> findByEmployeeId(int id);
+    List<Carrot> findByEmployeeId(String id);
 
 }

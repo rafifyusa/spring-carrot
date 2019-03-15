@@ -21,9 +21,9 @@ public class AwardController {
     public void create(@RequestBody Award award) { awardService.createAward(award); }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable int id) { awardService.deleteAward(id); }
+    public void delete(@PathVariable String id) { awardService.deleteAward(id); }
 
     @PutMapping("{id}")
-    public void update(@PathVariable int id, @RequestBody Award award) { awardService.updateAward(id, award);}
+    public void update(@PathVariable String id, @RequestBody Award award) { awardService.updateAward(id, award);}
 
 }

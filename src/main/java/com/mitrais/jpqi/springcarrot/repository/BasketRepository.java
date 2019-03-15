@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.Query;
 
 import java.util.List;
 
-public interface BasketRepository extends MongoRepository<Basket, Integer> {
+public interface BasketRepository extends MongoRepository<Basket, String> {
     @Query("{'employee.$id': ?0}")
-    List<Basket> findByEmployee(int id);
+    List<Basket> findByEmployee(String id);
 }

@@ -7,7 +7,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 
 @Document(collection = "employees")
@@ -22,15 +21,20 @@ public class Employee {
     private String emailAddress;
     @DBRef
     private Set<Group> group;
+    @DBRef
+    private Employee supervisor;
 
     @Enumerated(EnumType.STRING)
     private Role role;
+    @Enumerated(EnumType.STRING)
+    private SpvLevel spvLevel;
+
 
     // Constructor
     public Employee() {}
 
     public Employee(int id, String name, LocalDate dob, String address, Role role, String password,
-                    String profilePicture, String emailAddress, Set<Group> group) {
+                    String profilePicture, String emailAddress, Set<Group> group, Employee supervisor, SpvLevel spvLevel) {
         this.id = id;
         this.name = name;
         this.dob = dob;
@@ -40,6 +44,8 @@ public class Employee {
         this.profilePicture = profilePicture;
         this.emailAddress = emailAddress;
         this.group = group;
+        this.supervisor = supervisor;
+        this.spvLevel = spvLevel;
     }
 
     public int getId() {
@@ -113,6 +119,14 @@ public class Employee {
         SENIOR_MANAGER;
     }
 
+    public enum SpvLevel{
+        None,
+        Supervisor1,
+        Supervisor2,
+        Manager1,
+        Manager2
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -123,8 +137,19 @@ public class Employee {
         return id == employee.id;
     }
 
+    public Employee getSupervisor() {return supervisor;}
+
+    public void setSupervisor(Employee supervisor) {
+        this.supervisor = supervisor;
+    }
+
+    public SpvLevel getSpvLevel() {return spvLevel;}
+
+    public void setSpvLevel(SpvLevel spvLevel) {this.spvLevel = spvLevel;}
+
     @Override
     public int hashCode() {
         return id;
     }
+
 }

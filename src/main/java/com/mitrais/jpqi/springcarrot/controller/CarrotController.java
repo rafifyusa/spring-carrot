@@ -23,7 +23,7 @@ public class CarrotController {
     public List<Carrot> getCarrots(@RequestParam(required = false) Map<String, String> data){
         System.out.println(data.toString());
         if (data.get("userid") != null) {
-            return carrotServiceUsingDB.findByEmployeeId(Integer.parseInt(data.get("userid")));
+            return carrotServiceUsingDB.findByEmployeeId(data.get("userid"));
         }
         List<Carrot>cr =carrotServiceUsingDB.getAllCarrot();
         return cr;
