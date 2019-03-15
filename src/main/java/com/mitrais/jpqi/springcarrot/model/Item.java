@@ -101,7 +101,7 @@ public class Item {
         this.approvalStatus = approvalStatus;
     }
 
-    public boolean getSaleStatus() {
+    public boolean isSaleStatus() {
         return saleStatus;
     }
 
@@ -117,7 +117,4 @@ public class Item {
         this.itemSold = itemSold;
     }
 
-    public boolean isSaleStatus() {
-        return saleStatus;
-    }
 }
