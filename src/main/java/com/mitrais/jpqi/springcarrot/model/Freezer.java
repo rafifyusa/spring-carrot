@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Document(collection = "freezer")
 public class Freezer {
     @Id
-    private int id;
+    private String id;
     private String name;
     private LocalDate created_at;
     private LocalDate updated_at;
@@ -19,18 +19,18 @@ public class Freezer {
 
     public Freezer() {}
 
-    public Freezer (int id, String name, LocalDate created_at, LocalDate updated_at){
+    public Freezer (String id, String name, LocalDate created_at, LocalDate updated_at){
         this.id=id;
         this.name=name;
         this.created_at=created_at;
         this.updated_at=updated_at;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

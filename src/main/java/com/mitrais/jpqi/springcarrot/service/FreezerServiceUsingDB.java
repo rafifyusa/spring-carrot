@@ -26,7 +26,7 @@ public class FreezerServiceUsingDB {
         freezerRepository.save(freezer);
     }
 
-    public List<Freezer> findAllById(Integer id){
-        return freezerRepository.findAll().stream().filter((f)-> f.getId() == id).collect(Collectors.toList());
+    public List<Freezer> findAllById(String id){
+        return freezerRepository.findAll().stream().filter((f)-> f.getId().equals(id)).collect(Collectors.toList());
     }
 }

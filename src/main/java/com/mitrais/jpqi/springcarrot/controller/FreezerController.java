@@ -16,7 +16,7 @@ public class    FreezerController {
     FreezerRepository freezerRepository;
 
     @GetMapping
-    public List<Freezer> get(@RequestParam(required = false) Integer id){
+    public List<Freezer> get(@RequestParam(required = false) String id){
         if(id != null){
             List<Freezer> fr = (List<Freezer>) freezerRepository.findAllById(Collections.singleton(id));
             return fr;

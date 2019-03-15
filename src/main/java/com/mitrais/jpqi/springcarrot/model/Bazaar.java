@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public class Bazaar {
 
     @Id
-    private int id;
+    private String id;
     private String bazaarName;
     private LocalDate startPeriod;
     private LocalDate endPeriod;
@@ -18,7 +18,7 @@ public class Bazaar {
 
     public Bazaar() { }
 
-    public Bazaar(int id, String bazaarName, LocalDate startPeriod, LocalDate endPeriod, Employee owner) {
+    public Bazaar(String id, String bazaarName, LocalDate startPeriod, LocalDate endPeriod, Employee owner) {
         this.id = id;
         this.bazaarName = bazaarName;
         this.startPeriod = startPeriod;
@@ -26,11 +26,11 @@ public class Bazaar {
         this.owner = owner;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
