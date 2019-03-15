@@ -156,6 +156,12 @@ public class EmployeeServiceUsingDB implements EmployeeService {
             if (employee.getEmailAddress() != null) {
                 temp.setEmailAddress(employee.getEmailAddress());
             }
+            if (employee.getSupervisor() != null) {
+                temp.setSupervisor(employee.getSupervisor());
+            }
+            if (employee.getSpvLevel() != null) {
+                temp.setSpvLevel(employee.getSpvLevel());
+            }
             if (employee.getGroup() != null) {
                 temp.setGroup(employee.getGroup());
             }
@@ -185,6 +191,11 @@ public class EmployeeServiceUsingDB implements EmployeeService {
             employeeRepository.save(temp);
         }
     }*/
+
+    @Override
+    public List<Employee> getEmployeeBySpvLevel(String spvlevel){
+        return employeeRepository.findBySpvLevel(spvlevel);
+    }
 
     public void insertMemberToGroup(int id, List<Group> group) {
         Optional<Employee> employee = employeeRepository.findById(id);
@@ -235,6 +246,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
                 });
         return employeeWithoutGroup;
     }
+
 
 /*        employee.forEach(emp -> {
             if (emp.getGroup() == null);

@@ -96,4 +96,10 @@ public class EmployeeController {
         return employeeServiceUsingDB.findAllManagerWithoutManagementGroup();
     }
 
+    //use this to show the list of employee based on their spv level
+    @GetMapping("spvlevel")
+    public List<Employee> getSpvByLevel(@RequestParam String spvLevel){
+        return employeeServiceUsingDB.getEmployeeBySpvLevel(spvLevel);
+    }
+
 }

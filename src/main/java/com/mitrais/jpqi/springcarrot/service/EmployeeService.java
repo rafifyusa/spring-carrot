@@ -24,5 +24,7 @@ public interface EmployeeService {
 
     List<Employee> getEmployeeByGroup(String group);
 
+    List<Employee> getEmployeeBySpvLevel(String spvlevel);
+
     void deleteEmployeeGroup(int id, Group group);
 }
