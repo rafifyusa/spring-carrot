@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("api/item")
 public class ItemController {
     private ItemService itemService;
@@ -49,5 +50,10 @@ public class ItemController {
     @GetMapping("sortByExchangeRate")
     public List<Item> sortByExchangeRate() {
         return itemService.sortByExchangeRate();
+    }
+
+    @GetMapping("findByBazaarId")
+    public List<Item> findByBazaarId(@RequestParam String id) {
+        return itemService.findAllByBazaarId(id);
     }
 }
