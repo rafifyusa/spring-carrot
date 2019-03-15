@@ -42,4 +42,10 @@ public class BazaarController {
     public void changeActivation(@PathVariable("id") String id) {
         bazaarService.changeBazaarStatus(id);
     }
+
+    // Show by Id
+    @GetMapping ("/{id}")
+    public Bazaar getById(@PathVariable String id) {
+        return bazaarService.findById(id);
+    }
 }
