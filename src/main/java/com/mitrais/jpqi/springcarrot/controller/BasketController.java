@@ -36,8 +36,6 @@ public class BasketController {
 
     @PostMapping
     public void insertBasketIntoDB(@RequestBody Basket basket) {
-        /*int id = sequenceService.generateSequence(Basket.SEQUENCE_NAME);
-        basket.setId(id);*/
         basketService.insertBasketIntoDB(basket);
     }
 

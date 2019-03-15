@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.model;
 
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.EnumType;
@@ -15,10 +16,13 @@ public class Transaction {
     }
 
     @Id
-    private long id;
+    private String id;
     @Enumerated(EnumType.STRING)
     private Type type;
-    private String from_to;
+    private String from;
+    private String to;
+    private Basket detail_from;
+    private Basket detail_to;
     private String description;
     private int carrot_amt;
     private LocalDateTime transaction_date;
@@ -27,22 +31,26 @@ public class Transaction {
 
     public Transaction(){}
 
-    public Transaction(long id, Type type, String from_to, String description,
-                       int carrot_amt, LocalDateTime transaction_date) {
+    public Transaction(String id, Type type, String from, String to, Basket detail_from,
+                       Basket detail_to, String description, int carrot_amt,
+                       LocalDateTime transaction_date) {
         this.id = id;
         this.type = type;
-        this.from_to = from_to;
+        this.from = from;
+        this.to = to;
+        this.detail_from = detail_from;
+        this.detail_to = detail_to;
         this.description = description;
         this.carrot_amt = carrot_amt;
         this.transaction_date = transaction_date;
     }
 
     //Getter & Setters
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -54,17 +62,23 @@ public class Transaction {
         this.type = type;
     }
 
-    public String getFrom_to() {
-        return from_to;
-    }
+    public String getFrom() { return from; }
 
-    public void setFrom_to(String from_to) {
-        this.from_to = from_to;
-    }
+    public void setFrom(String from) { this.from = from; }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getTo() { return to; }
+
+    public void setTo(String to) { this.to = to; }
+
+    public Basket getDetail_from() { return detail_from; }
+
+    public void setDetail_from(Basket detail_from) { this.detail_from = detail_from; }
+
+    public Basket getDetail_to() { return detail_to; }
+
+    public void setDetail_to(Basket detail_to) { this.detail_to = detail_to; }
+
+    public String getDescription() { return description; }
 
     public void setDescription(String description) {
         this.description = description;
