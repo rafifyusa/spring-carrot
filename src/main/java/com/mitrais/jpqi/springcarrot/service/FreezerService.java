@@ -8,12 +8,12 @@ import java.util.List;
 
 @Service
 public interface FreezerService {
-    void deleteFreezer(int id);
-    void updateFreezer(int id, String name, Employee employee);
+    void deleteFreezer(String id);
+    void updateFreezer(String id, String name, Employee employee);
     List<Freezer> create (Freezer freezer);
     List<Freezer> fetch();
-    List<Freezer> delete(int id);
-    List<Freezer> update(int id, Freezer freezer);
+    List<Freezer> delete(String id);
+    List<Freezer> update(String id, Freezer freezer);
     List<Freezer> findAllByName(String name);
-    List<Freezer> findAllById(int id);
+    List<Freezer> findAllById(String id);
 }

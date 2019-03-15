@@ -26,7 +26,7 @@ public class BazaarController {
 
     // Update
     @PutMapping("{id}")
-    public void update(@PathVariable("id") int id, @RequestBody Bazaar bazaar) {
+    public void update(@PathVariable("id") String id, @RequestBody Bazaar bazaar) {
         bazaarService.updateBazaar(id, bazaar);
     }
 
@@ -38,7 +38,7 @@ public class BazaarController {
 
     // Change bazaar status
     @PatchMapping("/{id}")
-    public void changeActivation(@PathVariable("id") int id) {
+    public void changeActivation(@PathVariable("id") String id) {
         bazaarService.changeBazaarStatus(id);
     }
 }

@@ -23,13 +23,13 @@ public class ItemController {
 
     // Edit or Update
     @PutMapping("{id}")
-    public void update(@PathVariable int id, @RequestBody Item item) {
+    public void update(@PathVariable String id, @RequestBody Item item) {
         itemService.updateItem(id, item);
     }
 
     // Delete
     @DeleteMapping("{id}")
-    public void delete(@PathVariable int id) {
+    public void delete(@PathVariable String id) {
         itemService.deleteItem(id);
     }
 
@@ -41,7 +41,7 @@ public class ItemController {
 
     // Partial Update or Patch
     @PatchMapping("{id}")
-    public void patch(@PathVariable int id, @RequestBody Item item) {
+    public void patch(@PathVariable String id, @RequestBody Item item) {
         itemService.updatePartialItem(id, item);
     }
 

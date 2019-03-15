@@ -22,7 +22,7 @@ public class BazaarService {
     }
 
     // Update
-    public void updateBazaar(int id, Bazaar bazaar) {
+    public void updateBazaar(String id, Bazaar bazaar) {
         bazaar.setId(id);
         bazaarRepository.save(bazaar);
     }
@@ -33,7 +33,7 @@ public class BazaarService {
     }
 
     // Change bazaar status (activate or deactivate)
-    public void changeBazaarStatus(int id) {
+    public void changeBazaarStatus(String id) {
         // Create temporary bazaar
         Bazaar temp = bazaarRepository.findById(id).orElse(null);
 

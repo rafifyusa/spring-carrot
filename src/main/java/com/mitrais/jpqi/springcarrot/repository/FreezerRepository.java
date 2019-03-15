@@ -9,6 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public interface FreezerRepository extends MongoRepository<Freezer, Integer> {
+public interface FreezerRepository extends MongoRepository<Freezer, String> {
 
 }

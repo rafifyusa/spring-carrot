@@ -9,7 +9,7 @@ import javax.persistence.Id;
 public class Item {
 
     @Id
-    private int id;
+    private String id;
     private String itemName;
     private String itemDescription;
     private String pictureUrl;
@@ -23,7 +23,7 @@ public class Item {
 
     public Item() {}
 
-    public Item(int id, String itemName, String itemDescription, String pictureUrl, int exchangeRate,
+    public Item(String id, String itemName, String itemDescription, String pictureUrl, int exchangeRate,
                 int totalItem, boolean approvalStatus, boolean saleStatus, int itemSold, Bazaar bazaar) {
         this.id = id;
         this.itemName = itemName;
@@ -37,11 +37,11 @@ public class Item {
         this.bazaar = bazaar;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

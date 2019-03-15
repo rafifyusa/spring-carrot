@@ -22,13 +22,13 @@ public class ItemService {
     }
 
     // Edit/Update
-    public void updateItem(int id, Item item) {
+    public void updateItem(String id, Item item) {
         item.setId(id);
         itemRepository.save(item);
     }
 
     // Delete
-    public void deleteItem(int id) {
+    public void deleteItem(String id) {
         itemRepository.deleteById(id);
     }
 
@@ -38,7 +38,7 @@ public class ItemService {
     }
 
     // Patch
-    public void updatePartialItem(int id, Item item) {
+    public void updatePartialItem(String id, Item item) {
         // Create item object
         Item temp = itemRepository.findById(id).orElse(null);
 
