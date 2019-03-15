@@ -15,7 +15,7 @@ public class Bazaar {
     private LocalDate endPeriod;
     private boolean status;
     @DBRef
-    private Employee owner; //Todo ask for advice
+    private Employee owner;
 
     public Bazaar() { }
 

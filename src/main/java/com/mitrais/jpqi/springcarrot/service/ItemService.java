@@ -91,4 +91,8 @@ public class ItemService {
         List<Item> sortedItem = itemRepository.findAll(new Sort(Sort.Direction.DESC, "exchangeRate"));
         return sortedItem;
     }
+
+    public List<Item> findAllByBazaarId(String id) {
+        return itemRepository.findByBazaar(id);
+    }
 }
