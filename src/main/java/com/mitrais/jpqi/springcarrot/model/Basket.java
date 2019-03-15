@@ -16,7 +16,7 @@ public class Basket {
 
     @Id
   //  @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private int id;
+    private String id;
     private String name;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
@@ -36,7 +36,7 @@ public class Basket {
     public Basket() {
     }
 
-    public Basket(int id, String name, LocalDateTime created_at, LocalDateTime updated_at) {
+    public Basket(String id, String name, LocalDateTime created_at, LocalDateTime updated_at) {
         this.id = id;
         this.name = name;
         this.created_at = created_at;
@@ -52,11 +52,11 @@ public class Basket {
         this.carrot_amt = carrot_amt;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

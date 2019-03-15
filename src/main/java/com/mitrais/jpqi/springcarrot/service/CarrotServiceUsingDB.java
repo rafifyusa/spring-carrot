@@ -36,7 +36,7 @@ public class CarrotServiceUsingDB implements CarrotService {
     public void updateCarrot(Carrot carrot) { carrotRepository.save(carrot);}
 
     @Override
-    public List<Carrot> findByEmployeeId(int id) {
+    public List<Carrot> findByEmployeeId(String id) {
         return carrotRepository.findByEmployeeId(id);
     }
 }

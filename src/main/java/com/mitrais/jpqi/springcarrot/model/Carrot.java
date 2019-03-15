@@ -16,7 +16,7 @@ public class Carrot {
         NORMAL, FROZEN
     }
     @Id
-    private int id;
+    private String id;
     @Enumerated(EnumType.STRING)
     private Type type;
     private LocalDateTime created_at;
@@ -26,7 +26,7 @@ public class Carrot {
 
     public Carrot() {}
 
-    public Carrot(int id, Type type, LocalDateTime created_at,
+    public Carrot(String id, Type type, LocalDateTime created_at,
                   LocalDateTime updated_at, Basket basket) {
         this.id = id;
         this.type = type;
@@ -36,11 +36,11 @@ public class Carrot {
     }
 
     //Getters & Setters
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

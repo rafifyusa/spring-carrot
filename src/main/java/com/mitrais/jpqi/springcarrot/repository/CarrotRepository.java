@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-public interface CarrotRepository extends MongoRepository<Carrot, Integer> {
-    @Query("{'basket.employee.id': ?0}")
-    List<Carrot> findByEmployeeId(int basket);
+public interface CarrotRepository extends MongoRepository<Carrot, String> {
+    @Query("{'basket.employee.$id': ?0}")
+    List<Carrot> findByEmployeeId(String basket);
 }

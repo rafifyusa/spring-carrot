@@ -23,7 +23,8 @@ public class BasketService {
          basketRepository.save(basket);
      }
 
-    public void updateBasketIntoDB (int id, Basket basket) {
+    public void updateBasketIntoDB (String id, Basket basket) {
+        basket.setId(id);
         basketRepository.save(basket);
     }
 
@@ -31,7 +32,7 @@ public class BasketService {
         return basketRepository.findAll();
     }
 
-    public Basket findBasketById (int id) {
+    public Basket findBasketById (String id) {
         Optional<Basket> basket = basketRepository.findById(id);
         if (basket.isPresent()) {
             return basket.get();
@@ -39,7 +40,7 @@ public class BasketService {
         return null;
     }
 
-    public void deleteBasketById (int id) {
+    public void deleteBasketById (String id) {
         basketRepository.deleteById(id);
     }
 
@@ -54,7 +55,7 @@ public class BasketService {
         return sortedEmployee;
     }
 
-    public List<Basket> findByEmployee(int id) {
+    public List<Basket> findByEmployee(String id) {
         return basketRepository.findByEmployee(id);
     }
 }

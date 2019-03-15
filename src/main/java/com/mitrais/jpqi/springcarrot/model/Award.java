@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.model;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.EnumType;
@@ -11,7 +12,7 @@ public class Award {
     public enum Type{ENDYEAR, DATE, COLUMN, COLUMNYEAR}
     //Collection fields
     @Id
-    private int id;
+    private String id;
     private String type_name;
     private int carrot_amt;
     @Enumerated(EnumType.STRING)
@@ -22,7 +23,7 @@ public class Award {
     //Constructors
     public Award(){ }
 
-    public Award(int id, String type_name, int carrot_amt, Type type, String note, boolean active) {
+    public Award(String id, String type_name, int carrot_amt, Type type, String note, boolean active) {
         this.id = id;
         this.type_name = type_name;
         this.carrot_amt = carrot_amt;
@@ -32,11 +33,9 @@ public class Award {
     }
 
     //Getter & Setters
-    public int getId() {
-        return id;
-    }
+    public String getId() { return id; }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

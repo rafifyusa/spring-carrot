@@ -19,7 +19,7 @@ public class BasketController {
     @Autowired
     SequenceService sequenceService;
     @GetMapping
-    public List<Basket> findAllBasket(@RequestParam(required = false) Integer userid) {
+    public List<Basket> findAllBasket(@RequestParam(required = false) String userid) {
         if (userid != null) {
             return basketService.findByEmployee(userid);
         }
@@ -27,7 +27,7 @@ public class BasketController {
     }
 
     @GetMapping("{id}")
-    public Basket findBasketById(@PathVariable int id) {
+    public Basket findBasketById(@PathVariable String id) {
         return basketService.findBasketById(id);
     }
 
@@ -36,18 +36,18 @@ public class BasketController {
 
     @PostMapping
     public void insertBasketIntoDB(@RequestBody Basket basket) {
-        int id = sequenceService.generateSequence(Basket.SEQUENCE_NAME);
-        basket.setId(id);
+        /*int id = sequenceService.generateSequence(Basket.SEQUENCE_NAME);
+        basket.setId(id);*/
         basketService.insertBasketIntoDB(basket);
     }
 
     @PatchMapping("{id}")
-    public void updateBasket(@RequestBody Basket basket, @PathVariable int id) {
+    public void updateBasket(@RequestBody Basket basket, @PathVariable String id) {
         basketService.updateBasketIntoDB(id, basket);
     }
 
     @DeleteMapping("{id}")
-    public void deleteBasket(@PathVariable int id) {basketService.deleteBasketById(id);}
+    public void deleteBasket(@PathVariable String id) {basketService.deleteBasketById(id);}
 
 
 }
