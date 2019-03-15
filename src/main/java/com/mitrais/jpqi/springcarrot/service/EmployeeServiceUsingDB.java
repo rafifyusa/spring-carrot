@@ -11,7 +11,6 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Service;
 
-
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,12 +40,12 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     }
 
     @Override
-    public void deleteEmployee(int id) {
+    public void deleteEmployee(String id) {
         employeeRepository.deleteById(id);
     }
 
     @Override
-    public void updateEmployee(int id, Employee employee) {
+    public void updateEmployee(String id, Employee employee) {
         employee.setId(id);
         employeeRepository.save(employee);
     }
@@ -57,7 +56,8 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     }
 
     @Override
-    public Employee getEmployeeById(int id) {
+    public Employee getEmployeeById(String id) {
+        Integer halo = 2;
         Optional<Employee> temp = employeeRepository.findById(id);
         if (temp.isPresent()) {
             return temp.get();
@@ -128,11 +128,11 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
     // PATCH implementation manual version
     @Override
-    public void partialUpdateEmployee(int id, Employee employee) {
+    public void partialUpdateEmployee(String id, Employee employee) {
         Employee temp = employeeRepository.findById(id).orElse(null);
 
         if (temp != null) {
-            if (employee.getId() != 0) {
+            if (employee.getId() != null) {
                 temp.setId(employee.getId());
             }
             if (employee.getName() != null) {
@@ -197,7 +197,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         return employeeRepository.findBySpvLevel(spvlevel);
     }
 
-    public void insertMemberToGroup(int id, List<Group> group) {
+    public void insertMemberToGroup(String id, List<Group> group) {
         Optional<Employee> employee = employeeRepository.findById(id);
         if (employee.isPresent()) {
             Employee emp = employee.get();
@@ -210,7 +210,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         }
     }
 
-    public void deleteEmployeeGroup(int id, Group group){
+    public void deleteEmployeeGroup(String id, Group group){
         Optional<Employee> employee = employeeRepository.findById(id);
         if (employee.isPresent()) {
             Employee emp = employee.get();

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("api/employees")
 public class EmployeeController {
 
@@ -26,29 +27,29 @@ public class EmployeeController {
 
     // Update
     @PutMapping("/{id}")
-    public void update(@PathVariable("id") int id, @RequestBody Employee employee) {
+    public void update(@PathVariable("id") String id, @RequestBody Employee employee) {
         employeeServiceUsingDB.updateEmployee(id, employee);
     }
 
     // Delete employee
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") int id) {
+    public void delete(@PathVariable("id") String id) {
         employeeServiceUsingDB.deleteEmployee(id);
     }
 
     // Delete employee's group
     @DeleteMapping("{id}/delgroup")
-    public void deleteGroupFromEmployee (@PathVariable int id, @RequestBody Group group) {
+    public void deleteGroupFromEmployee (@PathVariable String id, @RequestBody Group group) {
         employeeServiceUsingDB.deleteEmployeeGroup( id, group);}
     //inserting groups to an employee
     @PatchMapping("{id}/updgroup")
-    public void insertGroup(@RequestBody List<Group> group, @PathVariable int id){
+    public void insertGroup(@RequestBody List<Group> group, @PathVariable String id){
         employeeServiceUsingDB.insertMemberToGroup(id, group);
     }
 
     // Patch
     @PatchMapping("/{id}")
-    public void partialUpdate(@PathVariable("id") int id, @RequestBody Employee employee) {
+    public void partialUpdate(@PathVariable("id") String id, @RequestBody Employee employee) {
         employeeServiceUsingDB.partialUpdateEmployee(id, employee);
     }
 
@@ -61,7 +62,7 @@ public class EmployeeController {
 
     // Get by Id
     @GetMapping("/{id}")
-    public Employee getById(@PathVariable("id") int id) {
+    public Employee getById(@PathVariable("id") String id) {
         return employeeServiceUsingDB.getEmployeeById(id);
     }
 
@@ -71,6 +72,7 @@ public class EmployeeController {
         return employeeServiceUsingDB.getStaffRole(role);
     }
 
+    // Get recent (2 days) birthday of all employees
     @GetMapping("recentdob")
     public List<Employee> getByRecentDOB() {
         return employeeServiceUsingDB.getRecentDOB();

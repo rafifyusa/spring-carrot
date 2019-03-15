@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.repository.Query;
 
 import java.util.List;
 
-public interface EmployeeRepository extends MongoRepository<Employee, Integer> {
+public interface EmployeeRepository extends MongoRepository<Employee, String> {
     @Query("{'role': ?0}")
     List<Employee> findByRole(String role);
 
