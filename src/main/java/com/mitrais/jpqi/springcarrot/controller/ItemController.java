@@ -2,6 +2,7 @@ package com.mitrais.jpqi.springcarrot.controller;
 
 import com.mitrais.jpqi.springcarrot.model.Item;
 import com.mitrais.jpqi.springcarrot.service.ItemService;
+import org.bson.types.ObjectId;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,6 +39,11 @@ public class ItemController {
     @GetMapping
     public List<Item> get() {
         return itemService.getAll();
+    }
+
+    @GetMapping("{id}")
+    public Item getItem(@PathVariable String id) {
+        return itemService.findItemById(id);
     }
 
     // Partial Update or Patch

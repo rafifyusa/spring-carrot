@@ -2,10 +2,16 @@ package com.mitrais.jpqi.springcarrot.service;
 
 import com.mitrais.jpqi.springcarrot.model.Item;
 import com.mitrais.jpqi.springcarrot.repository.ItemRepository;
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ItemService {
@@ -35,6 +41,14 @@ public class ItemService {
     // Show All
     public List<Item> getAll() {
         return itemRepository.findAll();
+    }
+
+    public Item findItemById(String id) {
+        Optional<Item> item = itemRepository.findById(id);
+        if (item.isPresent()) {
+            return item.get();
+        }
+        return null;
     }
 
     // Patch
@@ -93,6 +107,6 @@ public class ItemService {
     }
 
     public List<Item> findAllByBazaarId(String id) {
-        return itemRepository.findByBazaar(id);
+        return itemRepository.findByBazaar( new ObjectId(id));
     }
 }
