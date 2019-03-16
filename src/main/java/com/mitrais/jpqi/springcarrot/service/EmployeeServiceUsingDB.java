@@ -10,16 +10,16 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.HashSet;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
-
-//import jdk.vm.ci.meta.Local;
-
 
 @Service
 public class EmployeeServiceUsingDB implements EmployeeService {
@@ -58,10 +58,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     @Override
     public Employee getEmployeeById(String id) {
         Optional<Employee> temp = employeeRepository.findById(id);
-        if (temp.isPresent()) {
-            return temp.get();
-        }
-        return null;
+        return temp.orElse(null);
     }
 
     @Override
@@ -244,11 +241,38 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         return employeeWithoutGroup;
     }
 
+    //Upload File
+    public String storeFile(String id, MultipartFile file) {
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        Employee temp = employeeRepository.findById(id).orElse(null);
 
-/*        employee.forEach(emp -> {
-            if (emp.getGroup() == null);
-            employeeWithoutGroup.add(emp);
-        });*/
+        try {
+            // Check if the file's name contains invalid characters
+            if(fileName.contains("..")) {
+                System.out.println("Invalid file name");
+            }
 
+            // TODO save update string (PATCH)
+            helperPatch(fileName, temp);
+
+        } catch (IOException ex) {
+            System.out.println("Couldn't store file " + fileName + ".");
+        }
+    }
+
+    //Create helper function for patch string url
+    public void helperPatch(String location, Employee employee) {
+        // All field are same as it is
+        employee.setName(employee.getName());
+        employee.setDob(employee.getDob());
+        employee.setAddress(employee.getAddress());
+        employee.setPassword(employee.getPassword());
+        employee.setEmailAddress(employee.getEmailAddress());
+        employee.setGroup(employee.getGroup());
+        employee.setSupervisor(employee.getSupervisor());
+
+        // Except the profile pictures, this need to be changed
+        employee.setProfilePicture(location);
+    }
 }
 
