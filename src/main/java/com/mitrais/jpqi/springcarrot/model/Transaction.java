@@ -23,23 +23,26 @@ public class Transaction {
     private String to;
     private Basket detail_from;
     private Basket detail_to;
+    private Freezer freezer_from;
+    private Freezer freezer_to;
     private String description;
     private int carrot_amt;
     private LocalDateTime transaction_date;
 
-
-
     public Transaction(){}
 
-    public Transaction(String id, Type type, String from, String to, Basket detail_from,
-                       Basket detail_to, String description, int carrot_amt,
-                       LocalDateTime transaction_date) {
+
+    public Transaction(String id, Type type, String from, String to, Basket detail_from, Basket detail_to,
+                       Freezer freezer_from, Freezer freezer_to, String description,
+                       int carrot_amt, LocalDateTime transaction_date) {
         this.id = id;
         this.type = type;
         this.from = from;
         this.to = to;
         this.detail_from = detail_from;
         this.detail_to = detail_to;
+        this.freezer_from = freezer_from;
+        this.freezer_to = freezer_to;
         this.description = description;
         this.carrot_amt = carrot_amt;
         this.transaction_date = transaction_date;
@@ -99,4 +102,12 @@ public class Transaction {
     public void setTransaction_date(LocalDateTime transaction_date) {
         this.transaction_date = transaction_date;
     }
+
+    public Freezer getFreezer_from() { return freezer_from; }
+
+    public void setFreezer_from(Freezer freezer_from) { this.freezer_from = freezer_from; }
+
+    public Freezer getFreezer_to() { return freezer_to; }
+
+    public void setFreezer_to(Freezer freezer_to) { this.freezer_to = freezer_to; }
 }

@@ -21,7 +21,6 @@ public class CarrotController {
 
     @GetMapping
     public List<Carrot> getCarrots(@RequestParam(required = false) Map<String, String> data){
-        System.out.println(data.toString());
         if (data.get("userid") != null) {
             return carrotServiceUsingDB.findByEmployeeId(data.get("userid"));
         }

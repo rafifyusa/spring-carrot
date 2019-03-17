@@ -242,7 +242,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     }
 
     //Upload File
-    public String storeFile(String id, MultipartFile file) {
+/*    public String storeFile(String id, MultipartFile file) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         Employee temp = employeeRepository.findById(id).orElse(null);
 
@@ -258,7 +258,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         } catch (IOException ex) {
             System.out.println("Couldn't store file " + fileName + ".");
         }
-    }
+    }*/
 
     //Create helper function for patch string url
     public void helperPatch(String location, Employee employee) {
