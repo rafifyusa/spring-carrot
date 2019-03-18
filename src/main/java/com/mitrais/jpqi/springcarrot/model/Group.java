@@ -16,7 +16,7 @@ public class Group {
     }
 
     @Id
-    private int id;
+    private String id;
     private String name;
     @Enumerated(EnumType.STRING)
     private Type type;
@@ -28,7 +28,7 @@ public class Group {
     //Constructor
     public Group(){};
 
-    public Group(int id, String name, Set<Employee> member, LocalDateTime created_at){
+    public Group(String id, String name, Set<Employee> member, LocalDateTime created_at){
         this.id = id;
         this.name = name;
 //        this.member = member;
@@ -37,9 +37,9 @@ public class Group {
 
     //Getters & Setters
 
-    public int getId() { return id; }
+    public String getId() { return id; }
 
-    public void setId(int id) { this.id = id; }
+    public void setId(String id) { this.id = id; }
 
     public String getName() { return name; }
 
@@ -57,18 +57,4 @@ public class Group {
 
     public void setType(Type type) { this.type = type; }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Group that = (Group) o;
-
-        return id == that.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return id;
-    }
 }

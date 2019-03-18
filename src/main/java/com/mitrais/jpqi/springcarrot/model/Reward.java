@@ -9,8 +9,7 @@ import java.time.LocalDateTime;
 @Document("rewards")
 public class Reward {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private String id;
     private String name;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
@@ -21,7 +20,7 @@ public class Reward {
 
     public Reward(){}
 
-    public Reward(int id, String name, LocalDateTime created_at, LocalDateTime updated_at, boolean active,
+    public Reward(String id, String name, LocalDateTime created_at, LocalDateTime updated_at, boolean active,
                   LocalDate expired_date, String note) {
         this.id = id;
         this.name = name;
@@ -60,15 +59,13 @@ public class Reward {
         return carrot_amt;
     }
 
-    public void setCarrot_amt(double carrot_amt) {
-        this.carrot_amt = carrot_amt;
-    }
+    public void setCarrot_amt(double carrot_amt) { this.carrot_amt = carrot_amt; }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
