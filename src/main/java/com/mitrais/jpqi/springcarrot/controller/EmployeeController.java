@@ -104,4 +104,9 @@ public class EmployeeController {
         return employeeServiceUsingDB.getEmployeeBySpvLevel(spvLevel);
     }
 
+    @GetMapping("credential")
+    public Employee getEmployeeByEmailAndPass(@RequestParam String email, @RequestParam String password) {
+        return employeeServiceUsingDB.findByEmailAddressAndPassword(email, password);
+    }
+
 }

@@ -241,6 +241,11 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         return employeeWithoutGroup;
     }
 
+    public Employee findByEmailAddressAndPassword(String user, String pass) {
+        Optional<Employee> e = employeeRepository.findByEmailAddressAndPassword(user,pass);
+        return e.get();
+    }
+
     //Upload File
 /*    public String storeFile(String id, MultipartFile file) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
