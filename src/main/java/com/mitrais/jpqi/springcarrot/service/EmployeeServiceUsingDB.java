@@ -1,15 +1,10 @@
 package com.mitrais.jpqi.springcarrot.service;
 
-import com.google.gson.Gson;
-import com.mitrais.jpqi.springcarrot.model.Basket;
 import com.mitrais.jpqi.springcarrot.model.Employee;
 import com.mitrais.jpqi.springcarrot.model.Group;
 import com.mitrais.jpqi.springcarrot.model.GroupCount;
-import com.mitrais.jpqi.springcarrot.repository.BasketRepository;
 import com.mitrais.jpqi.springcarrot.repository.EmployeeRepository;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -31,9 +26,6 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
     @Autowired
     EmployeeRepository employeeRepository;
-
-    @Autowired
-    BasketRepository basketRepository;
 
     @Autowired
     MongoTemplate mongoTemplate;
@@ -89,22 +81,26 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     }
 
     public Map<String, String> findEmployeeByCredential(Map<String, String> body) {
-        Optional<Employee> emp = employeeRepository.findByEmailAddressAndPassword(body.get("email"), body.get("password"));
-        Map<String, String> kembalian = new HashMap<>();
-        Employee pegawai;
+        List<Employee> emp = employeeRepository.findAll().stream()
+                .filter(e -> e.getEmailAddress().equals(body.get("email")))
+                .filter(e->e.getPassword().equals(body.get("password")))
+                .collect(Collectors.toList());
 
-        if (emp.isPresent()) {
-            pegawai = emp.get();
-            Optional<Basket> basket = basketRepository.findByEmployee(new ObjectId(pegawai.getId()));
+        Map<String, String> kembalian = new HashMap<>();
+        Map<String, String> pegawai = new HashMap<>();
+
+        if (emp.size() > 0) {
             kembalian.put("status", "berhasil");
             kembalian.put("message", "employee ditemukan");
-
-            Gson gson = new Gson();
-            kembalian.put("employee", gson.toJson(pegawai));
-            if (basket.isPresent()) {
-            kembalian.put("basket", gson.toJson(basket));
-            }
-        }else {
+            emp.forEach(e -> {
+                pegawai.put("id", String.valueOf(e.getId()));
+                pegawai.put("name", e.getName());
+                pegawai.put("alamat", e.getAddress());
+                pegawai.put("emailAddress", e.getEmailAddress());
+                pegawai.put("profilePicture", e.getProfilePicture());
+            });
+            kembalian.put("employee", pegawai.toString());
+        } else {
             kembalian.put("status", "gagal");
             kembalian.put("message", "employee tidak ditemukan");
         }
