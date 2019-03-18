@@ -3,6 +3,7 @@ package com.mitrais.jpqi.springcarrot.service;
 import com.mitrais.jpqi.springcarrot.model.Basket;
 import com.mitrais.jpqi.springcarrot.model.Employee;
 import com.mitrais.jpqi.springcarrot.repository.BasketRepository;
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -55,7 +56,12 @@ public class BasketService {
         return sortedEmployee;
     }
 
-    public List<Basket> findByEmployee(String id) {
-        return basketRepository.findByEmployee(id);
+    public Optional<Basket> findByEmployee(String id) {
+        Optional<Basket> b = basketRepository.findByEmployee(new ObjectId(id));
+        return b;
+    }
+
+    public Basket findBasketByEmployeeId(String id) {
+        return basketRepository.findBasketByEmployeeId(id);
     }
 }
