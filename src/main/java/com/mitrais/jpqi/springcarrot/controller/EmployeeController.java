@@ -104,4 +104,9 @@ public class EmployeeController {
         return employeeServiceUsingDB.getEmployeeBySpvLevel(spvLevel);
     }
 
+    // Upload a Pictures
+    @PostMapping("uploadPicture")
+    public String uploadImage(@RequestBody String base64String) {
+        return employeeServiceUsingDB.storeImage(base64String);
+    }
 }

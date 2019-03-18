@@ -4,6 +4,8 @@ import com.mitrais.jpqi.springcarrot.model.Employee;
 import com.mitrais.jpqi.springcarrot.model.Group;
 import com.mitrais.jpqi.springcarrot.model.GroupCount;
 import com.mitrais.jpqi.springcarrot.repository.EmployeeRepository;
+//import com.mitrais.jpqi.springcarrot.storage.service.FileStorageService;
+import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -12,10 +14,17 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import sun.misc.BASE64Decoder;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.HashSet;
 
@@ -26,6 +35,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
     @Autowired
     EmployeeRepository employeeRepository;
+//    private FileStorageService fileStorageService;
 
     @Autowired
     MongoTemplate mongoTemplate;
@@ -175,17 +185,6 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         return employeeRepository.findByGroupName(group);
     }
 
-    ///delete if group is only one for each employee
-/*    @Override
-    public void deleteEmployeeGroup(int id) {
-        Employee temp = employeeRepository.findById(id).orElse(null);
-
-        if (temp != null) {
-            temp.setGroup(null);
-            employeeRepository.save(temp);
-        }
-    }*/
-
     @Override
     public List<Employee> getEmployeeBySpvLevel(String spvlevel){
         return employeeRepository.findBySpvLevel(spvlevel);
@@ -241,23 +240,51 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         return employeeWithoutGroup;
     }
 
-    //Upload File
-    public String storeFile(String id, MultipartFile file) {
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        Employee temp = employeeRepository.findById(id).orElse(null);
+    //Handling from base64 to string and save
+    public String storeImage(String imageString) {
+//        try {
+//            // Decoding process
+//            BASE64Decoder decoder = new BASE64Decoder();
+//            byte[] decodedBytes = decoder.decodeBuffer(bas64String);
+//
+//            String uploadFile = "/src/main/resources/uploads/test.jpg";
+//            File file = new File(uploadFile);
+//
+//            //Buffered image from the decoded bytes
+//            BufferedImage image = ImageIO.read(new ByteArrayInputStream(decodedBytes));
+//            if (image == null) {
+//                System.out.println("Buffered Image is null");
+//            }
+//
+////            File file = new File(uploadFile);
+//
+//            // Write the image
+//            ImageIO.write(image, "jpg", file);
+//
+//
+//        } catch (IOException e) {
+//            System.out.println(e);
+//        }
+//        return "image saved";
 
-        try {
-            // Check if the file's name contains invalid characters
-            if(fileName.contains("..")) {
-                System.out.println("Invalid file name");
-            }
+        BufferedImage image = null;
+        byte[] imageByte;
 
-            // TODO save update string (PATCH)
-            helperPatch(fileName, temp);
+        String uploadFile = "/src/main/resources/uploads/test.jpg";
+        File file = new File(uploadFile);
 
-        } catch (IOException ex) {
-            System.out.println("Couldn't store file " + fileName + ".");
+        try{
+            BASE64Decoder decoder = new BASE64Decoder();
+            imageByte = decoder.decodeBuffer(imageString);
+            ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
+            image = ImageIO.read(bis);
+            bis.close();
+
+            ImageIO.write(image, "jpg", file);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return "image saved";
     }
 
     //Create helper function for patch string url
