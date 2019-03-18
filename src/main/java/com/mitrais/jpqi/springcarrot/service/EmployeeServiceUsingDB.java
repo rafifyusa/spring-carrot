@@ -241,6 +241,30 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         return employeeWithoutGroup;
     }
 
+    public Employee findByEmailAddressAndPassword(String user, String pass) {
+        Optional<Employee> e = employeeRepository.findByEmailAddressAndPassword(user,pass);
+        return e.get();
+    }
+
+    //Upload File
+/*    public String storeFile(String id, MultipartFile file) {
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        Employee temp = employeeRepository.findById(id).orElse(null);
+
+        try {
+            // Check if the file's name contains invalid characters
+            if(fileName.contains("..")) {
+                System.out.println("Invalid file name");
+            }
+
+            // TODO save update string (PATCH)
+            helperPatch(fileName, temp);
+
+        } catch (IOException ex) {
+            System.out.println("Couldn't store file " + fileName + ".");
+        }
+    }*/
+
     //Create helper function for patch string url
     public void helperPatch(String location, Employee employee) {
         // All field are same as it is

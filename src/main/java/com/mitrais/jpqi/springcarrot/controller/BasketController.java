@@ -8,7 +8,9 @@ import com.mitrais.jpqi.springcarrot.service.SequenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/basket")
@@ -21,7 +23,10 @@ public class BasketController {
     @GetMapping
     public List<Basket> findAllBasket(@RequestParam(required = false) String userid) {
         if (userid != null) {
-            return basketService.findByEmployee(userid);
+            List<Basket> basket = new ArrayList<>();
+            Optional<Basket> b = basketService.findByEmployee(userid);
+            basket.add(b.get());
+            return basket;
         }
         return basketService.findAllBasket();
     }
@@ -33,6 +38,16 @@ public class BasketController {
 
     @GetMapping("sortedEmp")
     public List<Employee> findAllBasketSortedByCarrotAmt(){ return basketService.findEmployeeSortedByCarrotAmt();}
+
+    @GetMapping("emp")
+    public Basket findBasketByEmployee(@RequestParam String employeeid) {
+        /*Optional<Basket> b = basketService.findByEmployee(employeeid);
+        return b.get();*/
+        System.out.println(employeeid);
+        Basket b = basketService.findBasketByEmployeeId(employeeid);
+        System.out.println(b.getName());
+        return  b;
+    }
 
     @PostMapping
     public void insertBasketIntoDB(@RequestBody Basket basket) {

@@ -30,6 +30,11 @@ public class BazaarController {
     public void update(@PathVariable("id") String id, @RequestBody Bazaar bazaar) {
         bazaarService.updateBazaar(id, bazaar);
     }
+    // Change bazaar status
+    @PatchMapping("/{id}")
+    public void changeActivation(@PathVariable("id") String id) {
+        bazaarService.changeBazaarStatus(id);
+    }
 
     // Show all
     @GetMapping
@@ -37,15 +42,15 @@ public class BazaarController {
         return bazaarService.findAllBazaar();
     }
 
-    // Change bazaar status
-    @PatchMapping("/{id}")
-    public void changeActivation(@PathVariable("id") String id) {
-        bazaarService.changeBazaarStatus(id);
-    }
-
     // Show by Id
     @GetMapping ("/{id}")
     public Bazaar getById(@PathVariable String id) {
         return bazaarService.findById(id);
+    }
+
+    //Show bazaar by status
+    @GetMapping ("status")
+    public List<Bazaar> getByStatus (@RequestParam boolean status) {
+        return bazaarService.findByStatus(status);
     }
 }
