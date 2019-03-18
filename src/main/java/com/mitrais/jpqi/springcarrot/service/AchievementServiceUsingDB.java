@@ -21,8 +21,8 @@ public class AchievementServiceUsingDB implements AchievementService{
     }
 
     @Override
-    public Optional<Achievement> findByAchievementId(int id) {
-        return achievementRepository.findById(id);
+    public Optional<Achievement> findByAchievementId(String id) {
+        return achievementRepository.findById(Integer.valueOf(id));
     }
 
     @Override
@@ -37,23 +37,23 @@ public class AchievementServiceUsingDB implements AchievementService{
     }
 
     @Override
-    public List<Achievement> updateAchievement(int id, Achievement achievement) {
+    public List<Achievement> updateAchievement(String id, Achievement achievement) {
         achievement.setId(id);
         achievementRepository.save(achievement);
         return achievementRepository.findAll();
     }
 
     @Override
-    public void deleteAchievement(int id) {
-        achievementRepository.deleteById(id);
+    public void deleteAchievement(String id) {
+        achievementRepository.deleteById(Integer.valueOf(id));
     }
 
     @Override
-    public void partialUpdateAchievement(int id, Achievement achievement) {
-        Achievement temp = achievementRepository.findById(id).orElse(null);
+    public void partialUpdateAchievement(String id, Achievement achievement) {
+        Achievement temp = achievementRepository.findById(Integer.valueOf(id)).orElse(null);
 
         if (temp != null){
-            if (achievement.getId() != 0){
+            if (achievement.getId() != null){
                 temp.setId(achievement.getId());
             }
             if (achievement.getTitle() != null){
@@ -73,6 +73,12 @@ public class AchievementServiceUsingDB implements AchievementService{
             }
             if (achievement.getReasoning() != null){
                 temp.setReasoning(achievement.getReasoning());
+            }
+            if (achievement.getDateAchieved() != null){
+                temp.setDateAchieved(achievement.getDateAchieved());
+            }
+            if (achievement.getEmployee() != null){
+                temp.setEmployee(achievement.getEmployee());
             }
         }
         achievementRepository.save(temp);

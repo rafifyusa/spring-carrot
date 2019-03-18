@@ -1,15 +1,17 @@
 package com.mitrais.jpqi.springcarrot.model;
 
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 
 @Document(collection = "achievement")
 public class Achievement {
     @Id
-    private int id;
+    private String id;
     private String title;
     private String description;
     private int carrot;
@@ -17,6 +19,9 @@ public class Achievement {
     private Role role;
     private boolean status;
     private String reasoning;
+    private LocalDateTime dateAchieved;
+    @DBRef
+    private Employee employee;
 
     public boolean isStatus() {
         return status;
@@ -48,18 +53,36 @@ public class Achievement {
 
     public Achievement(){}
 
-    public Achievement(int id, String title, String description, int carrot, Role role, String reasoning) {
+    public Achievement(String id, String title, String description, int carrot, Role role, boolean status, String reasoning, LocalDateTime dateAchieved) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.carrot = carrot;
         this.role = role;
+        this.status = status;
         this.reasoning = reasoning;
+        this.dateAchieved = dateAchieved;
     }
 
-    public int getId() {return id;}
+    public LocalDateTime getDateAchieved() {
+        return dateAchieved;
+    }
 
-    public void setId(int id) {this.id = id;}
+    public void setDateAchieved(LocalDateTime dateAchieved) {
+        this.dateAchieved = dateAchieved;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
+    public String getId() {return id;}
+
+    public void setId(String id) {this.id = id;}
 
     public String getTitle() {return title;}
 
