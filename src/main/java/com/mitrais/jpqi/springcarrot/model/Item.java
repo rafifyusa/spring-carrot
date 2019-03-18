@@ -1,6 +1,6 @@
 package com.mitrais.jpqi.springcarrot.model;
 
-import jdk.nashorn.internal.ir.annotations.Reference;
+//import jdk.nashorn.internal.ir.annotations.Reference;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 

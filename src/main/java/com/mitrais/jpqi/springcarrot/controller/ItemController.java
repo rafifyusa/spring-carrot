@@ -61,4 +61,9 @@ public class ItemController {
     public List<Item> findByBazaarId(@RequestParam String id) {
         return itemService.findAllByBazaarId(id);
     }
+
+    @GetMapping("findByCarrotAmount")
+    public List<Item> findByCarrotAmount(@RequestParam int carrotAmount) {
+        return itemService.findAllByExchangeRateAmount(carrotAmount);
+    }
 }

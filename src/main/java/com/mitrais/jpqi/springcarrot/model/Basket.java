@@ -15,7 +15,6 @@ public class Basket {
     public static final String SEQUENCE_NAME = "basket_sequence";
 
     @Id
-  //  @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private String id;
     private String name;
     private LocalDateTime created_at;
