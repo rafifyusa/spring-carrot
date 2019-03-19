@@ -19,11 +19,13 @@ public class Freezer {
 
     public Freezer() {}
 
-    public Freezer (String id, String name, LocalDate created_at, LocalDate updated_at){
-        this.id=id;
-        this.name=name;
-        this.created_at=created_at;
-        this.updated_at=updated_at;
+    public Freezer(String id, String name, LocalDate created_at, LocalDate updated_at, Employee employee, double carrot_amt) {
+        this.id = id;
+        this.name = name;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.employee = employee;
+        this.carrot_amt = carrot_amt;
     }
 
     public String getId() {

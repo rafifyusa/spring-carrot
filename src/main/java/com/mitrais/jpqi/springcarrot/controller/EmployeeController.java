@@ -32,6 +32,16 @@ public class EmployeeController {
         employeeServiceUsingDB.updateEmployee(id, employee);
     }
 
+    @PatchMapping("admin")
+    public void makeAdmin(@RequestParam String id) {
+        employeeServiceUsingDB.makeEmployeeAsAdmin(id);
+    }
+
+    @PatchMapping("revoke")
+    public void revokeAdmin(@RequestParam String id, @RequestBody Employee role) {
+        employeeServiceUsingDB.revokeEmployeefromAdmin(id, role);
+    }
+
     // Delete employee
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") String id) {

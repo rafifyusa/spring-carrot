@@ -39,7 +39,7 @@ public class AchievementController {
         achievementService.deleteAchievement(id);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public void update(@PathVariable("id") String id, @RequestBody Achievement achievement){
         achievementService.updateAchievement(id, achievement);
     }

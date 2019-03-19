@@ -256,6 +256,21 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         return e.get();
     }
 
+    public void makeEmployeeAsAdmin (String id) {
+        Employee emp = getEmployeeById(id);
+        emp.setRole(Employee.Role.ADMIN);
+        employeeRepository.save(emp);
+    }
+
+    public void revokeEmployeefromAdmin(String id, Employee role) {
+        System.out.println(role);
+        Employee emp = getEmployeeById(id);
+        emp.setRole(role.getRole());
+        employeeRepository.save(emp);
+    }
+
+
+
     //Upload File
 /*    public String storeFile(String id, MultipartFile file) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
