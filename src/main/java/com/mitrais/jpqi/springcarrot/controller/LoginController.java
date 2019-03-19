@@ -17,5 +17,6 @@ public class LoginController {
     @PostMapping
     public Map<String, String> findUserByEmailAndPassword (@RequestBody Map<String, String> body) {
         return employeeServiceUsingDB.findEmployeeByCredential(body);
+//        return employeeServiceUsingDB.findByEmailAddressAndPassword(body.get("email"), body.get("password"));
     }
 }
