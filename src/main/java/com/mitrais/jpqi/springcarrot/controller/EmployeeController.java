@@ -120,4 +120,11 @@ public class EmployeeController {
         return employeeServiceUsingDB.findByEmailAddressAndPassword(email, password);
     }
 
+    //---------------------------- UPLOAD IMAGE -----------------------------//
+    @PostMapping("upload")
+    public void uploadImage(@RequestBody String imageString) {
+        System.out.println(imageString);
+        employeeServiceUsingDB.storeImage(imageString);
+    }
+
 }

@@ -15,6 +15,8 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Service;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,6 +29,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
     @Autowired
     EmployeeRepository employeeRepository;
+
     @Autowired
     BasketRepository basketRepository;
 
@@ -269,8 +272,6 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         employeeRepository.save(emp);
     }
 
-
-
     //Upload File
 /*    public String storeFile(String id, MultipartFile file) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
@@ -290,19 +291,15 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         }
     }*/
 
-    //Create helper function for patch string url
-    public void helperPatch(String location, Employee employee) {
-        // All field are same as it is
-        employee.setName(employee.getName());
-        employee.setDob(employee.getDob());
-        employee.setAddress(employee.getAddress());
-        employee.setPassword(employee.getPassword());
-        employee.setEmailAddress(employee.getEmailAddress());
-        employee.setGroup(employee.getGroup());
-        employee.setSupervisor(employee.getSupervisor());
-
-        // Except the profile pictures, this need to be changed
-        employee.setProfilePicture(location);
+    public void storeImage(String imageString) {
+        String pathFile = "newTest.png";
+        try (FileOutputStream imageOutputFile = new FileOutputStream(pathFile)) {
+            byte[] imageByteArray = Base64.getDecoder().decode(imageString);
+            imageOutputFile.write(imageByteArray);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("image saved");
     }
 }
 
