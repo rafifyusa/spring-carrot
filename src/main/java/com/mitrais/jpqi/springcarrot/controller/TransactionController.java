@@ -32,5 +32,10 @@ public class TransactionController {
         return transactionService.countCarrotSpentForRewardItem(id);
     }
 
+    @GetMapping("{id}/spent_for_sharing")
+    public int getTotalSpentForSharing(@PathVariable String id) {
+        return transactionService.countCarrotSpentForSharing(id);
+    }
+
 
 }

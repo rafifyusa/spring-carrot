@@ -21,22 +21,25 @@ public class Group {
     @Enumerated(EnumType.STRING)
     private Type type;
     private LocalDateTime created_at;
-//    private Set<Employee> member;
+    Set<Achievement> achievements;
+    Set<Award> awards;
 
 
 
-    //Constructor
-    public Group(){};
 
-    public Group(String id, String name, Set<Employee> member, LocalDateTime created_at){
+    //Constructors
+    public Group(){}
+
+    public Group(String id, String name, Type type, LocalDateTime created_at, Set<Achievement> achievements, Set<Award> rewards) {
         this.id = id;
         this.name = name;
-//        this.member = member;
+        this.type = type;
         this.created_at = created_at;
+        this.achievements = achievements;
+        this.awards = rewards;
     }
 
     //Getters & Setters
-
     public String getId() { return id; }
 
     public void setId(String id) { this.id = id; }
@@ -45,9 +48,6 @@ public class Group {
 
     public void setName(String name) { this.name = name; }
 
-//    public Set<Employee> getMember() { return member; }
-//
-//    public void setMember(Set<Employee> member) { this.member = member; }
 
     public LocalDateTime getCreated_at() { return created_at; }
 
@@ -57,4 +57,11 @@ public class Group {
 
     public void setType(Type type) { this.type = type; }
 
+    public Set<Achievement> getAchievements() { return achievements; }
+
+    public void setAchievements(Set<Achievement> achievements) { this.achievements = achievements; }
+
+    public Set<Award> getAwards() { return awards; }
+
+    public void setAwards(Set<Award> Awards) { this.awards = awards; }
 }

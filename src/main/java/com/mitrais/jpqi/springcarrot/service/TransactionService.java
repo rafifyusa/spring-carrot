@@ -4,6 +4,8 @@ import com.mitrais.jpqi.springcarrot.model.*;
 import com.mitrais.jpqi.springcarrot.repository.*;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -177,5 +179,15 @@ public class TransactionService {
 
         int total_spent = filtered.stream().mapToInt( a->a.getCarrot_amt()).sum();
         return total_spent;
+    }
+
+    //TODO sortbyspentcarrots
+    public List<Employee> findAllEmployeeSortedBySpentCarrotForRewards () {
+
+        /*Aggregation agg = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("type").is(Transaction.Type.BAZAAR)),
+                Aggregation.unwind("basket")
+        )*/
+        return null;
     }
 }
