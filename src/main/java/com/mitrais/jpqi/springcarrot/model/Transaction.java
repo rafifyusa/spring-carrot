@@ -28,6 +28,7 @@ public class Transaction {
     private String description;
     private int carrot_amt;
     private LocalDateTime transaction_date;
+    private boolean status;
 
     public Transaction(){}
 

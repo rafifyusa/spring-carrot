@@ -40,4 +40,9 @@ public class CarrotServiceUsingDB implements CarrotService {
     public List<Carrot> findByEmployeeId(String id) {
         return carrotRepository.findByBasketId(new ObjectId(id));
     }
+
+    public int countMyCarrotSum (String id) {
+        List<Carrot> carrots = carrotRepository.findByBasketId(new ObjectId(id));
+        return carrots.size();
+    }
 }
