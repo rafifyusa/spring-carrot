@@ -1,11 +1,13 @@
 package com.mitrais.jpqi.springcarrot.service;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import com.mitrais.jpqi.springcarrot.model.Employee;
 import com.mitrais.jpqi.springcarrot.model.Group;
 import com.mitrais.jpqi.springcarrot.model.GroupCount;
 import com.mitrais.jpqi.springcarrot.repository.EmployeeRepository;
 //import com.mitrais.jpqi.springcarrot.storage.service.FileStorageService;
 import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -19,8 +21,10 @@ import sun.misc.BASE64Decoder;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
@@ -62,7 +66,8 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
     @Override
     public List<Employee> getAllEmployee() {
-        return employeeRepository.findAll();
+//        return employeeRepository.findAll();
+        return null;
     }
 
     @Override
@@ -267,21 +272,42 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 //        }
 //        return "image saved";
 
-        BufferedImage image = null;
-        byte[] imageByte;
+//        BufferedImage image = new BufferedImage(977, 263, BufferedImage.TYPE_BYTE_INDEXED);
+//        byte[] imageByte;
+//
+//        String uploadFile = "/src/main/resources/uploads/test.jpg";
+//        File file = new File(uploadFile);
+//
+//        try{
+//            BASE64Decoder decoder = new BASE64Decoder();
+//            imageByte = decoder.decodeBuffer(imageString);
+//            ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
+//            image = ImageIO.read(bis);
+//            bis.close();
+//
+//            ImageIO.write(image, "png", file);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return "image saved";
 
-        String uploadFile = "/src/main/resources/uploads/test.jpg";
-        File file = new File(uploadFile);
-
-        try{
-            BASE64Decoder decoder = new BASE64Decoder();
-            imageByte = decoder.decodeBuffer(imageString);
-            ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
-            image = ImageIO.read(bis);
-            bis.close();
-
-            ImageIO.write(image, "jpg", file);
-        } catch (Exception e) {
+//        String path = "test_decode.png";
+//        File outputFile =  new File(path);
+//
+//        byte[] decodedBytes = Base64
+//                .getMimeDecoder()
+//                .decode(imageString);
+//        try {
+//            FileUtils.writeByteArrayToFile(outputFile, decodedBytes);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return "file created";
+        String pathFile = "./src/main/resources/test";
+        try (FileOutputStream imageOut = new FileOutputStream(pathFile)) {
+            byte[] imageByteArray = Base64.getDecoder().decode(imageString);
+            imageOut.write(imageByteArray);
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return "image saved";

@@ -8,9 +8,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 @SpringBootApplication
 @EntityScan("model")
-//@EnableConfigurationProperties({
-//		FileStorageProperties.class
-//})
 //@EnableJpaRepositories("repository")
 public class SpringCarrotApplication {
 
