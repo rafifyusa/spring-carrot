@@ -133,43 +133,10 @@ public class EmployeeController {
     }
 
     //---------------------------- UPLOAD IMAGE -----------------------------//
-    @PostMapping("upload")
-    public Map<String, String> uploadImage(@RequestBody Map<String, String> param) {
-        Map<String, String> hasil = new HashMap<>();
-        byte[] imageByte= Base64.decodeBase64(param.get("img"));
-        try {
-            File theDir = new File("src\\main\\resources\\images");
-            if (!theDir.exists()) {
-                System.out.println("creating directory: " + theDir.getName());
-                boolean result = false;
 
-                try{
-                    theDir.mkdir();
-                    result = true;
-                }
-                catch(SecurityException se){
-                    //handle it
-                }
-                if(result) {
-                    System.out.println("DIR created");
-                }
-            }
-            Instant instant = Instant.now();
-            long timeStampMillis = instant.toEpochMilli();
-            System.out.println(timeStampMillis + "");
-            new FileOutputStream("src\\main\\resources\\images\\"+timeStampMillis+".jpg").write(imageByte);
-            hasil.put("status", "true");
-            hasil.put("filename", timeStampMillis + ".jpg");
-        } catch (IOException e) {
-            e.printStackTrace();
-            hasil.put("status", "false");
-        }
-        return hasil;
-    }
-
-    @PostMapping("testUpload/{id}")
-    public void testUploadImage(@RequestBody Map<String, String> param, @PathVariable String id) {
+    @PostMapping("uploadImage/{id}")
+    public void patchUploadImage(@RequestBody Map<String, String> param, @PathVariable String id, Employee employee) {
         System.out.println(param.get("img"));
-        employeeServiceUsingDB.storeImage(param.get("img"), id);
+        employeeServiceUsingDB.picturePatch(param.get("img"), id);
     }
 }

@@ -293,15 +293,9 @@ public class EmployeeServiceUsingDB implements EmployeeService {
                 }
             }
 
-//            // Creating name from when the file created
-//            Instant instant = Instant.now();
-//            long timeStampMillis = instant.toEpochMilli();
-//            System.out.println(timeStampMillis);
-
-            // Rename by id
+            // Rename picture by id
             outputFileLocation = pathFile + id  + ".jpg";
 
-//            new FileOutputStream(pathFile + timeStampMillis + ".jpg").write(imageByteArray);
             new FileOutputStream(outputFileLocation).write(imageByteArray);
 
         } catch (IOException e) {
@@ -310,6 +304,30 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
         System.out.println("Image successfully uploaded");
         return outputFileLocation;
+    }
+
+    public void picturePatch (String imageString, String id) {
+        String profilePictureLoc = storeImage(imageString, id);
+
+        // Find employee first
+        Employee employee = employeeRepository.findById(id).orElse(null);
+
+        if (employee != null) {
+            // Everything except profilePicture field was not changed during process
+            employee.setName(employee.getName());
+            employee.setDob(employee.getDob());
+            employee.setAddress(employee.getAddress());
+            employee.setRole(employee.getRole());
+            employee.setPassword(employee.getPassword());
+            employee.setEmailAddress(employee.getEmailAddress());
+            employee.setGroup(employee.getGroup());
+            employee.setSupervisor(employee.getSupervisor());
+            employee.setSpvLevel(employee.getSpvLevel());
+
+            // set profile picture with profile picture location
+            employee.setProfilePicture(profilePictureLoc);
+        }
+        employeeRepository.save(employee);
     }
 }
 
