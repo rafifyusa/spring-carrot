@@ -13,7 +13,7 @@ import java.util.Date;
 @Document(collection = "carrots")
 public class Carrot {
     public enum Type{
-        NORMAL, FROZEN
+        NORMAL, FROZEN, INACTIVE
     }
     @Id
     private String id;
@@ -23,16 +23,20 @@ public class Carrot {
     private LocalDateTime updated_at;
     @DBRef
     private Basket basket;
+    @DBRef
+    private Freezer freezer;
 
     public Carrot() {}
 
     public Carrot(String id, Type type, LocalDateTime created_at,
-                  LocalDateTime updated_at, Basket basket) {
+                  LocalDateTime updated_at, Basket basket, Freezer freezer) {
         this.id = id;
         this.type = type;
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.basket = basket;
+        this.freezer = freezer;
+
     }
 
     //Getters & Setters
@@ -48,15 +52,19 @@ public class Carrot {
 
     public void setType(Type type) { this.type = type; }
 
-    public LocalDateTime getCreatedAt() { return created_at;}
-
-    public void setCreatedAt(LocalDateTime createdAt) { this.created_at = createdAt; }
-
-    public LocalDateTime getUpdatedAt() { return updated_at; }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updated_at = updatedAt; }
-
     public Basket getBasket() { return basket; }
 
     public void setBasket(Basket basket) { this.basket = basket; }
+
+    public LocalDateTime getCreated_at() { return created_at; }
+
+    public void setCreated_at(LocalDateTime created_at) { this.created_at = created_at; }
+
+    public LocalDateTime getUpdated_at() { return updated_at; }
+
+    public void setUpdated_at(LocalDateTime updated_at) { this.updated_at = updated_at; }
+
+    public Freezer getFreezer() { return freezer; }
+
+    public void setFreezer(Freezer freezer) { this.freezer = freezer; }
 }

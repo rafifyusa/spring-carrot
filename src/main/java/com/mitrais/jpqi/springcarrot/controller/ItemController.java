@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.List;
-
 @CrossOrigin
 @RestController
 @RequestMapping("api/items")
@@ -63,5 +62,10 @@ public class ItemController  {
     @GetMapping("findByBazaarId")
     public List<Item> findByBazaarId(@RequestParam String id) {
         return itemService.findAllByBazaarId(id);
+    }
+
+    @GetMapping("findByCarrotAmount")
+    public List<Item> findByCarrotAmount(@RequestParam int carrotAmount) {
+        return itemService.findAllByExchangeRateAmount(carrotAmount);
     }
 }

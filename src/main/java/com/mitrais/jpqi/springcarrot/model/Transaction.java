@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class Transaction {
 
     public enum Type{
-        BAZAAR, REWARD, SHARED
+        BAZAAR, REWARD, SHARED, DONATION
     }
 
     @Id
@@ -23,26 +23,36 @@ public class Transaction {
     private String to;
     private Basket detail_from;
     private Basket detail_to;
+    private Freezer freezer_from;
+    @DBRef
+    private Item requested_item;
+    @DBRef
+    private SocialFoundation socialFoundation;
     private String description;
     private int carrot_amt;
     private LocalDateTime transaction_date;
-
-
+    private boolean status;
 
     public Transaction(){}
 
+
     public Transaction(String id, Type type, String from, String to, Basket detail_from,
-                       Basket detail_to, String description, int carrot_amt,
-                       LocalDateTime transaction_date) {
+                       Basket detail_to, Freezer freezer_from, Item requested_item, String description,
+                       SocialFoundation socialFoundation, int carrot_amt,
+                       LocalDateTime transaction_date, boolean status) {
         this.id = id;
         this.type = type;
         this.from = from;
         this.to = to;
         this.detail_from = detail_from;
         this.detail_to = detail_to;
+        this.freezer_from = freezer_from;
+        this.requested_item = requested_item;
         this.description = description;
+        this.socialFoundation = socialFoundation;
         this.carrot_amt = carrot_amt;
         this.transaction_date = transaction_date;
+        this.status = status;
     }
 
     //Getter & Setters
@@ -99,4 +109,20 @@ public class Transaction {
     public void setTransaction_date(LocalDateTime transaction_date) {
         this.transaction_date = transaction_date;
     }
+
+    public Freezer getFreezer_from() { return freezer_from; }
+
+    public void setFreezer_from(Freezer freezer_from) { this.freezer_from = freezer_from; }
+
+    public Item getRequested_item() { return requested_item; }
+
+    public void setRequested_item(Item requested_item) { this.requested_item = requested_item; }
+
+    public boolean isStatus() { return status; }
+
+    public void setStatus(boolean status) { this.status = status; }
+
+    public SocialFoundation getSocialFoundation() { return socialFoundation; }
+
+    public void setSocialFoundation(SocialFoundation socialFoundation) { this.socialFoundation = socialFoundation; }
 }

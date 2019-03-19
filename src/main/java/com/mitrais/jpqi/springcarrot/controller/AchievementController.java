@@ -20,7 +20,7 @@ public class AchievementController {
     }
 
     @GetMapping("{id}")
-    public Optional<Achievement> findByAchievementId(@PathVariable int id){
+    public Optional<Achievement> findByAchievementId(@PathVariable String id){
         return achievementService.findByAchievementId(id);
     }
 
@@ -35,17 +35,17 @@ public class AchievementController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") int id){
+    public void delete(@PathVariable("id") String id){
         achievementService.deleteAchievement(id);
     }
 
-    @PutMapping("{id}")
-    public void update(@PathVariable("id") int id, @RequestBody Achievement achievement){
+    @PutMapping("/{id}")
+    public void update(@PathVariable("id") String id, @RequestBody Achievement achievement){
         achievementService.updateAchievement(id, achievement);
     }
 
     @PatchMapping("{id}")
-    public void partialUpdate(@PathVariable("id") int id, @RequestBody Achievement achievement){
+    public void partialUpdate(@PathVariable("id") String id, @RequestBody Achievement achievement){
         achievementService.partialUpdateAchievement(id, achievement);
     }
 

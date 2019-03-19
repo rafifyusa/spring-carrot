@@ -1,9 +1,13 @@
 package com.mitrais.jpqi.springcarrot.service;
 
+import com.google.gson.Gson;
+import com.mitrais.jpqi.springcarrot.model.Basket;
 import com.mitrais.jpqi.springcarrot.model.Employee;
 import com.mitrais.jpqi.springcarrot.model.Group;
 import com.mitrais.jpqi.springcarrot.model.GroupCount;
+import com.mitrais.jpqi.springcarrot.repository.BasketRepository;
 import com.mitrais.jpqi.springcarrot.repository.EmployeeRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -11,6 +15,8 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Service;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,14 +24,14 @@ import java.util.HashSet;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
-//import jdk.vm.ci.meta.Local;
-
-
 @Service
 public class EmployeeServiceUsingDB implements EmployeeService {
 
     @Autowired
     EmployeeRepository employeeRepository;
+
+    @Autowired
+    BasketRepository basketRepository;
 
     @Autowired
     MongoTemplate mongoTemplate;
@@ -58,10 +64,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     @Override
     public Employee getEmployeeById(String id) {
         Optional<Employee> temp = employeeRepository.findById(id);
-        if (temp.isPresent()) {
-            return temp.get();
-        }
-        return null;
+        return temp.orElse(null);
     }
 
     @Override
@@ -84,25 +87,24 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     }
 
     public Map<String, String> findEmployeeByCredential(Map<String, String> body) {
-        List<Employee> emp = employeeRepository.findAll().stream()
-                .filter(e -> e.getEmailAddress().equals(body.get("email")))
-                .filter(e->e.getPassword().equals(body.get("password")))
-                .collect(Collectors.toList());
+        Optional<Employee> employee = employeeRepository.findByEmailAddressAndPassword(body.get("email"), body.get("password"));
+//        List<Employee> emp = employeeRepository.findAll().stream()
+//                .filter(e -> e.getEmailAddress().equals(body.get("email")))
+//                .filter(e->e.getPassword().equals(body.get("password")))
+//                .collect(Collectors.toList());
 
         Map<String, String> kembalian = new HashMap<>();
-        Map<String, String> pegawai = new HashMap<>();
 
-        if (emp.size() > 0) {
+        if (employee.isPresent()) {
+            Gson gson = new Gson();
+            Employee emp = employee.get();
+            Optional<Basket> basket = basketRepository.findByEmployee(new ObjectId(emp.getId()));
+            if (basket.isPresent()) {
+                kembalian.put("basket", gson.toJson(basket.get()));
+            }
             kembalian.put("status", "berhasil");
             kembalian.put("message", "employee ditemukan");
-            emp.forEach(e -> {
-                pegawai.put("id", String.valueOf(e.getId()));
-                pegawai.put("name", e.getName());
-                pegawai.put("alamat", e.getAddress());
-                pegawai.put("emailAddress", e.getEmailAddress());
-                pegawai.put("profilePicture", e.getProfilePicture());
-            });
-            kembalian.put("employee", pegawai.toString());
+            kembalian.put("employee", gson.toJson(emp));
         } else {
             kembalian.put("status", "gagal");
             kembalian.put("message", "employee tidak ditemukan");
@@ -244,11 +246,52 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         return employeeWithoutGroup;
     }
 
+    public Employee findByEmailAddressAndPassword(String user, String pass) {
+        Optional<Employee> e = employeeRepository.findByEmailAddressAndPassword(user,pass);
+        return e.get();
+    }
 
-/*        employee.forEach(emp -> {
-            if (emp.getGroup() == null);
-            employeeWithoutGroup.add(emp);
-        });*/
+    public void makeEmployeeAsAdmin (String id) {
+        Employee emp = getEmployeeById(id);
+        emp.setRole(Employee.Role.ADMIN);
+        employeeRepository.save(emp);
+    }
 
+    public void revokeEmployeefromAdmin(String id, Employee role) {
+        System.out.println(role);
+        Employee emp = getEmployeeById(id);
+        emp.setRole(role.getRole());
+        employeeRepository.save(emp);
+    }
+
+    //Upload File
+/*    public String storeFile(String id, MultipartFile file) {
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        Employee temp = employeeRepository.findById(id).orElse(null);
+
+        try {
+            // Check if the file's name contains invalid characters
+            if(fileName.contains("..")) {
+                System.out.println("Invalid file name");
+            }
+
+            // TODO save update string (PATCH)
+            helperPatch(fileName, temp);
+
+        } catch (IOException ex) {
+            System.out.println("Couldn't store file " + fileName + ".");
+        }
+    }*/
+
+    public void storeImage(String imageString) {
+        String pathFile = "newTest.png";
+        try (FileOutputStream imageOutputFile = new FileOutputStream(pathFile)) {
+            byte[] imageByteArray = Base64.getDecoder().decode(imageString);
+            imageOutputFile.write(imageByteArray);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("image saved");
+    }
 }
 

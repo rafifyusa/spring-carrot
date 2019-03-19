@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
@@ -102,11 +103,18 @@ public class ItemService {
 
     // Sort by exchange rate
     public List<Item> sortByExchangeRate() {
-        List<Item> sortedItem = itemRepository.findAll(new Sort(Sort.Direction.DESC, "exchangeRate"));
-        return sortedItem;
+//        List<Item> sortedItem = itemRepository.findAll(new Sort(Sort.Direction.DESC, "exchangeRate"));
+//        return sortedItem;
+        return itemRepository.findAll(new Sort(Sort.Direction.DESC, "exchangeRate"));
     }
 
     public List<Item> findAllByBazaarId(String id) {
         return itemRepository.findByBazaar( new ObjectId(id));
+    }
+
+    public List<Item> findAllByExchangeRateAmount (int emplooyeCarrot) {
+        return itemRepository.findAll().stream()
+                .filter(item -> item.getExchangeRate() <= emplooyeCarrot)
+                .collect(Collectors.toList());
     }
 }
