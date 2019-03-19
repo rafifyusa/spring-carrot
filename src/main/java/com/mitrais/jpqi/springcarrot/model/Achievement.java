@@ -1,12 +1,10 @@
 package com.mitrais.jpqi.springcarrot.model;
 
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
-import java.time.LocalDateTime;
 
 @Document(collection = "achievement")
 public class Achievement {
@@ -19,9 +17,6 @@ public class Achievement {
     private Role role;
     private boolean status;
     private String reasoning;
-    private LocalDateTime dateAchieved;
-    @DBRef
-    private Employee employee;
 
     public boolean isStatus() {
         return status;
@@ -53,7 +48,7 @@ public class Achievement {
 
     public Achievement(){}
 
-    public Achievement(String id, String title, String description, int carrot, Role role, boolean status, String reasoning, LocalDateTime dateAchieved) {
+    public Achievement(String id, String title, String description, int carrot, Role role, boolean status, String reasoning) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -61,23 +56,6 @@ public class Achievement {
         this.role = role;
         this.status = status;
         this.reasoning = reasoning;
-        this.dateAchieved = dateAchieved;
-    }
-
-    public LocalDateTime getDateAchieved() {
-        return dateAchieved;
-    }
-
-    public void setDateAchieved(LocalDateTime dateAchieved) {
-        this.dateAchieved = dateAchieved;
-    }
-
-    public Employee getEmployee() {
-        return employee;
-    }
-
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
     }
 
     public String getId() {return id;}

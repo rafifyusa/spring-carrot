@@ -74,12 +74,6 @@ public class AchievementServiceUsingDB implements AchievementService{
             if (achievement.getReasoning() != null){
                 temp.setReasoning(achievement.getReasoning());
             }
-            if (achievement.getDateAchieved() != null){
-                temp.setDateAchieved(achievement.getDateAchieved());
-            }
-            if (achievement.getEmployee() != null){
-                temp.setEmployee(achievement.getEmployee());
-            }
         }
         achievementRepository.save(temp);
     }
