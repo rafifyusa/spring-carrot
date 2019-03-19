@@ -245,12 +245,12 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         return employeeWithoutGroup;
     }
 
-    //Handling from base64 to string and save
+    // Handling from base64 to string and save to local folder
     public String storeImage(String imageString) {
 //        try {
 //            // Decoding process
 //            BASE64Decoder decoder = new BASE64Decoder();
-//            byte[] decodedBytes = decoder.decodeBuffer(bas64String);
+//            byte[] decodedBytes = decoder.decodeBuffer(imageString);
 //
 //            String uploadFile = "/src/main/resources/uploads/test.jpg";
 //            File file = new File(uploadFile);
@@ -271,8 +271,9 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 //            System.out.println(e);
 //        }
 //        return "image saved";
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //        BufferedImage image = new BufferedImage(977, 263, BufferedImage.TYPE_BYTE_INDEXED);
+//        BufferedImage image = null;
 //        byte[] imageByte;
 //
 //        String uploadFile = "/src/main/resources/uploads/test.jpg";
@@ -290,7 +291,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 //            e.printStackTrace();
 //        }
 //        return "image saved";
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //        String path = "test_decode.png";
 //        File outputFile =  new File(path);
 //
@@ -303,7 +304,11 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 //            e.printStackTrace();
 //        }
 //        return "file created";
-        String pathFile = "./src/main/resources/test";
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//        String folder = "./src/main/resources/uploads";
+//        File createFolder = new File(folder);
+
+        String pathFile = "./src/main/resources/test.png";
         try (FileOutputStream imageOut = new FileOutputStream(pathFile)) {
             byte[] imageByteArray = Base64.getDecoder().decode(imageString);
             imageOut.write(imageByteArray);
@@ -314,18 +319,18 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     }
 
     //Create helper function for patch string url
-    public void helperPatch(String location, Employee employee) {
-        // All field are same as it is
-        employee.setName(employee.getName());
-        employee.setDob(employee.getDob());
-        employee.setAddress(employee.getAddress());
-        employee.setPassword(employee.getPassword());
-        employee.setEmailAddress(employee.getEmailAddress());
-        employee.setGroup(employee.getGroup());
-        employee.setSupervisor(employee.getSupervisor());
-
-        // Except the profile pictures, this need to be changed
-        employee.setProfilePicture(location);
-    }
+//    public void helperPatch(String location, Employee employee) {
+//        // All field are same as it is
+//        employee.setName(employee.getName());
+//        employee.setDob(employee.getDob());
+//        employee.setAddress(employee.getAddress());
+//        employee.setPassword(employee.getPassword());
+//        employee.setEmailAddress(employee.getEmailAddress());
+//        employee.setGroup(employee.getGroup());
+//        employee.setSupervisor(employee.getSupervisor());
+//
+//        // Except the profile pictures, this need to be changed
+//        employee.setProfilePicture(location);
+//    }
 }
 
