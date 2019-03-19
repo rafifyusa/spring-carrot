@@ -68,7 +68,7 @@ public class Group {
     }
 
     @Override
-    public String hashCode() {
+    public int hashCode() {
         return id;
     }
 }
