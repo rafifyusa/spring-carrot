@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.controller;
 
+import com.mitrais.jpqi.springcarrot.model.Basket;
 import com.mitrais.jpqi.springcarrot.model.Employee;
 import com.mitrais.jpqi.springcarrot.model.Group;
 import com.mitrais.jpqi.springcarrot.model.GroupCount;
@@ -74,7 +75,7 @@ public class EmployeeController {
 
     // Get recent (2 days) birthday of all employees
     @GetMapping("recentdob")
-    public List<Employee> getByRecentDOB() {
+    public List<Basket> getByRecentDOB() {
         return employeeServiceUsingDB.getRecentDOB();
     }
 

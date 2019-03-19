@@ -14,10 +14,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -113,7 +110,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     }
 
     @Override
-    public List<Employee> getRecentDOB() { // get the matching employee's dob with last 2 days.
+    public List<Basket> getRecentDOB() { // get the matching employee's dob with last 2 days.
         LocalDate localDate = LocalDate.now();
         LocalDate recentDOB1 = localDate.minusDays(1);
         LocalDate recentDOB2 = localDate.minusDays(2);
@@ -121,10 +118,18 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         String date0 = localDate.toString().substring(5);
         String date1 = recentDOB1.toString().substring(5);
         String date2 = recentDOB2.toString().substring(5);
-        List<Employee> emp = employeeRepository.findAll().stream()
+        List<Basket> listBasket = new ArrayList<>();
+        List<Employee> emp = employeeRepository.findAll()
+                .stream()
                 .filter(e -> e.getDob().toString().substring(5).equals(date1) || e.getDob().toString().substring(5).equals(date2)|| e.getDob().toString().substring(5).equals(date0))
                 .collect(Collectors.toList());
-        return emp;
+        emp.forEach(employee -> {
+            Optional<Basket> basket1 = basketRepository.findByEmployee(new ObjectId(employee.getId()));
+            if (basket1.isPresent()) {
+                listBasket.add(basket1.get());
+            }
+        });
+        return listBasket;
     }
 
     // PATCH implementation manual version
@@ -203,7 +208,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
             if (emp.getGroup() == null) {
                 emp.setGroup(new HashSet<>());
             }
-
+//
             group.forEach(e -> emp.getGroup().add(e));
             employeeRepository.save((emp));
         }
