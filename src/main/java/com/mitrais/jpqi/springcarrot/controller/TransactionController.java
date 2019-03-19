@@ -27,5 +27,10 @@ public class TransactionController {
         transactionService.createTransaction(transaction);
     }
 
+    @GetMapping("{id}/spent_for_reward")
+    public int getTotalSpentForReward(@PathVariable String id) {
+        return transactionService.countCarrotSpentForRewardItem(id);
+    }
+
 
 }
