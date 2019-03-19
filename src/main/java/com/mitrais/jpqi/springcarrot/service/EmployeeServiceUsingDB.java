@@ -15,8 +15,11 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -265,33 +268,48 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     }
 
     //Upload File
-/*    public String storeFile(String id, MultipartFile file) {
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        Employee temp = employeeRepository.findById(id).orElse(null);
-
+    public String storeImage(String imageString, String id) {
+        // Path File
+        String pathFile = "src\\main\\resources\\images\\";
+        String outputFileLocation = null;
+        // Decode image string int
+        byte[] imageByteArray = Base64.getDecoder().decode(imageString);
         try {
-            // Check if the file's name contains invalid characters
-            if(fileName.contains("..")) {
-                System.out.println("Invalid file name");
+            File dir = new File(pathFile);
+
+            if(!dir.exists()) {
+                System.out.println("Creating directory : " + dir.getName());
+                boolean result = false;
+
+                try {
+                    dir.mkdir();
+                    result = true;
+                } catch (SecurityException se) {
+                    se.printStackTrace();
+                }
+
+                if (result) {
+                    System.out.println("Directory created");
+                }
             }
 
-            // TODO save update string (PATCH)
-            helperPatch(fileName, temp);
+//            // Creating name from when the file created
+//            Instant instant = Instant.now();
+//            long timeStampMillis = instant.toEpochMilli();
+//            System.out.println(timeStampMillis);
 
-        } catch (IOException ex) {
-            System.out.println("Couldn't store file " + fileName + ".");
-        }
-    }*/
+            // Rename by id
+            outputFileLocation = pathFile + id  + ".jpg";
 
-    public void storeImage(String imageString) {
-        String pathFile = "newTest.png";
-        try (FileOutputStream imageOutputFile = new FileOutputStream(pathFile)) {
-            byte[] imageByteArray = Base64.getDecoder().decode(imageString);
-            imageOutputFile.write(imageByteArray);
+//            new FileOutputStream(pathFile + timeStampMillis + ".jpg").write(imageByteArray);
+            new FileOutputStream(outputFileLocation).write(imageByteArray);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("image saved");
+
+        System.out.println("Image successfully uploaded");
+        return outputFileLocation;
     }
 }
 

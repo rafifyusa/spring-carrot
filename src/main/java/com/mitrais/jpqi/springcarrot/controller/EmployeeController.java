@@ -167,4 +167,9 @@ public class EmployeeController {
         return hasil;
     }
 
+    @PostMapping("testUpload/{id}")
+    public void testUploadImage(@RequestBody Map<String, String> param, @PathVariable String id) {
+        System.out.println(param.get("img"));
+        employeeServiceUsingDB.storeImage(param.get("img"), id);
+    }
 }
