@@ -9,34 +9,39 @@ import java.util.List;
 @RestController
 @RequestMapping("api/achievementhistory")
 public class AchievementHistoryController {
-    private AchievementHistoryService AchievementHistoryService;
+    private AchievementHistoryService achievementHistoryService;
 
     public AchievementHistoryController(com.mitrais.jpqi.springcarrot.service.AchievementHistoryService achievementHistoryService) {
-        AchievementHistoryService = achievementHistoryService;
+        this.achievementHistoryService = achievementHistoryService;
     }
 
     @GetMapping
     public List<AchievementHistory> getAllAchievementHistory(){
-        return AchievementHistoryService.getAllAchievementHistory();
+        return achievementHistoryService.getAllAchievementHistory();
     }
 
     @GetMapping("{id}")
     public Iterable<AchievementHistory> findByAchievementHistoryId(@PathVariable String id){
-        return AchievementHistoryService.findByAchievementHistoryId(id);
+        return achievementHistoryService.findByAchievementHistoryId(id);
     }
 
     @PostMapping
     public void create(@RequestBody AchievementHistory AchievementHistory){
-        AchievementHistoryService.createAchievementHistory(AchievementHistory);
+        achievementHistoryService.createAchievementHistory(AchievementHistory);
     }
 
     @DeleteMapping("{id}")
     public void delete(@PathVariable("id") String id){
-        AchievementHistoryService.deleteAchievementHistory(id);
+        achievementHistoryService.deleteAchievementHistory(id);
     }
 
     @PutMapping("{id}")
     public void update(@PathVariable("id") String id, @RequestBody AchievementHistory AchievementHistory){
-        AchievementHistoryService.updateAchievementHistory(id, AchievementHistory);
+        achievementHistoryService.updateAchievementHistory(id, AchievementHistory);
+    }
+
+    @PatchMapping("{id}")
+    public void partialUpdate(@PathVariable("id") String id, @RequestBody AchievementHistory achievementHistory){
+        achievementHistoryService.partialUpdateAchievementHistory(id, achievementHistory);
     }
 }

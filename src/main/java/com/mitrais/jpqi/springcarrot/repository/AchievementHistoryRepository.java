@@ -9,4 +9,6 @@ import java.util.List;
 public interface AchievementHistoryRepository extends MongoRepository <AchievementHistory, Integer> {
     @Query("{'id': ?0}")
     List<AchievementHistory> findAchievementHistoryById(String id);
+    @Query("{'id': ?0}")
+    AchievementHistory findById(String id);
 }
