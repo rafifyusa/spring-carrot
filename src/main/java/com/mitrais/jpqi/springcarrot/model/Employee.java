@@ -23,9 +23,11 @@ public class Employee {
     private Set<Group> group;
     @DBRef
     private Employee supervisor;
+    @DBRef
+    private Set<Reward> achievement;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    public Role role;
     @Enumerated(EnumType.STRING)
     private SpvLevel spvLevel;
 

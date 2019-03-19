@@ -31,6 +31,16 @@ public class EmployeeController {
         employeeServiceUsingDB.updateEmployee(id, employee);
     }
 
+    @PatchMapping("admin")
+    public void makeAdmin(@RequestParam String id) {
+        employeeServiceUsingDB.makeEmployeeAsAdmin(id);
+    }
+
+    @PatchMapping("revoke")
+    public void revokeAdmin(@RequestParam String id, @RequestBody Employee role) {
+        employeeServiceUsingDB.revokeEmployeefromAdmin(id, role);
+    }
+
     // Delete employee
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") String id) {
@@ -104,9 +114,17 @@ public class EmployeeController {
         return employeeServiceUsingDB.getEmployeeBySpvLevel(spvLevel);
     }
 
+<<<<<<< HEAD
     // Upload a Pictures
     @PostMapping("uploadPicture")
     public String uploadImage(@RequestBody String base64String) {
         return employeeServiceUsingDB.storeImage(base64String);
     }
+=======
+    @GetMapping("credential")
+    public Employee getEmployeeByEmailAndPass(@RequestParam String email, @RequestParam String password) {
+        return employeeServiceUsingDB.findByEmailAddressAndPassword(email, password);
+    }
+
+>>>>>>> f7353cfc9ab8a199af3c2ccb6b8c3800b3924132
 }

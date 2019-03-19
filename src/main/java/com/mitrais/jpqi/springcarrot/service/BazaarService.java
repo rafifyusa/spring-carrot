@@ -33,6 +33,19 @@ public class BazaarService {
         return bazaarRepository.findAll();
     }
 
+    // Find Bazaar by Id
+    public Bazaar findById(String id) {
+        Optional<Bazaar> temp = bazaarRepository.findById(id);
+        if (temp.isPresent()) {
+            return temp.get();
+        }
+        return null;
+    }
+
+    public List<Bazaar> findByStatus(boolean status) {
+        return bazaarRepository.findBazaarByStatus(status);
+    }
+
     // Change bazaar status (activate or deactivate)
     public void changeBazaarStatus(String id) {
         // Create temporary bazaar
@@ -50,12 +63,4 @@ public class BazaarService {
         bazaarRepository.save(temp);
     }
 
-    // Find Bazaar by Id
-    public Bazaar findById(String id) {
-        Optional<Bazaar> temp = bazaarRepository.findById(id);
-        if (temp.isPresent()) {
-            return temp.get();
-        }
-        return null;
-    }
 }
