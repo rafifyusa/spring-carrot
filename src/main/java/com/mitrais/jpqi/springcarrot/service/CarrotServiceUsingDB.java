@@ -3,6 +3,7 @@ package com.mitrais.jpqi.springcarrot.service;
 import com.mitrais.jpqi.springcarrot.model.Basket;
 import com.mitrais.jpqi.springcarrot.model.Carrot;
 import com.mitrais.jpqi.springcarrot.repository.CarrotRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -37,6 +38,6 @@ public class CarrotServiceUsingDB implements CarrotService {
 
     @Override
     public List<Carrot> findByEmployeeId(String id) {
-        return carrotRepository.findByEmployeeId(id);
+        return carrotRepository.findByBasketId(new ObjectId(id));
     }
 }
