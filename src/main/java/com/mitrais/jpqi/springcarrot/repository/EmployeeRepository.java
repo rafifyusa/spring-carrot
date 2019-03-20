@@ -5,6 +5,7 @@ import com.mitrais.jpqi.springcarrot.model.Group;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +21,6 @@ public interface EmployeeRepository extends MongoRepository<Employee, String> {
 
     @Query("{'emailAddress': ?0, 'password': ?1}")
     Optional<Employee> findByEmailAddressAndPassword(String email, String password);
-
 }
 //    @Query(value = "{ 'userId' : ?0, 'questions.questionID' : ?1 }", fields = "{ 'questions.questionID' : 1 }")
 //    List<PracticeQuestion> findByUserIdAndQuestionsQuestionID(int userId, int questionID);

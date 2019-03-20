@@ -335,5 +335,62 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         }
         employeeRepository.save(employee);
     }
+
+    /**
+     * Get member amount of each group
+     * @return map contain key-value pair of group id and number of member in the group
+     */
+    public HashMap<String, Integer> getGroupMemberAmount() {
+        // Create empty hashmap to holding key-value pair
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+
+        // List all employee who has group
+        List <Employee> employees = employeeRepository.findAll().stream()
+                .filter(e -> e.getGroup() != null)
+                .collect(Collectors.toList());
+
+        // Iterate over all employee in employees list
+        employees.forEach(e -> {
+            // get group set of an employee
+            Set<Group> mySet = e.getGroup();
+            mySet.forEach(g -> {
+                String key = g.getId();
+                // check if contain the keys or not
+                if (!map.containsKey(key)) {
+                    map.put(key, 1); // buat baru
+                } else {
+                    map.put(key, map.get(key) + 1); // +1 jika ditemukan
+                }
+            });
+        });
+
+//        // print key-value pair in hashmap
+//        for (String key : map.keySet()) {
+//            System.out.println(key + " : " + map.get(key));
+//        }
+        return map;
+//        Set<Group> mySet = employees.get(0).getGroup();
+//        mySet.forEach(g -> {
+//            System.out.println(g.getId());
+//            String key = g.getId();
+//            // check if contain the keys or not
+//            if (!map.containsKey(key)) {
+//                map.put(key, 1); // buat baru
+//            } else {
+//                map.put(key, map.get(key) + 1); // +1 jika ditemukan
+//            }
+//        });
+
+
+
+//        Iterator itr = mySet.iterator();
+//        while (itr.hasNext()) {
+//            Group g = (Group) itr.next();
+//            g.getId();
+//            System.out.println(itr.next());
+//        }
+
+//        System.out.println(employees);
+    }
 }
 
