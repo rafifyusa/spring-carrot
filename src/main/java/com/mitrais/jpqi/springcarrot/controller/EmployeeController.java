@@ -1,13 +1,11 @@
 package com.mitrais.jpqi.springcarrot.controller;
 
-import com.mitrais.jpqi.springcarrot.model.Basket;
-import com.mitrais.jpqi.springcarrot.model.Employee;
-import com.mitrais.jpqi.springcarrot.model.Group;
-import com.mitrais.jpqi.springcarrot.model.GroupCount;
+import com.mitrais.jpqi.springcarrot.model.*;
 import com.mitrais.jpqi.springcarrot.service.EmployeeServiceUsingDB;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -123,8 +121,8 @@ public class EmployeeController {
     //---------------------------- UPLOAD IMAGE -----------------------------//
     @PostMapping("upload")
     public void uploadImage(@RequestBody String imageString) {
-        System.out.println(imageString);
-        employeeServiceUsingDB.storeImage(imageString);
+        System.out.println(imageString.replace("imageString=", ""));
+        employeeServiceUsingDB.storeImage(imageString.replace("imageString=", ""));
     }
 
 }

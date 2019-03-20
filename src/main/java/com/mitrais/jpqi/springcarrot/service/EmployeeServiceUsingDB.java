@@ -14,13 +14,19 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Base64Utils;
+import sun.misc.BASE64Decoder;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.HashSet;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
@@ -292,10 +298,17 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     }*/
 
     public void storeImage(String imageString) {
-        String pathFile = "newTest.png";
+        String pathFile = "newTest.jpg";
         try (FileOutputStream imageOutputFile = new FileOutputStream(pathFile)) {
-            byte[] imageByteArray = Base64.getDecoder().decode(imageString);
-            imageOutputFile.write(imageByteArray);
+             byte[] imageByteArray = new BASE64Decoder().decodeBuffer(imageString);
+//            ByteArrayInputStream bis = new ByteArrayInputStream(imageByteArray);
+//            File imgOutFile = new File("newLabel.png");
+//            ImageIO.write(bufImg, "png", imgOutFile);
+//            System.out.println(imageByteArray);
+//            imageOutputFile.write(imageByteArray);
+            Path destinationFile = Paths.get("myImage.jpeg");
+            System.out.println(destinationFile);
+            Files.write(destinationFile, imageByteArray);
         } catch (IOException e) {
             e.printStackTrace();
         }
