@@ -183,10 +183,15 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         return employeeRepository.findByRole(role);
     }
 
-    @Override
-    public List<Employee> getEmployeeByGroup(String group){
-        return employeeRepository.findByGroupName(group);
-    }
+    //TODO Create getEmployeeByGroup
+/*    @Override
+    public List<Employee> getEmployeeByGroup(Group group){
+        List<Employee> employeeInGroup = new ArrayList<>();
+
+
+
+        return employeeInGroup;
+    }*/
 
     ///delete if group is only one for each employee
 /*    @Override

@@ -12,9 +12,6 @@ public interface EmployeeRepository extends MongoRepository<Employee, String> {
     @Query("{'role': ?0}")
     List<Employee> findByRole(String role);
 
-    @Query("{'group.name': ?0}")
-    List<Employee> findByGroupName(String groupname);
-
     @Query("{'spvLevel': ?0}")
     List<Employee> findBySpvLevel(String spvlevel);
 

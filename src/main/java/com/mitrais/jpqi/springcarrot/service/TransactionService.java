@@ -6,10 +6,15 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import static org.springframework.data.domain.Sort.Direction.ASC;
+import static org.springframework.data.domain.Sort.Direction.DESC;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -69,6 +74,8 @@ public class TransactionService {
                     c.setType(Carrot.Type.NORMAL);
                     carrotRepository.save(c);
                 }
+                transaction.setFrom(f_from.getName());
+                transaction.setTo(b_to.getName());
             }
             else {
                 //code if the reward is from system (not from manager's freezer )
@@ -133,6 +140,9 @@ public class TransactionService {
                     item.setItemSold((item.getItemSold() +1));
                     item.setTotalItem((item.getTotalItem() -1));
                     itemRepository.save(item);
+
+                    transaction.setFrom(b_from.getName());
+                    transaction.setTo(item.getBazaar().getBazaarName());
                 }
                 else {
                     SocialFoundation socialFoundation = transaction.getSocialFoundation();
@@ -142,6 +152,9 @@ public class TransactionService {
                         double newFoundationAmount = sf.getTotal_carrot() + transaction.getCarrot_amt();
                         sf.setTotal_carrot(newFoundationAmount);
                         socialFoundationRepository.save(sf);
+
+                        transaction.setFrom(b_from.getName());
+                        transaction.setTo(socialFoundation.getName());
                     }
                 }
             }
@@ -251,13 +264,27 @@ public class TransactionService {
         List <Transaction> pendingTransactions = mongoTemplate.find(query, Transaction.class);
         return  pendingTransactions;
     }
-    //TODO sortbyspentcarrots
+/*    //TODO sortbyspentcarrots
     public List<Employee> findAllEmployeeSortedBySpentCarrotForRewards () {
 
-        /*Aggregation agg = Aggregation.newAggregation(
+        Aggregation agg = Aggregation.newAggregation(
                 Aggregation.match(Criteria.where("type").is(Transaction.Type.BAZAAR)),
                 Aggregation.unwind("basket")
-        )*/
+        )
         return null;
-    }
+    }*/
+
+
+ /*   public List<CarrotCount> findAllEmployeeSortedByCarrotEarned (){
+        MatchOperation getMatchOperation()
+
+        Aggregation agg = newAggregation(
+                group("detail_to").sum("carrot_amt").as("carrotEarned"),
+                sort(ASC, previousOperation(),"carrotEarned")
+        );
+        AggregationResults<CarrotCount> results = mongoTemplate.aggregate(agg, Transaction.class, CarrotCount.class);
+        List<CarrotCount> carrotCount = results.getMappedResults();
+
+        return carrotCount;
+    }*/
 }

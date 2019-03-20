@@ -34,6 +34,15 @@ public class GroupService {
 
     public void deleteGroupById(String id) {groupRepository.deleteById(id);}
 
+    public Group findGroupById (String id) {
+        if (groupRepository.findById(id).isPresent()) {
+            return groupRepository.findById(id).get();
+        }
+        else {
+            return null;
+        }
+    }
+
     public List<Group> findAllStaffGroup() {
         List<Group> groups = groupRepository.findAll();
         List<Group>result = groups.stream().filter(grp -> grp.getType() == Group.Type.STAFF)
