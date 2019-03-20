@@ -22,6 +22,8 @@ public class TransactionService {
     @Autowired
     private CarrotRepository carrotRepository;
     @Autowired
+    CarrotServiceUsingDB carrotServiceUsingDB;
+    @Autowired
     private FreezerRepository freezerRepository;
     @Autowired
     private ItemRepository itemRepository;
@@ -77,7 +79,6 @@ public class TransactionService {
             Basket basket = b.get();
             Double newAmount = basket.getCarrot_amt() - transaction.getCarrot_amt();
             basket.setCarrot_amt(newAmount);
-            //System.out.println("new from: " + newAmount);
             basketRepository.save(basket);
 
             //Edit the recipient carrot amount in basket
@@ -85,7 +86,6 @@ public class TransactionService {
             Basket basket1 = b1.get();
             Double newAmount1 = basket1.getCarrot_amt() + transaction.getCarrot_amt();
             basket1.setCarrot_amt(newAmount1);
-            //System.out.println("new to: " + newAmount1);
             basketRepository.save(basket1);
 
             //update the carrots in sender's basket into recipient's basket
@@ -115,8 +115,7 @@ public class TransactionService {
                 int count = transaction.getCarrot_amt();
                 for (int i = 0 ; i < count ; i++) {
                     Carrot c = carrots.get(i);
-                    c.setType(Carrot.Type.INACTIVE);
-                    c.setBasket(null);
+                    c.setUsable(false);
                     carrotRepository.save(c);
                 }
             }
@@ -134,8 +133,45 @@ public class TransactionService {
 
         //set the transaction date
         if (transaction.getTransaction_date() == null) { transaction.setTransaction_date(LocalDateTime.now()); }
-
         transactionRepository.save(transaction);
+    }
+
+    public void approveTransaction(String id) {
+        if (transactionRepository.findById(id).isPresent()) {
+            Transaction transaction = transactionRepository.findById(id).get();
+
+            Basket requester = transaction.getDetail_from();
+            List<Carrot> pendingCarrots = carrotRepository.findByBasketId(new ObjectId(requester.getId()))
+                    .stream().filter(c -> c.isUsable() == false).collect(Collectors.toList());
+
+            int count = transaction.getCarrot_amt();
+            for (int i = 0; i<count;i++) {
+                Carrot c = pendingCarrots.get(i);
+                c.setBasket(null);
+                carrotRepository.save(c);
+            }
+            transaction.setStatus(Transaction.Status.APPROVED);
+            transactionRepository.save(transaction);
+        }
+    }
+
+    public void declineTransaction(String id) {
+        if (transactionRepository.findById(id).isPresent()) {
+            Transaction transaction = transactionRepository.findById(id).get();
+
+            Basket requester = transaction.getDetail_from();
+            List<Carrot> pendingCarrots = carrotRepository.findByBasketId(new ObjectId(requester.getId()))
+                    .stream().filter(c -> c.isUsable() == false).collect(Collectors.toList());
+
+            int count = transaction.getCarrot_amt();
+            for (int i = 0; i<count;i++) {
+                Carrot c = pendingCarrots.get(i);
+                c.setUsable(true);
+                carrotRepository.save(c);
+            }
+            transaction.setStatus(Transaction.Status.DECLINED);
+            transactionRepository.save(transaction);
+        }
     }
 
     public void updateTransaction(String id, Transaction transaction) {
