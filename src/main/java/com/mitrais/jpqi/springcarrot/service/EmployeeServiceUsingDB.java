@@ -14,16 +14,10 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Base64Utils;
-import sun.misc.BASE64Decoder;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -279,40 +273,64 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     }
 
     //Upload File
-/*    public String storeFile(String id, MultipartFile file) {
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        Employee temp = employeeRepository.findById(id).orElse(null);
-
+    public String storeImage(String imageString, String id) {
+        // Path File
+        String pathFile = "src\\main\\resources\\images\\";
+        String outputFileLocation = null;
+        // Decode image string int
+        byte[] imageByteArray = Base64.getDecoder().decode(imageString);
         try {
-            // Check if the file's name contains invalid characters
-            if(fileName.contains("..")) {
-                System.out.println("Invalid file name");
+            File dir = new File(pathFile);
+
+            if (!dir.exists()) {
+                System.out.println("Creating directory : " + dir.getName());
+                boolean result = false;
+
+                try {
+                    dir.mkdir();
+                    result = true;
+                } catch (SecurityException se) {
+                    se.printStackTrace();
+                }
+
+                if (result) {
+                    System.out.println("Directory created");
+                }
             }
 
-            // TODO save update string (PATCH)
-            helperPatch(fileName, temp);
+            // Rename picture by id
+            outputFileLocation = pathFile + id + ".jpg";
 
-        } catch (IOException ex) {
-            System.out.println("Couldn't store file " + fileName + ".");
-        }
-    }*/
-
-    public void storeImage(String imageString) {
-        String pathFile = "newTest.jpg";
-        try (FileOutputStream imageOutputFile = new FileOutputStream(pathFile)) {
-             byte[] imageByteArray = new BASE64Decoder().decodeBuffer(imageString);
-//            ByteArrayInputStream bis = new ByteArrayInputStream(imageByteArray);
-//            File imgOutFile = new File("newLabel.png");
-//            ImageIO.write(bufImg, "png", imgOutFile);
-//            System.out.println(imageByteArray);
-//            imageOutputFile.write(imageByteArray);
-            Path destinationFile = Paths.get("myImage.jpeg");
-            System.out.println(destinationFile);
-            Files.write(destinationFile, imageByteArray);
+            new FileOutputStream(outputFileLocation).write(imageByteArray);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("image saved");
+        return outputFileLocation;
+    }
+    public void picturePatch (String imageString, String id) {
+        String profilePictureLoc = storeImage(imageString, id);
+
+        // Find employee first
+        Employee employee = employeeRepository.findById(id).orElse(null);
+
+        if (employee != null) {
+            // Everything except profilePicture field was not changed during process
+            employee.setName(employee.getName());
+            employee.setDob(employee.getDob());
+            employee.setAddress(employee.getAddress());
+            employee.setRole(employee.getRole());
+            employee.setPassword(employee.getPassword());
+            employee.setEmailAddress(employee.getEmailAddress());
+            employee.setGroup(employee.getGroup());
+            employee.setSupervisor(employee.getSupervisor());
+            employee.setSpvLevel(employee.getSpvLevel());
+
+            // set profile picture with profile picture location
+            employee.setProfilePicture(profilePictureLoc);
+        }
+        employeeRepository.save(employee);
     }
 }
 

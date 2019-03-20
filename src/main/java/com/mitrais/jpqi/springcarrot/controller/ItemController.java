@@ -3,13 +3,15 @@ package com.mitrais.jpqi.springcarrot.controller;
 import com.mitrais.jpqi.springcarrot.model.Item;
 import com.mitrais.jpqi.springcarrot.service.ItemService;
 import org.bson.types.ObjectId;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping("api/items")
-public class ItemController {
+public class ItemController  {
     private ItemService itemService;
 
     public ItemController(ItemService itemService) {
@@ -30,7 +32,7 @@ public class ItemController {
 
     // Delete
     @DeleteMapping("{id}")
-    public void delete(@PathVariable String id) {
+    public void remove(@PathVariable String id) {
         itemService.deleteItem(id);
     }
 

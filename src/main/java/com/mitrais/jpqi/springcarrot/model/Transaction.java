@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class Transaction {
 
     public enum Type{
-        BAZAAR, REWARD, SHARED
+        BAZAAR, REWARD, SHARED, DONATION
     }
 
     @Id
@@ -24,7 +24,10 @@ public class Transaction {
     private Basket detail_from;
     private Basket detail_to;
     private Freezer freezer_from;
-    private Freezer freezer_to;
+    @DBRef
+    private Item requested_item;
+    @DBRef
+    private SocialFoundation socialFoundation;
     private String description;
     private int carrot_amt;
     private LocalDateTime transaction_date;
@@ -33,9 +36,10 @@ public class Transaction {
     public Transaction(){}
 
 
-    public Transaction(String id, Type type, String from, String to, Basket detail_from, Basket detail_to,
-                       Freezer freezer_from, Freezer freezer_to, String description,
-                       int carrot_amt, LocalDateTime transaction_date) {
+    public Transaction(String id, Type type, String from, String to, Basket detail_from,
+                       Basket detail_to, Freezer freezer_from, Item requested_item, String description,
+                       SocialFoundation socialFoundation, int carrot_amt,
+                       LocalDateTime transaction_date, boolean status) {
         this.id = id;
         this.type = type;
         this.from = from;
@@ -43,10 +47,12 @@ public class Transaction {
         this.detail_from = detail_from;
         this.detail_to = detail_to;
         this.freezer_from = freezer_from;
-        this.freezer_to = freezer_to;
+        this.requested_item = requested_item;
         this.description = description;
+        this.socialFoundation = socialFoundation;
         this.carrot_amt = carrot_amt;
         this.transaction_date = transaction_date;
+        this.status = status;
     }
 
     //Getter & Setters
@@ -108,7 +114,15 @@ public class Transaction {
 
     public void setFreezer_from(Freezer freezer_from) { this.freezer_from = freezer_from; }
 
-    public Freezer getFreezer_to() { return freezer_to; }
+    public Item getRequested_item() { return requested_item; }
 
-    public void setFreezer_to(Freezer freezer_to) { this.freezer_to = freezer_to; }
+    public void setRequested_item(Item requested_item) { this.requested_item = requested_item; }
+
+    public boolean isStatus() { return status; }
+
+    public void setStatus(boolean status) { this.status = status; }
+
+    public SocialFoundation getSocialFoundation() { return socialFoundation; }
+
+    public void setSocialFoundation(SocialFoundation socialFoundation) { this.socialFoundation = socialFoundation; }
 }

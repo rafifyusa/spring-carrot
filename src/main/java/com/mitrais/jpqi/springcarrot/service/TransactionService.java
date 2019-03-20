@@ -1,21 +1,17 @@
 package com.mitrais.jpqi.springcarrot.service;
 
-import com.google.gson.Gson;
 import com.mitrais.jpqi.springcarrot.model.*;
-import com.mitrais.jpqi.springcarrot.repository.BasketRepository;
-import com.mitrais.jpqi.springcarrot.repository.CarrotRepository;
-import com.mitrais.jpqi.springcarrot.repository.FreezerRepository;
-import com.mitrais.jpqi.springcarrot.repository.TransactionRepository;
+import com.mitrais.jpqi.springcarrot.repository.*;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionService {
@@ -27,6 +23,8 @@ public class TransactionService {
     private CarrotRepository carrotRepository;
     @Autowired
     private FreezerRepository freezerRepository;
+    @Autowired
+    private ItemRepository itemRepository;
 
 
     public List<Transaction> findAllTransactions() {return transactionRepository.findAll();}
@@ -104,9 +102,34 @@ public class TransactionService {
         }
 
         if (transaction.getType() == Transaction.Type.BAZAAR) {
-            //TODO Kurangi jumlah carrot di basket
-            //TODO UBAH carrot jadi inactive
-            //TODO Ganti jumlah Item
+            Basket b_from = transaction.getDetail_from();
+            Optional<Basket> b = basketRepository.findById(b_from.getId());
+            Basket basket = b.get();
+            if (basket.getCarrot_amt() > transaction.getCarrot_amt()) {
+                Double newAmount = basket.getCarrot_amt() - transaction.getCarrot_amt();
+                basket.setCarrot_amt(newAmount);
+                basketRepository.save(basket);
+
+                //update the carrots in sender's basket into recipient's basket
+                List<Carrot> carrots = carrotRepository.findByBasketId(new ObjectId(b_from.getId()));
+                int count = transaction.getCarrot_amt();
+                for (int i = 0 ; i < count ; i++) {
+                    Carrot c = carrots.get(i);
+                    c.setType(Carrot.Type.INACTIVE);
+                    c.setBasket(null);
+                    carrotRepository.save(c);
+                }
+            }
+            else {
+                //TODO Create 'cancel transaction because the amount is insufficient'
+            }
+
+            Item requested_Item = transaction.getRequested_item();
+            Optional<Item> i = itemRepository.findById(requested_Item.getId());
+            Item item = i.get();
+            item.setItemSold((item.getItemSold() +1));
+            item.setTotalItem((item.getTotalItem() -1));
+            itemRepository.save(item);
         }
 
         //set the transaction date
@@ -126,5 +149,45 @@ public class TransactionService {
 
         temp.forEach( t -> result.add(t));
         return result;
+    }
+
+    public int countCarrotSpentForRewardItem (String id) {
+        List<Transaction> reward_transaction = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id));
+
+        List<Transaction> filtered = reward_transaction.stream()
+                .filter(e -> e.getType() == Transaction.Type.BAZAAR).collect(Collectors.toList());
+
+        int total_spent = filtered.stream().mapToInt( a->a.getCarrot_amt()).sum();
+        return total_spent;
+    }
+
+    public int countCarrotSpentForSharing (String id) {
+        List<Transaction> reward_transaction = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id));
+
+        List<Transaction> filtered = reward_transaction.stream()
+                .filter(e -> e.getType() == Transaction.Type.SHARED).collect(Collectors.toList());
+
+        int total_spent = filtered.stream().mapToInt( a->a.getCarrot_amt()).sum();
+        return total_spent;
+    }
+
+    public int countCarrotSpentForDonation (String id) {
+        List<Transaction> donation_transaction = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id));
+
+        List<Transaction> filtered = donation_transaction.stream()
+                .filter(e -> e.getType() == Transaction.Type.DONATION).collect(Collectors.toList());
+
+        int total_spent = filtered.stream().mapToInt( a->a.getCarrot_amt()).sum();
+        return total_spent;
+    }
+
+    //TODO sortbyspentcarrots
+    public List<Employee> findAllEmployeeSortedBySpentCarrotForRewards () {
+
+        /*Aggregation agg = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("type").is(Transaction.Type.BAZAAR)),
+                Aggregation.unwind("basket")
+        )*/
+        return null;
     }
 }

@@ -2,8 +2,19 @@ package com.mitrais.jpqi.springcarrot.controller;
 
 import com.mitrais.jpqi.springcarrot.model.*;
 import com.mitrais.jpqi.springcarrot.service.EmployeeServiceUsingDB;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +22,7 @@ import java.util.Map;
 @CrossOrigin
 @RequestMapping("api/employees")
 public class EmployeeController {
+    private ServletContext servletContext;
 
     private EmployeeServiceUsingDB employeeServiceUsingDB;
 
@@ -121,8 +133,13 @@ public class EmployeeController {
     //---------------------------- UPLOAD IMAGE -----------------------------//
     @PostMapping("upload")
     public void uploadImage(@RequestBody String imageString) {
-        System.out.println(imageString.replace("imageString=", ""));
-        employeeServiceUsingDB.storeImage(imageString.replace("imageString=", ""));
+//        System.out.println(imageString.replace("imageString=", ""));
+//        employeeServiceUsingDB.storeImage(imageString.replace("imageString=", ""));
     }
 
+    @PostMapping("uploadImage/{id}")
+    public void patchUploadImage(@RequestBody Map<String, String> param, @PathVariable String id, Employee employee) {
+        System.out.println(param.get("img"));
+        employeeServiceUsingDB.picturePatch(param.get("img"), id);
+    }
 }
