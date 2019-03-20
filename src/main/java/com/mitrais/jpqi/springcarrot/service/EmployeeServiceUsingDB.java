@@ -14,16 +14,13 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Service;
-
+import java.io.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.HashSet;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
@@ -116,7 +113,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     }
 
     @Override
-    public List<Employee> getRecentDOB() { // get the matching employee's dob with last 2 days.
+    public List<Basket> getRecentDOB() { // get the matching employee's dob with last 2 days.
         LocalDate localDate = LocalDate.now();
         LocalDate recentDOB1 = localDate.minusDays(1);
         LocalDate recentDOB2 = localDate.minusDays(2);
@@ -124,10 +121,18 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         String date0 = localDate.toString().substring(5);
         String date1 = recentDOB1.toString().substring(5);
         String date2 = recentDOB2.toString().substring(5);
-        List<Employee> emp = employeeRepository.findAll().stream()
+        List<Basket> listBasket = new ArrayList<>();
+        List<Employee> emp = employeeRepository.findAll()
+                .stream()
                 .filter(e -> e.getDob().toString().substring(5).equals(date1) || e.getDob().toString().substring(5).equals(date2)|| e.getDob().toString().substring(5).equals(date0))
                 .collect(Collectors.toList());
-        return emp;
+        emp.forEach(employee -> {
+            Optional<Basket> basket1 = basketRepository.findByEmployee(new ObjectId(employee.getId()));
+            if (basket1.isPresent()) {
+                listBasket.add(basket1.get());
+            }
+        });
+        return listBasket;
     }
 
     // PATCH implementation manual version
@@ -206,7 +211,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
             if (emp.getGroup() == null) {
                 emp.setGroup(new HashSet<>());
             }
-
+//
             group.forEach(e -> emp.getGroup().add(e));
             employeeRepository.save((emp));
         }
@@ -272,12 +277,13 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         // Path File
         String pathFile = "src\\main\\resources\\images\\";
         String outputFileLocation = null;
+
         // Decode image string int
         byte[] imageByteArray = Base64.getDecoder().decode(imageString);
         try {
             File dir = new File(pathFile);
 
-            if(!dir.exists()) {
+            if (!dir.exists()) {
                 System.out.println("Creating directory : " + dir.getName());
                 boolean result = false;
 
@@ -294,7 +300,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
             }
 
             // Rename picture by id
-            outputFileLocation = pathFile + id  + ".jpg";
+            outputFileLocation = pathFile + id + ".jpg";
 
             new FileOutputStream(outputFileLocation).write(imageByteArray);
 
@@ -302,12 +308,11 @@ public class EmployeeServiceUsingDB implements EmployeeService {
             e.printStackTrace();
         }
 
-        System.out.println("Image successfully uploaded");
-        return outputFileLocation;
+        return id + ".jpg";
     }
 
+    // Patch upload images
     public void picturePatch (String imageString, String id) {
-        String profilePictureLoc = storeImage(imageString, id);
 
         // Find employee first
         Employee employee = employeeRepository.findById(id).orElse(null);
@@ -325,6 +330,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
             employee.setSpvLevel(employee.getSpvLevel());
 
             // set profile picture with profile picture location
+            String profilePictureLoc = storeImage(imageString, id);
             employee.setProfilePicture(profilePictureLoc);
         }
         employeeRepository.save(employee);

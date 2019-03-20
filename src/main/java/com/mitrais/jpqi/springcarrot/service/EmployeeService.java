@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.service;
 
+import com.mitrais.jpqi.springcarrot.model.Basket;
 import com.mitrais.jpqi.springcarrot.model.Employee;
 import com.mitrais.jpqi.springcarrot.model.Group;
 import com.mitrais.jpqi.springcarrot.model.GroupCount;
@@ -17,7 +18,7 @@ public interface EmployeeService {
     Employee getEmployeeById(String id);
     List<GroupCount> getAllEmployeeGroups();
     Map<String, String> findEmployeeByCredential (Map<String, String> body);
-    List<Employee> getRecentDOB();
+    List<Basket> getRecentDOB();
 
     void partialUpdateEmployee(String id, Employee employee);
     List<Employee> getStaffRole(String role);

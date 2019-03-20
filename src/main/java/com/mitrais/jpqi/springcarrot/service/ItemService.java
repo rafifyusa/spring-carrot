@@ -10,6 +10,11 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -116,5 +121,68 @@ public class ItemService {
         return itemRepository.findAll().stream()
                 .filter(item -> item.getExchangeRate() <= emplooyeCarrot)
                 .collect(Collectors.toList());
+    }
+
+    // Upload image for item
+    public String storeImage(String imageString, String id) {
+        // Path File
+        String pathFile = "src\\main\\resources\\images\\";
+        String outputFileLocation = null;
+
+        //Decode image string
+        byte[] imageByteArray = Base64.getDecoder().decode(imageString);
+        try {
+            File dir = new File(pathFile);
+
+            if(!dir.exists()) {
+                System.out.println("Creating directory: " + dir.getName());
+                boolean result = false;
+
+                try {
+                    dir.mkdir();
+                    result = true;
+                } catch (SecurityException se) {
+                    se.printStackTrace();
+                }
+
+                if (result) {
+                    System.out.println("Directory created");
+                }
+            }
+
+            // Rename picture by id
+            outputFileLocation = pathFile + id + ".jpg";
+
+            new FileOutputStream(outputFileLocation).write(imageByteArray);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return  id + ".jpg";
+    }
+
+    // Patch Upload Image for Item
+    public void picturePatch (String imageString, String id) {
+
+        // Find item
+        Item item = itemRepository.findById(id).orElse(null);
+
+        if (item != null) {
+            // Set all field as it's except pictureUrl field
+            item.setItemName(item.getItemName());
+            item.setItemDescription(item.getItemDescription());
+            item.setExchangeRate(item.getExchangeRate());
+            item.setTotalItem(item.getTotalItem());
+            item.setApprovalStatus(item.isApprovalStatus());
+            item.setSaleStatus(item.isSaleStatus());
+            item.setItemSold(item.getItemSold());
+            item.setBazaar(item.getBazaar());
+
+            // Change picture url field;
+            String itemPictureName = storeImage(imageString, id);
+            item.setPictureUrl(itemPictureName);
+        }
+        itemRepository.save(item);
     }
 }

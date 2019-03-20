@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("api/transactions")
 public class TransactionController {
@@ -17,6 +18,7 @@ public class TransactionController {
     List<Transaction> findAllTransactions() {
         return transactionService.findAllTransactions();
     }
+
     @GetMapping("{id}")
     List<Transaction> findTransactionsByEmployee(@PathVariable String id) {
         return transactionService.findTransactionByEmployee(id);

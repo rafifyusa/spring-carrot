@@ -1,8 +1,6 @@
 package com.mitrais.jpqi.springcarrot.controller;
 
-import com.mitrais.jpqi.springcarrot.model.Employee;
-import com.mitrais.jpqi.springcarrot.model.Group;
-import com.mitrais.jpqi.springcarrot.model.GroupCount;
+import com.mitrais.jpqi.springcarrot.model.*;
 import com.mitrais.jpqi.springcarrot.service.EmployeeServiceUsingDB;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.web.bind.annotation.*;
@@ -97,7 +95,7 @@ public class EmployeeController {
 
     // Get recent (2 days) birthday of all employees
     @GetMapping("recentdob")
-    public List<Employee> getByRecentDOB() {
+    public List<Basket> getByRecentDOB() {
         return employeeServiceUsingDB.getRecentDOB();
     }
 
@@ -133,9 +131,14 @@ public class EmployeeController {
     }
 
     //---------------------------- UPLOAD IMAGE -----------------------------//
+    @PostMapping("upload")
+    public void uploadImage(@RequestBody String imageString) {
+//        System.out.println(imageString.replace("imageString=", ""));
+//        employeeServiceUsingDB.storeImage(imageString.replace("imageString=", ""));
+    }
 
     @PostMapping("uploadImage/{id}")
-    public void patchUploadImage(@RequestBody Map<String, String> param, @PathVariable String id, Employee employee) {
+    public void patchUploadImage(@RequestBody Map<String, String> param, @PathVariable String id) {
         System.out.println(param.get("img"));
         employeeServiceUsingDB.picturePatch(param.get("img"), id);
     }

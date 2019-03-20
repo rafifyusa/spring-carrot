@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.controller;
 
+import com.mitrais.jpqi.springcarrot.model.Employee;
 import com.mitrais.jpqi.springcarrot.model.Item;
 import com.mitrais.jpqi.springcarrot.service.ItemService;
 import org.bson.types.ObjectId;
@@ -8,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.List;
+import java.util.Map;
+
 @CrossOrigin
 @RestController
 @RequestMapping("api/items")
@@ -67,5 +70,13 @@ public class ItemController  {
     @GetMapping("findByCarrotAmount")
     public List<Item> findByCarrotAmount(@RequestParam int carrotAmount) {
         return itemService.findAllByExchangeRateAmount(carrotAmount);
+    }
+
+    /**
+     * Upload Image
+     */
+    @PostMapping("uploadImage/{id}")
+    public void patchUploadImage(@RequestBody Map<String, String> param, @PathVariable String id) {
+        itemService.picturePatch(param.get("img"), id);
     }
 }
