@@ -19,6 +19,11 @@ public class TransactionController {
         return transactionService.findAllTransactions();
     }
 
+    @GetMapping("pending")
+    List<Transaction> findAllPendingTransactions() {
+        return transactionService.findAllPendingTransaction();
+    }
+
     @GetMapping("{id}")
     List<Transaction> findTransactionsByEmployee(@PathVariable String id) {
         return transactionService.findTransactionByEmployee(id);
@@ -27,6 +32,16 @@ public class TransactionController {
     @PostMapping
     public void createTransaction(@RequestBody Transaction transaction) {
         transactionService.createTransaction(transaction);
+    }
+
+    @PatchMapping("approve")
+    public void approveTransaction(@RequestParam String id) {
+        transactionService.approveTransaction(id);
+    }
+
+    @PatchMapping("decline")
+    public void declineTransaction(@RequestParam String id) {
+        transactionService.declineTransaction(id);
     }
 
     @GetMapping("{id}/spent_for_reward")

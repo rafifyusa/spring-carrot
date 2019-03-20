@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CarrotServiceUsingDB implements CarrotService {
@@ -37,12 +38,26 @@ public class CarrotServiceUsingDB implements CarrotService {
     public void updateCarrot(Carrot carrot) { carrotRepository.save(carrot);}
 
     @Override
-    public List<Carrot> findByEmployeeId(String id) {
+    public List<Carrot> findByBasketId(String id) {
         return carrotRepository.findByBasketId(new ObjectId(id));
     }
 
     public int countMyCarrotSum (String id) {
         List<Carrot> carrots = carrotRepository.findByBasketId(new ObjectId(id));
         return carrots.size();
+    }
+
+    public List<Carrot> findUsableCarrotByBasketId(String id) {
+        List<Carrot> usableCarrots = carrotRepository.findByBasketId(new ObjectId(id))
+                .stream().filter(e -> e.isUsable())
+                .collect(Collectors.toList());
+        return usableCarrots;
+    }
+
+    public List<Carrot> findUsableCarrotByFreezerId(String id) {
+        List<Carrot> usableCarrots = carrotRepository.findByFreezerId(new ObjectId(id))
+                .stream().filter(e-> e.isUsable())
+                .collect(Collectors.toList());
+        return usableCarrots;
     }
 }

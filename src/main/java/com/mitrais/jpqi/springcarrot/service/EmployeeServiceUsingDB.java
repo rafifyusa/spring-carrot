@@ -277,6 +277,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         // Path File
         String pathFile = "src\\main\\resources\\images\\";
         String outputFileLocation = null;
+
         // Decode image string int
         byte[] imageByteArray = Base64.getDecoder().decode(imageString);
         try {
@@ -302,15 +303,16 @@ public class EmployeeServiceUsingDB implements EmployeeService {
             outputFileLocation = pathFile + id + ".jpg";
 
             new FileOutputStream(outputFileLocation).write(imageByteArray);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return outputFileLocation;
+
+        return id + ".jpg";
     }
+
+    // Patch upload images
     public void picturePatch (String imageString, String id) {
-        String profilePictureLoc = storeImage(imageString, id);
 
         // Find employee first
         Employee employee = employeeRepository.findById(id).orElse(null);
@@ -328,6 +330,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
             employee.setSpvLevel(employee.getSpvLevel());
 
             // set profile picture with profile picture location
+            String profilePictureLoc = storeImage(imageString, id);
             employee.setProfilePicture(profilePictureLoc);
         }
         employeeRepository.save(employee);
