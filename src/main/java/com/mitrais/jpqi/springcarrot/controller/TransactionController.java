@@ -19,6 +19,11 @@ public class TransactionController {
         return transactionService.findAllTransactions();
     }
 
+    @GetMapping("pending")
+    List<Transaction> findAllPendingTransactions() {
+        return transactionService.findAllPendingTransaction();
+    }
+
     @GetMapping("{id}")
     List<Transaction> findTransactionsByEmployee(@PathVariable String id) {
         return transactionService.findTransactionByEmployee(id);
