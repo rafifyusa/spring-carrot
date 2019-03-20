@@ -25,17 +25,19 @@ public class Carrot {
     private Basket basket;
     @DBRef
     private Freezer freezer;
+    private boolean usable = true;
 
     public Carrot() {}
 
     public Carrot(String id, Type type, LocalDateTime created_at,
-                  LocalDateTime updated_at, Basket basket, Freezer freezer) {
+                  LocalDateTime updated_at, Basket basket, Freezer freezer, boolean usable) {
         this.id = id;
         this.type = type;
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.basket = basket;
         this.freezer = freezer;
+        this.usable = usable;
 
     }
 
@@ -67,4 +69,8 @@ public class Carrot {
     public Freezer getFreezer() { return freezer; }
 
     public void setFreezer(Freezer freezer) { this.freezer = freezer; }
+
+    public boolean isUsable() { return usable; }
+
+    public void setUsable(boolean usable) { this.usable = usable; }
 }

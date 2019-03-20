@@ -27,6 +27,16 @@ public class TransactionController {
         transactionService.createTransaction(transaction);
     }
 
+    @PatchMapping("approve")
+    public void approveTransaction(@RequestParam String id) {
+        transactionService.approveTransaction(id);
+    }
+
+    @PatchMapping("decline")
+    public void declineTransaction(@RequestParam String id) {
+        transactionService.declineTransaction(id);
+    }
+
     @GetMapping("{id}/spent_for_reward")
     public int getTotalSpentForReward(@PathVariable String id) {
         return transactionService.countCarrotSpentForRewardItem(id);
