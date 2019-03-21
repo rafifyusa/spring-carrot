@@ -57,7 +57,10 @@ public class TransactionController {
 
     /*@GetMapping("mostearned")
     public List<CarrotCount> getEmployeeByCarrotEarned (){
+<<<<<<< HEAD
         return transactionService.findAllEmployeeSortedByCarrotEarned();
     }*/
+
+//        return transactionService.findAllEmployeeSortedByCarrotEarned();
 
 }

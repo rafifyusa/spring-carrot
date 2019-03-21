@@ -5,6 +5,8 @@ import com.mitrais.jpqi.springcarrot.repository.SocialFoundationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,6 +15,11 @@ public class SocialFoundationServiceUsingDB implements SocialFoundationService{
 
     @Autowired
     SocialFoundationRepository socialFoundationRepository;
+
+    // Constructor
+    public SocialFoundationServiceUsingDB(SocialFoundationRepository socialFoundationRepository) {
+        this.socialFoundationRepository = socialFoundationRepository;
+    }
 
     @Override
     public void createSocialFoundation(SocialFoundation socialFoundation) {
@@ -64,5 +71,16 @@ public class SocialFoundationServiceUsingDB implements SocialFoundationService{
             }
         }
         socialFoundationRepository.save(sf);
+    }
+
+    /**
+     * Ordered Social Foundation based on mostly contributed
+     *
+     */
+    public List<SocialFoundation> getMostContributedSocialFoundation() {
+        return socialFoundationRepository.findAll().stream()
+//                .sorted(Comparator.comparing
+                .sorted((f1, f2) -> Double.compare(f2.getTotal_carrot(), f1.getTotal_carrot()))
+                .collect(Collectors.toList());
     }
 }
