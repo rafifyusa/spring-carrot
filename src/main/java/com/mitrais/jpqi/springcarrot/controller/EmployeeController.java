@@ -59,7 +59,7 @@ public class EmployeeController {
     }
 
     // Delete employee's group
-    @DeleteMapping("/delgroup/{id}")
+    @PatchMapping("/delgroup/{id}")
     public void deleteGroupFromEmployee (@PathVariable String id, @RequestBody Group group) {
         employeeServiceUsingDB.deleteEmployeeGroup( id, group);}
 

@@ -24,7 +24,7 @@ public class Employee {
     @DBRef
     private Employee supervisor;
     @DBRef
-    private Set<Reward> achievement;
+    private Set<Achievement> achievement;
 
     @Enumerated(EnumType.STRING)
     public Role role;
