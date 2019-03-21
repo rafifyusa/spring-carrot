@@ -106,6 +106,10 @@ public class EmployeeController {
         return employeeServiceUsingDB.getAllEmployeeGroups();
     }
 
+    @GetMapping("group-member/{id}")
+    public List<Employee> getAllMemberOfAGroup(@PathVariable String id) {
+        return employeeServiceUsingDB.getGroupMember(id);
+    }
     @GetMapping("nostaffgroup")
     public List<Employee> getAllEmployeeWithoutGroup() {
         return employeeServiceUsingDB.findAllEmployeeWithoutStaffGroup();
