@@ -34,6 +34,9 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     BasketRepository basketRepository;
 
     @Autowired
+    GroupService groupService;
+
+    @Autowired
     MongoTemplate mongoTemplate;
 
     public EmployeeServiceUsingDB(EmployeeRepository employeeRepository) {
@@ -99,9 +102,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
             Gson gson = new Gson();
             Employee emp = employee.get();
             Optional<Basket> basket = basketRepository.findByEmployee(new ObjectId(emp.getId()));
-            if (basket.isPresent()) {
-                kembalian.put("basket", gson.toJson(basket.get()));
-            }
+            basket.ifPresent(basket1 -> kembalian.put("basket", gson.toJson(basket1)));
             kembalian.put("status", "berhasil");
             kembalian.put("message", "employee ditemukan");
             kembalian.put("employee", gson.toJson(emp));
@@ -194,16 +195,14 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         return employeeInGroup;
     }*/
 
-    ///delete if group is only one for each employee
-/*    @Override
-    public void deleteEmployeeGroup(int id) {
-        Employee temp = employeeRepository.findById(id).orElse(null);
-
-        if (temp != null) {
-            temp.setGroup(null);
-            employeeRepository.save(temp);
+    public List<Employee> getGroupMember(String id) {
+        List<Employee> members = members = employeeRepository.findByGroupId(new ObjectId(id));
+        if (members.isEmpty()){
+            System.out.println("member empty");
+            return null;
         }
-    }*/
+        else return members;
+    }
 
     @Override
     public List<Employee> getEmployeeBySpvLevel(String spvlevel){
@@ -369,34 +368,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
                 }
             });
         });
-
-//        // print key-value pair in hashmap
-//        for (String key : map.keySet()) {
-//            System.out.println(key + " : " + map.get(key));
-//        }
         return map;
-//        Set<Group> mySet = employees.get(0).getGroup();
-//        mySet.forEach(g -> {
-//            System.out.println(g.getId());
-//            String key = g.getId();
-//            // check if contain the keys or not
-//            if (!map.containsKey(key)) {
-//                map.put(key, 1); // buat baru
-//            } else {
-//                map.put(key, map.get(key) + 1); // +1 jika ditemukan
-//            }
-//        });
-
-
-
-//        Iterator itr = mySet.iterator();
-//        while (itr.hasNext()) {
-//            Group g = (Group) itr.next();
-//            g.getId();
-//            System.out.println(itr.next());
-//        }
-
-//        System.out.println(employees);
     }
 }
 

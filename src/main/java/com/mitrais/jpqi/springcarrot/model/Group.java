@@ -72,4 +72,5 @@ public class Group {
     public List<Bazaar> getBazaars() { return bazaars; }
 
     public void setBazaars(List<Bazaar> bazaars) { this.bazaars = bazaars; }
+
 }
