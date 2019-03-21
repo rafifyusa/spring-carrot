@@ -55,9 +55,9 @@ public class TransactionController {
         return transactionService.countCarrotSpentForSharing(id);
     }
 
-    @GetMapping("mostearned")
-    public List<CarrotCount> getEmployeeByCarrotEarned (){
-        return transactionService.findAllEmployeeSortedByCarrotEarned();
-    }
+//    @GetMapping("mostearned")
+//    public List<CarrotCount> getEmployeeByCarrotEarned (){
+//        return transactionService.findAllEmployeeSortedByCarrotEarned();
+//    }
 
 }

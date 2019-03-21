@@ -71,8 +71,8 @@ public class EmployeeController {
 
     // Patch
     @PatchMapping("/{id}")
-    public void partialUpdate(@PathVariable("id") String id, @RequestBody Employee employee) {
-        employeeServiceUsingDB.partialUpdateEmployee(id, employee);
+    public Employee partialUpdate(@PathVariable("id") String id, @RequestBody Employee employee) {
+        return employeeServiceUsingDB.partialUpdateEmployee(id, employee);
     }
 
     //-----------------------------------------GET MAPPING GROUP----------------------//

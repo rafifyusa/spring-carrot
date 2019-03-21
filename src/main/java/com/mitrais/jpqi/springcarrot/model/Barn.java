@@ -10,8 +10,9 @@ import java.util.List;
 @Document("barns")
 public class Barn {
     @Id
-    private String Id;
+    private String id;
     private String name;
+    @DBRef
     private Employee owner;
     private LocalDate startPeriod;
     private LocalDate endPeriod;
@@ -25,7 +26,7 @@ public class Barn {
     public Barn(){}
     public Barn(String id, String name, Employee owner, LocalDate startPeriod, LocalDate endPeriod,
                 Long totalCarrot, Long carrotLeft, boolean status, boolean released, List<Award> awards) {
-        Id = id;
+        this.id = id;
         this.name = name;
         this.owner = owner;
         this.startPeriod = startPeriod;
@@ -39,9 +40,9 @@ public class Barn {
 
     //Getter & Setters
 
-    public String getId() { return Id; }
+    public String getId() { return id; }
 
-    public void setId(String id) { Id = id; }
+    public void setId(String id) { this.id = id; }
 
     public String getName() { return name; }
 

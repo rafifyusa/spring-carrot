@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Service;
-import java.io.*;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -137,7 +137,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
     // PATCH implementation manual version
     @Override
-    public void partialUpdateEmployee(String id, Employee employee) {
+    public Employee partialUpdateEmployee(String id, Employee employee) {
         Employee temp = employeeRepository.findById(id).orElse(null);
         if (temp != null) {
             if (employee.getId() != null) {
@@ -175,6 +175,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
             }
         }
         employeeRepository.save(temp);
+        return temp;
     }
 
     // List employee birthday by role
