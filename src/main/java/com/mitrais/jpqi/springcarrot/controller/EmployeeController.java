@@ -105,10 +105,6 @@ public class EmployeeController {
         return employeeServiceUsingDB.getAllEmployeeGroups();
     }
 
-    // Get employee groups with param
-    @GetMapping("group")
-    public List<Employee> getEmployeeByGroup(@RequestParam String group) {return employeeServiceUsingDB.getEmployeeByGroup(group);}
-
     @GetMapping("nostaffgroup")
     public List<Employee> getAllEmployeeWithoutGroup() {
         return employeeServiceUsingDB.findAllEmployeeWithoutStaffGroup();
