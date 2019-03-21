@@ -32,18 +32,6 @@ public class GroupController {
         return groupService.findAllStaffGroup();
     }
 
-    @GetMapping("awards/{id}")
-    public List<Award> getAllAwardsByGroup(@PathVariable String id) {return groupService.findAllAwardsByGroupId(id);}
-
-    @GetMapping("achievements/{id}")
-    public List<Achievement> getAllAchievementsByGroup (@PathVariable String id) {
-        return groupService.findAllAchievementsByGroupId(id);
-    }
-    @GetMapping("bazaars/{id}")
-    public List<Bazaar> getAllBazaarsByGroup (@PathVariable String id) {
-        return groupService.findAllBazaarsByGroupId(id);
-    }
-
     @PostMapping
     public void insertGroup(@RequestBody Group group){
         groupService.insertGroup(group);
