@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.service;
 
+import com.google.gson.Gson;
 import com.mitrais.jpqi.springcarrot.model.Achievement;
 import com.mitrais.jpqi.springcarrot.model.Award;
 import com.mitrais.jpqi.springcarrot.model.Bazaar;
@@ -96,6 +97,8 @@ public class GroupService {
         if (group.getBazaars() == null) {
             group.setBazaars(new ArrayList<>());
         }
+
+        System.out.println(new Gson().toJson(group));
         List<Bazaar> bazaarList = group.getBazaars();
         bazaars.forEach( e -> bazaarList.add(e));
 
