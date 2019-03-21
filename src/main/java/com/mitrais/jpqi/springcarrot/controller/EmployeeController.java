@@ -142,4 +142,16 @@ public class EmployeeController {
         System.out.println(param.get("img"));
         employeeServiceUsingDB.picturePatch(param.get("img"), id);
     }
+
+    //---------------------------- TEST BED ---------------------------------//
+
+    /**
+     * Get member amount of staff group
+     * From PBI -> list all existing Staff groups ordered by Staff amount
+     * @return map
+     */
+    @GetMapping("getGroup")
+    public HashMap<String, Integer> getGroupIdByMemberAmount(){
+        return employeeServiceUsingDB.getGroupMemberAmount();
+    }
 }

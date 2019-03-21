@@ -19,6 +19,11 @@ public class GroupController {
         return groupService.findAllGroup();
     }
 
+    @GetMapping ("{id}")
+    public Group getStaffGroups(@PathVariable String id) {
+        return groupService.findGroupById(id);
+    }
+
     @GetMapping ("staff")
     public List<Group> getStaffGroups() {
         return groupService.findAllStaffGroup();

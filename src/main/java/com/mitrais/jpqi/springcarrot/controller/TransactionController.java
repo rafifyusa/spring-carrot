@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.controller;
 
+import com.mitrais.jpqi.springcarrot.model.CarrotCount;
 import com.mitrais.jpqi.springcarrot.model.Transaction;
 import com.mitrais.jpqi.springcarrot.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,5 +55,9 @@ public class TransactionController {
         return transactionService.countCarrotSpentForSharing(id);
     }
 
+    @GetMapping("mostearned")
+    public List<CarrotCount> getEmployeeByCarrotEarned (){
+        return transactionService.findAllEmployeeSortedByCarrotEarned();
+    }
 
 }

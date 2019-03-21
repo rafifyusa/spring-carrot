@@ -23,8 +23,6 @@ public interface EmployeeService {
     void partialUpdateEmployee(String id, Employee employee);
     List<Employee> getStaffRole(String role);
 
-    List<Employee> getEmployeeByGroup(String group);
-
     List<Employee> getEmployeeBySpvLevel(String spvlevel);
 
     void deleteEmployeeGroup(String id, Group group);
