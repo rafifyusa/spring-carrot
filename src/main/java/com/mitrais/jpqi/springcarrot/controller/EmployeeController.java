@@ -59,11 +59,12 @@ public class EmployeeController {
     }
 
     // Delete employee's group
-    @DeleteMapping("{id}/delgroup")
+    @DeleteMapping("/delgroup/{id}")
     public void deleteGroupFromEmployee (@PathVariable String id, @RequestBody Group group) {
         employeeServiceUsingDB.deleteEmployeeGroup( id, group);}
+
     //inserting groups to an employee
-    @PatchMapping("{id}/updgroup")
+    @PatchMapping("/addgroup/{id}")
     public void insertGroup(@RequestBody List<Group> group, @PathVariable String id){
         employeeServiceUsingDB.insertMemberToGroup(id, group);
     }
@@ -105,9 +106,6 @@ public class EmployeeController {
         return employeeServiceUsingDB.getAllEmployeeGroups();
     }
 
-    // Get employee groups with param
-    @GetMapping("group")
-    public List<Employee> getEmployeeByGroup(@RequestParam String group) {return employeeServiceUsingDB.getEmployeeByGroup(group);}
 
     @GetMapping("nostaffgroup")
     public List<Employee> getAllEmployeeWithoutGroup() {

@@ -2,6 +2,7 @@ package com.mitrais.jpqi.springcarrot.service;
 
 import com.mitrais.jpqi.springcarrot.model.Achievement;
 import com.mitrais.jpqi.springcarrot.model.Award;
+import com.mitrais.jpqi.springcarrot.model.Bazaar;
 import com.mitrais.jpqi.springcarrot.model.Group;
 import com.mitrais.jpqi.springcarrot.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,32 +48,79 @@ public class GroupService {
         return result;
     }
 
-    public void addAchievementToGroup(String id, Set<Achievement> achievements) {
+    public void addAchievementToGroup(String id, List<Achievement> achievements) {
         Optional<Group> g = groupRepository.findById(id);
         Group group = g.get();
 
         if (group.getAchievements() == null) {
-            group.setAchievements(new HashSet<>());
+            group.setAchievements(new ArrayList<>());
         }
-        Set<Achievement> achievements_set = group.getAchievements();
+        List<Achievement> achievements_set = group.getAchievements();
         achievements.forEach( e -> achievements_set.add(e));
 
         group.setAchievements(achievements_set);
         groupRepository.save(group);
     }
 
-    public void addAwardToGroup(String id, Set<Award> awards) {
+    public void addAwardToGroup(String id, List<Award> awards) {
         Optional<Group> g = groupRepository.findById(id);
         Group group = g.get();
 
         if (group.getAwards() == null) {
-            group.setAwards(new HashSet<>());
+            group.setAwards(new ArrayList<>());
         }
-        Set<Award> awards_set = group.getAwards();
+        List<Award> awards_set = group.getAwards();
         awards.forEach( e -> awards_set.add(e));
 
         group.setAwards(awards_set);
         groupRepository.save(group);
+    }
+
+    public void addBazaarToGroup (String id, List<Bazaar> bazaars) {
+        Optional<Group> g = groupRepository.findById(id);
+        Group group = g.get();
+
+        if (group.getBazaars() == null) {
+            group.setBazaars(new ArrayList<>());
+        }
+        List<Bazaar> bazaarList = group.getBazaars();
+        bazaars.forEach( e -> bazaarList.add(e));
+
+        group.setBazaars(bazaarList);
+        groupRepository.save(group);
+    }
+
+    public void deleteAchievementFromGroup(String id, Achievement achievement){
+        Optional<Group> group = groupRepository.findById(id);
+        if (group.isPresent()) {
+            Group g = group.get();
+            if (g.getAchievements() != null) {
+                g.getAchievements().remove(achievement);
+            }
+            groupRepository.save(g);
+        }
+    }
+
+    public void deleteAwardFromGroup(String id, Award award){
+        Optional<Group> group = groupRepository.findById(id);
+        if (group.isPresent()) {
+            Group g = group.get();
+            if (g.getAwards() != null) {
+                g.getAwards().remove(award);
+            }
+            groupRepository.save(g);
+        }
+    }
+
+    public void deleteBazaarFromGroup(String id, Bazaar bazaar){
+        Optional<Group> group = groupRepository.findById(id);
+        if (group.isPresent()) {
+            Group g = group.get();
+            if (g.getBazaars() != null) {
+                g.getBazaars().remove(bazaar);
+            }
+            groupRepository.save(g);
+        }
     }
 
 /*    public void insertMemberToGroup(int id, List<Employee> employee){
