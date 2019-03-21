@@ -49,4 +49,9 @@ public class SocialFoundationController {
         socialFoundationServiceUsingDB.partialUpdate(id, socialFoundation);
     }
 
+    // Sorted based on Contribution
+    @GetMapping("getSorted")
+    public List<SocialFoundation> getSortedSocialFoundation() {
+        return socialFoundationServiceUsingDB.getMostContributedSocialFoundation();
+    }
 }

@@ -99,9 +99,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
             Gson gson = new Gson();
             Employee emp = employee.get();
             Optional<Basket> basket = basketRepository.findByEmployee(new ObjectId(emp.getId()));
-            if (basket.isPresent()) {
-                kembalian.put("basket", gson.toJson(basket.get()));
-            }
+            basket.ifPresent(basket1 -> kembalian.put("basket", gson.toJson(basket1)));
             kembalian.put("status", "berhasil");
             kembalian.put("message", "employee ditemukan");
             kembalian.put("employee", gson.toJson(emp));
@@ -368,34 +366,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
                 }
             });
         });
-
-//        // print key-value pair in hashmap
-//        for (String key : map.keySet()) {
-//            System.out.println(key + " : " + map.get(key));
-//        }
         return map;
-//        Set<Group> mySet = employees.get(0).getGroup();
-//        mySet.forEach(g -> {
-//            System.out.println(g.getId());
-//            String key = g.getId();
-//            // check if contain the keys or not
-//            if (!map.containsKey(key)) {
-//                map.put(key, 1); // buat baru
-//            } else {
-//                map.put(key, map.get(key) + 1); // +1 jika ditemukan
-//            }
-//        });
-
-
-
-//        Iterator itr = mySet.iterator();
-//        while (itr.hasNext()) {
-//            Group g = (Group) itr.next();
-//            g.getId();
-//            System.out.println(itr.next());
-//        }
-
-//        System.out.println(employees);
     }
 }
 
