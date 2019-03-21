@@ -50,18 +50,6 @@ public class GroupService {
         return result;
     }
 
-    public List<Achievement> findAllAchievementsByGroupId(String id) {
-        return groupRepository.findAchievementsByGroupId(new ObjectId(id));
-    }
-
-    public List<Award> findAllAwardsByGroupId(String id) {
-        return groupRepository.findAwardsByGroupId(new ObjectId(id));
-    }
-
-    public List<Bazaar> findAllBazaarsByGroupId (String id) {
-        return groupRepository.findBazaarsByGroupId(new ObjectId(id));
-    }
-
     public void addAchievementToGroup(String id, List<Achievement> achievements) {
         Optional<Group> g = groupRepository.findById(id);
         Group group = g.get();
@@ -92,6 +80,9 @@ public class GroupService {
 
     public void addBazaarToGroup (String id, List<Bazaar> bazaars) {
         Optional<Group> g = groupRepository.findById(id);
+        if(g.isPresent()) {
+
+        }
         Group group = g.get();
 
         if (group.getBazaars() == null) {

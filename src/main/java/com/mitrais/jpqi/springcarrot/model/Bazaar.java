@@ -84,4 +84,19 @@ public class Bazaar {
     public void setBazaarDescription(String bazaarDescription) {
         this.bazaarDescription = bazaarDescription;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Bazaar bazaar = (Bazaar) o;
+
+        return id.equals(bazaar.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }
