@@ -21,14 +21,26 @@ public class GroupController {
         return groupService.findAllGroup();
     }
 
-    @GetMapping ("{id}")
+    @GetMapping("{id}")
     public Group getStaffGroups(@PathVariable String id) {
         return groupService.findGroupById(id);
     }
 
-    @GetMapping ("staff")
+    @GetMapping("staff")
     public List<Group> getStaffGroups() {
         return groupService.findAllStaffGroup();
+    }
+
+    @GetMapping("awards/{id}")
+    public List<Award> getAllAwardsByGroup(@PathVariable String id) {return groupService.findAllAwardsByGroupId(id);}
+
+    @GetMapping("achievements/{id}")
+    public List<Achievement> getAllAchievementsByGroup (@PathVariable String id) {
+        return groupService.findAllAchievementsByGroupId(id);
+    }
+    @GetMapping("bazaars/{id}")
+    public List<Bazaar> getAllBazaarsByGroup (@PathVariable String id) {
+        return groupService.findAllBazaarsByGroupId(id);
     }
 
     @PostMapping

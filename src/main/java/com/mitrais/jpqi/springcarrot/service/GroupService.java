@@ -5,6 +5,7 @@ import com.mitrais.jpqi.springcarrot.model.Award;
 import com.mitrais.jpqi.springcarrot.model.Bazaar;
 import com.mitrais.jpqi.springcarrot.model.Group;
 import com.mitrais.jpqi.springcarrot.repository.GroupRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -48,7 +49,17 @@ public class GroupService {
         return result;
     }
 
+    public List<Achievement> findAllAchievementsByGroupId(String id) {
+        return groupRepository.findAchievementsByGroupId(new ObjectId(id));
+    }
 
+    public List<Award> findAllAwardsByGroupId(String id) {
+        return groupRepository.findAwardsByGroupId(new ObjectId(id));
+    }
+
+    public List<Bazaar> findAllBazaarsByGroupId (String id) {
+        return groupRepository.findBazaarsByGroupId(new ObjectId(id));
+    }
 
     public void addAchievementToGroup(String id, List<Achievement> achievements) {
         Optional<Group> g = groupRepository.findById(id);

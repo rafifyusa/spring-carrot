@@ -16,4 +16,5 @@ public interface GroupRepository extends MongoRepository<Group, String> {
 
     @Query("{'achievements':{$elemMatch:{$id : ?0}}}")
     List<Achievement> findAchievementsByGroupId (ObjectId id);
+
 }
