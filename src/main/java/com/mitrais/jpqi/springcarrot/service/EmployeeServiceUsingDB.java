@@ -34,6 +34,9 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     BasketRepository basketRepository;
 
     @Autowired
+    GroupService groupService;
+
+    @Autowired
     MongoTemplate mongoTemplate;
 
     public EmployeeServiceUsingDB(EmployeeRepository employeeRepository) {
@@ -193,16 +196,14 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         return employeeInGroup;
     }*/
 
-    ///delete if group is only one for each employee
-/*    @Override
-    public void deleteEmployeeGroup(int id) {
-        Employee temp = employeeRepository.findById(id).orElse(null);
-
-        if (temp != null) {
-            temp.setGroup(null);
-            employeeRepository.save(temp);
+    public List<Employee> getGroupMember(String id) {
+        List<Employee> members = members = employeeRepository.findByGroupId(new ObjectId(id));
+        if (members.isEmpty()){
+            System.out.println("member empty");
+            return null;
         }
-    }*/
+        else return members;
+    }
 
     @Override
     public List<Employee> getEmployeeBySpvLevel(String spvlevel){

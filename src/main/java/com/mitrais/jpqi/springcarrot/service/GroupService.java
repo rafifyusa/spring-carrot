@@ -48,6 +48,8 @@ public class GroupService {
         return result;
     }
 
+
+
     public void addAchievementToGroup(String id, List<Achievement> achievements) {
         Optional<Group> g = groupRepository.findById(id);
         Group group = g.get();
@@ -122,30 +124,5 @@ public class GroupService {
             groupRepository.save(g);
         }
     }
-
-/*    public void insertMemberToGroup(int id, List<Employee> employee){
-        Optional<Group> group = groupRepository.findById(id);
-
-        if (group.isPresent()) {
-            Group sg = group.get();
-            if (sg.getMember() == null) {
-                sg.setMember(new HashSet<>());
-            }
-
-            employee.forEach(e -> sg.getMember().add(e));
-            groupRepository.save(sg);
-        }
-    }
-
-    public void deleteMemberFromGroup(int id, Employee employee){
-        Optional<Group> group = groupRepository.findById(id);
-        if (group.isPresent()) {
-           Group sg = group.get();
-            if (sg.getMember() != null) {
-                sg.getMember().remove(employee);
-            }
-            groupRepository.save(sg);
-        }
-    }*/
 
 }
