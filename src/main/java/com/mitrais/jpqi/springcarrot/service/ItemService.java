@@ -1,26 +1,29 @@
 package com.mitrais.jpqi.springcarrot.service;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.mitrais.jpqi.springcarrot.model.Bazaar;
 import com.mitrais.jpqi.springcarrot.model.Item;
 import com.mitrais.jpqi.springcarrot.repository.ItemRepository;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
     private ItemRepository itemRepository;
+
+    Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+            "cloud_name", "dc1lp90qy",
+            "api_key", "194312298198378",
+            "api_secret", "FCxNYbqo0okfaWU_GDPhJdKR0TQ"));
 
     public ItemService(ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
@@ -117,28 +120,6 @@ public class ItemService {
     public List<Item> findAllByBazaarId(String id) {
 //        return itemRepository.findByBazaar( new ObjectId(id));
         List<Item> mm = itemRepository.findByBazaar( new ObjectId(id));
-        for (Item e : mm) {
-            if (e.getPictureUrl() != null) {
-                ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-                String pth = classLoader.getResource("images/").getPath();
-                File f = new File(pth + e.getPictureUrl());
-                if(f.exists() && !f.isDirectory()) {
-                    if (f.exists()) {
-                        String base64File = "";
-                        try (FileInputStream imageInFile = new FileInputStream(f)) {
-                            byte fileData[] = new byte[(int) f.length()];
-                            imageInFile.read(fileData);
-                            base64File = Base64.getEncoder().encodeToString(fileData);
-                            e.setPictureUrl(base64File);
-                        } catch (FileNotFoundException ee) {
-                            System.out.println("File not found" + ee);
-                        } catch (IOException ioe) {
-                            System.out.println("Exception while reading the file " + ioe);
-                        }
-                    }
-                }
-            }
-        }
         return mm;
     }
 
@@ -152,28 +133,6 @@ public class ItemService {
         });
 
         List<Item> mm = itemRepository.findByMultipleBazaar(a);
-        for (Item e : mm) {
-            if (e.getPictureUrl() != null) {
-                ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-                String pth = classLoader.getResource("images/").getPath();
-                File f = new File(pth + e.getPictureUrl());
-                if(f.exists() && !f.isDirectory()) {
-                    if (f.exists()) {
-                        String base64File = "";
-                        try (FileInputStream imageInFile = new FileInputStream(f)) {
-                            byte fileData[] = new byte[(int) f.length()];
-                            imageInFile.read(fileData);
-                            base64File = Base64.getEncoder().encodeToString(fileData);
-                            e.setPictureUrl(base64File);
-                        } catch (FileNotFoundException ee) {
-                            System.out.println("File not found" + ee);
-                        } catch (IOException ioe) {
-                            System.out.println("Exception while reading the file " + ioe);
-                        }
-                    }
-                }
-            }
-        }
         return mm;
     }
     public List<Item> findAllByExchangeRateAmount (int emplooyeCarrot) {
@@ -184,49 +143,24 @@ public class ItemService {
 
     // Upload image for item
     public String storeImage(String imageString, String id) {
-        // Path File
-        String pathFile = "src\\main\\resources\\images\\";
-        String outputFileLocation = null;
-
-        //Decode image string
         byte[] imageByteArray = Base64.getDecoder().decode(imageString);
+        String url = "";
         try {
-            File dir = new File(pathFile);
-
-            if(!dir.exists()) {
-                System.out.println("Creating directory: " + dir.getName());
-                boolean result = false;
-
-                try {
-                    dir.mkdir();
-                    result = true;
-                } catch (SecurityException se) {
-                    se.printStackTrace();
-                }
-
-                if (result) {
-                    System.out.println("Directory created");
-                }
-            }
-
-            // Rename picture by id
-            outputFileLocation = pathFile + id + ".jpg";
-
-            new FileOutputStream(outputFileLocation).write(imageByteArray);
-
+            Map uploadResult = cloudinary.uploader().upload(imageByteArray, ObjectUtils.asMap("folder", "pictures/",
+                    "public_id", id));
+            url = (String) uploadResult.get("secure_url");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return  id + ".jpg";
+        return  url;
     }
 
     // Patch Upload Image for Item
     public void picturePatch (String imageString, String id) {
-
-        // Find item
+//        // Find item
         Item item = itemRepository.findById(id).orElse(null);
-
+//
         if (item != null) {
             // Set all field as it's except pictureUrl field
             item.setItemName(item.getItemName());

@@ -85,6 +85,7 @@ public class ItemController  {
      */
     @PostMapping("uploadImage/{id}")
     public void patchUploadImage(@RequestBody Map<String, String> param, @PathVariable String id) {
+//        System.out.println("reniii");
         itemService.picturePatch(param.get("img"), id);
     }
 }
