@@ -22,7 +22,7 @@ public class RewardController {
     }
 
     @GetMapping("{id}")
-    public Reward findRewardById(@PathVariable int id) {
+    public Reward findRewardById(@PathVariable String id) {
         return rewardService.findRewardById(id);
     }
 
@@ -32,10 +32,10 @@ public class RewardController {
     }
 
     @PatchMapping("{id}")
-    public void updateReward(@RequestBody Reward reward, @PathVariable int id) {
+    public void updateReward(@RequestBody Reward reward, @PathVariable String id) {
         rewardService.updateRewardIntoDB(reward, id);
     }
 
     @DeleteMapping("{id}")
-    public void deleteReward(@PathVariable int id) {rewardService.removeRewardById(id);}
+    public void deleteReward(@PathVariable String id) {rewardService.removeRewardById(id);}
 }
