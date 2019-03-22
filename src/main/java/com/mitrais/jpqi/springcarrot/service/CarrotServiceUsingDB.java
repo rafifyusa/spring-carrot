@@ -60,4 +60,13 @@ public class CarrotServiceUsingDB implements CarrotService {
                 .collect(Collectors.toList());
         return usableCarrots;
     }
+
+    public void createFrozenCarrotOnBarnCreation(long count) {
+        for (int i = 0; i < count; i++) {
+            Carrot c = new Carrot();
+            c.setType(Carrot.Type.FRESH);
+            c.setCreated_at(LocalDateTime.now());
+            carrotRepository.save(c);
+        }
+    }
 }

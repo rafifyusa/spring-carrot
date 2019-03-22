@@ -63,15 +63,4 @@ public class GroupController {
     public void deleteBazaarFromGroup (@PathVariable String id, @RequestBody Bazaar bazaar) {
         groupService.deleteBazaarFromGroup( id, bazaar);
     }
-
-
-/*    @PatchMapping("{id}")
-    public void insertMember(@RequestBody List<Employee> employee, @PathVariable int id){
-        groupService.insertMemberToGroup(id, employee);
-    }
-
-    @PatchMapping("/delete/{id}")
-    public void deleteMember(@RequestBody Employee employee, @PathVariable int id){
-        groupService.deleteMemberFromGroup(id, employee);
-    }*/
 }
