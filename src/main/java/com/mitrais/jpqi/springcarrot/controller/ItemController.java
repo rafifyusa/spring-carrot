@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.controller;
 
+import com.mitrais.jpqi.springcarrot.model.Bazaar;
 import com.mitrais.jpqi.springcarrot.model.Employee;
 import com.mitrais.jpqi.springcarrot.model.Item;
 import com.mitrais.jpqi.springcarrot.service.ItemService;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,8 +25,8 @@ public class ItemController  {
 
     // Create
     @PostMapping
-    public void create(@RequestBody Item item) {
-        itemService.createItem(item);
+    public Map<String, String> create(@RequestBody Item item) {
+        return itemService.createItem(item);
     }
 
     // Edit or Update
@@ -65,6 +67,12 @@ public class ItemController  {
     @GetMapping("findByBazaarId")
     public List<Item> findByBazaarId(@RequestParam String id) {
         return itemService.findAllByBazaarId(id);
+    }
+
+    @PostMapping("findByMultipleBazaarId")
+    public List<Item> findByMultipleBazaarId(@RequestBody List<Bazaar> id) {
+        return itemService.findAllByMultipleBazaarId(id);
+//        return null;
     }
 
     @GetMapping("findByCarrotAmount")
