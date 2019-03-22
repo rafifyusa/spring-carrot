@@ -25,8 +25,8 @@ public class ItemController  {
 
     // Create
     @PostMapping
-    public void create(@RequestBody Item item) {
-        itemService.createItem(item);
+    public Map<String, String> create(@RequestBody Item item) {
+        return itemService.createItem(item);
     }
 
     // Edit or Update

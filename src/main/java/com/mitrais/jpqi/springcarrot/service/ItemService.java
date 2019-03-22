@@ -15,10 +15,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,8 +28,10 @@ public class ItemService {
     }
 
     // Create new item
-    public void createItem(Item item) {
-        itemRepository.save(item);
+    public Map<String, String> createItem(Item item) {
+        Map<String, String> hasil = new HashMap<>();
+        hasil.put("id", itemRepository.save(item).getId());
+        return hasil;
     }
 
     // Edit/Update
