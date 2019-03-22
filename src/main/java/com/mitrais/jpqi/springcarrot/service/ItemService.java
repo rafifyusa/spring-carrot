@@ -42,6 +42,7 @@ public class ItemService {
     // Delete
     public void deleteItem(String id) {
         itemRepository.deleteById(id);
+
     }
 
     // Show All

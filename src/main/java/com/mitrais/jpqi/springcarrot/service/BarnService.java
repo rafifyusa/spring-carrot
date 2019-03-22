@@ -15,6 +15,9 @@ public class BarnService {
     @Autowired
     BarnRepository barnRepository;
 
+    @Autowired
+    CarrotServiceUsingDB carrotServiceUsingDB;
+
     public List<Barn> findAllBarn () {return barnRepository.findAll(); }
 
     public Barn findBarnById (String id) {
@@ -23,7 +26,13 @@ public class BarnService {
         }
         else {return null;}
     }
-    public void createBarn (Barn barn) { barnRepository.save(barn); }
+    public void createBarn (Barn barn) {
+        if (barn.isStatus()) {
+            long count = barn.getTotalCarrot();
+            carrotServiceUsingDB.createFrozenCarrotOnBarnCreation(count);
+        }
+        barnRepository.save(barn);
+    }
 
     public void deleteBarn (String id) { barnRepository.deleteById(id);}
 
