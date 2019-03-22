@@ -3,6 +3,7 @@ package com.mitrais.jpqi.springcarrot.service;
 import com.mitrais.jpqi.springcarrot.model.Bazaar;
 import com.mitrais.jpqi.springcarrot.model.Item;
 import com.mitrais.jpqi.springcarrot.repository.ItemRepository;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -11,16 +12,14 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
-
     private ItemRepository itemRepository;
 
     public ItemService(ItemRepository itemRepository) {
@@ -43,6 +42,7 @@ public class ItemService {
     // Delete
     public void deleteItem(String id) {
         itemRepository.deleteById(id);
+
     }
 
     // Show All
@@ -115,7 +115,31 @@ public class ItemService {
     }
 
     public List<Item> findAllByBazaarId(String id) {
-        return itemRepository.findByBazaar( new ObjectId(id));
+//        return itemRepository.findByBazaar( new ObjectId(id));
+        List<Item> mm = itemRepository.findByBazaar( new ObjectId(id));
+        for (Item e : mm) {
+            if (e.getPictureUrl() != null) {
+                ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+                String pth = classLoader.getResource("images/").getPath();
+                File f = new File(pth + e.getPictureUrl());
+                if(f.exists() && !f.isDirectory()) {
+                    if (f.exists()) {
+                        String base64File = "";
+                        try (FileInputStream imageInFile = new FileInputStream(f)) {
+                            byte fileData[] = new byte[(int) f.length()];
+                            imageInFile.read(fileData);
+                            base64File = Base64.getEncoder().encodeToString(fileData);
+                            e.setPictureUrl(base64File);
+                        } catch (FileNotFoundException ee) {
+                            System.out.println("File not found" + ee);
+                        } catch (IOException ioe) {
+                            System.out.println("Exception while reading the file " + ioe);
+                        }
+                    }
+                }
+            }
+        }
+        return mm;
     }
 
     public List<Item> findAllByMultipleBazaarId(List<Bazaar> id) {
@@ -126,8 +150,31 @@ public class ItemService {
             a[i[0]] = new ObjectId(e.getId());
             i[0]++;
         });
-        return itemRepository.findByMultipleBazaar(a);
-//        return null;
+
+        List<Item> mm = itemRepository.findByMultipleBazaar(a);
+        for (Item e : mm) {
+            if (e.getPictureUrl() != null) {
+                ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+                String pth = classLoader.getResource("images/").getPath();
+                File f = new File(pth + e.getPictureUrl());
+                if(f.exists() && !f.isDirectory()) {
+                    if (f.exists()) {
+                        String base64File = "";
+                        try (FileInputStream imageInFile = new FileInputStream(f)) {
+                            byte fileData[] = new byte[(int) f.length()];
+                            imageInFile.read(fileData);
+                            base64File = Base64.getEncoder().encodeToString(fileData);
+                            e.setPictureUrl(base64File);
+                        } catch (FileNotFoundException ee) {
+                            System.out.println("File not found" + ee);
+                        } catch (IOException ioe) {
+                            System.out.println("Exception while reading the file " + ioe);
+                        }
+                    }
+                }
+            }
+        }
+        return mm;
     }
     public List<Item> findAllByExchangeRateAmount (int emplooyeCarrot) {
         return itemRepository.findAll().stream()
