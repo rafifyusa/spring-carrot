@@ -13,7 +13,7 @@ import java.util.Date;
 @Document(collection = "carrots")
 public class Carrot {
     public enum Type{
-        NORMAL, FROZEN, INACTIVE
+        NORMAL, FROZEN, INACTIVE, FRESH
     }
     @Id
     private String id;
