@@ -1,10 +1,12 @@
 package com.mitrais.jpqi.springcarrot.service;
 
+import com.google.gson.Gson;
 import com.mitrais.jpqi.springcarrot.model.Achievement;
 import com.mitrais.jpqi.springcarrot.model.Award;
 import com.mitrais.jpqi.springcarrot.model.Bazaar;
 import com.mitrais.jpqi.springcarrot.model.Group;
 import com.mitrais.jpqi.springcarrot.repository.GroupRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -48,8 +50,6 @@ public class GroupService {
         return result;
     }
 
-
-
     public void addAchievementToGroup(String id, List<Achievement> achievements) {
         Optional<Group> g = groupRepository.findById(id);
         Group group = g.get();
@@ -80,11 +80,16 @@ public class GroupService {
 
     public void addBazaarToGroup (String id, List<Bazaar> bazaars) {
         Optional<Group> g = groupRepository.findById(id);
+        if(g.isPresent()) {
+
+        }
         Group group = g.get();
 
         if (group.getBazaars() == null) {
             group.setBazaars(new ArrayList<>());
         }
+
+        System.out.println(new Gson().toJson(group));
         List<Bazaar> bazaarList = group.getBazaars();
         bazaars.forEach( e -> bazaarList.add(e));
 

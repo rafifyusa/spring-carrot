@@ -24,7 +24,7 @@ public class Employee {
     @DBRef
     private Employee supervisor;
     @DBRef
-    private Set<Reward> achievement;
+    private Set<Achievement> achievement;
 
     @Enumerated(EnumType.STRING)
     public Role role;
@@ -36,7 +36,8 @@ public class Employee {
     public Employee() {}
 
     public Employee(String id, String name, LocalDate dob, String address, Role role, String password,
-                    String profilePicture, String emailAddress, Set<Group> group, Employee supervisor, SpvLevel spvLevel) {
+                    String profilePicture, String emailAddress, Set<Group> group, Employee supervisor,
+                    SpvLevel spvLevel, Set<Achievement> achievement) {
         this.id = id;
         this.name = name;
         this.dob = dob;
@@ -48,6 +49,7 @@ public class Employee {
         this.group = group;
         this.supervisor = supervisor;
         this.spvLevel = spvLevel;
+        this.achievement = achievement;
     }
 
     public String getId() {
@@ -108,6 +110,10 @@ public class Employee {
 
     public Set<Group> getGroup() { return group; }
     public void setGroup(Set<Group> group) { this.group = group; }
+
+    public Set<Achievement> getAchievement() { return achievement; }
+
+    public void setAchievement(Set<Achievement> achievement) { this.achievement = achievement; }
 
     // Enum for roles or position
     public enum Role {

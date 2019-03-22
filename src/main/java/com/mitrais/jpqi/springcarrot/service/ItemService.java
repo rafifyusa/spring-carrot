@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.service;
 
+import com.mitrais.jpqi.springcarrot.model.Bazaar;
 import com.mitrais.jpqi.springcarrot.model.Item;
 import com.mitrais.jpqi.springcarrot.repository.ItemRepository;
 import org.bson.types.ObjectId;
@@ -14,6 +15,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
@@ -117,6 +119,17 @@ public class ItemService {
         return itemRepository.findByBazaar( new ObjectId(id));
     }
 
+    public List<Item> findAllByMultipleBazaarId(List<Bazaar> id) {
+        ObjectId[] a = new ObjectId[id.size()];
+        final int[] i = {0};
+        id.forEach(e -> {
+            System.out.println(e.getId());
+            a[i[0]] = new ObjectId(e.getId());
+            i[0]++;
+        });
+        return itemRepository.findByMultipleBazaar(a);
+//        return null;
+    }
     public List<Item> findAllByExchangeRateAmount (int emplooyeCarrot) {
         return itemRepository.findAll().stream()
                 .filter(item -> item.getExchangeRate() <= emplooyeCarrot)

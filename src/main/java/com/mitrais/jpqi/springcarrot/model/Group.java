@@ -73,4 +73,18 @@ public class Group {
 
     public void setBazaars(List<Bazaar> bazaars) { this.bazaars = bazaars; }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Group group = (Group) o;
+
+        return id != null ? id.equals(group.id) : group.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }

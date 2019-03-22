@@ -20,7 +20,7 @@ public interface EmployeeService {
     Map<String, String> findEmployeeByCredential (Map<String, String> body);
     List<Basket> getRecentDOB();
 
-    void partialUpdateEmployee(String id, Employee employee);
+    Employee partialUpdateEmployee(String id, Employee employee);
     List<Employee> getStaffRole(String role);
 
     List<Employee> getEmployeeBySpvLevel(String spvlevel);

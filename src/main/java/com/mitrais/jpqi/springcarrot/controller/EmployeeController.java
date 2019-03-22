@@ -30,7 +30,7 @@ public class EmployeeController {
         this.employeeServiceUsingDB = employeeServiceUsingDB;
     }
 
-    // Create new
+    // Create newupdgroup
     @PostMapping
     public void create(@RequestBody Employee employee) {
         employeeServiceUsingDB.createEmployee(employee);
@@ -59,7 +59,7 @@ public class EmployeeController {
     }
 
     // Delete employee's group
-    @DeleteMapping("/delgroup/{id}")
+    @PatchMapping("/delgroup/{id}")
     public void deleteGroupFromEmployee (@PathVariable String id, @RequestBody Group group) {
         employeeServiceUsingDB.deleteEmployeeGroup( id, group);}
 
@@ -71,8 +71,8 @@ public class EmployeeController {
 
     // Patch
     @PatchMapping("/{id}")
-    public void partialUpdate(@PathVariable("id") String id, @RequestBody Employee employee) {
-        employeeServiceUsingDB.partialUpdateEmployee(id, employee);
+    public Employee partialUpdate(@PathVariable("id") String id, @RequestBody Employee employee) {
+        return employeeServiceUsingDB.partialUpdateEmployee(id, employee);
     }
 
     //-----------------------------------------GET MAPPING GROUP----------------------//
@@ -110,7 +110,6 @@ public class EmployeeController {
     public List<Employee> getAllMemberOfAGroup(@PathVariable String id) {
         return employeeServiceUsingDB.getGroupMember(id);
     }
-
     @GetMapping("nostaffgroup")
     public List<Employee> getAllEmployeeWithoutGroup() {
         return employeeServiceUsingDB.findAllEmployeeWithoutStaffGroup();

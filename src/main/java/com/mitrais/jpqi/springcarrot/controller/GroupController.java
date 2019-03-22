@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("api/groups")
 public class GroupController {
@@ -21,12 +22,12 @@ public class GroupController {
         return groupService.findAllGroup();
     }
 
-    @GetMapping ("{id}")
+    @GetMapping("{id}")
     public Group getStaffGroups(@PathVariable String id) {
         return groupService.findGroupById(id);
     }
 
-    @GetMapping ("staff")
+    @GetMapping("staff")
     public List<Group> getStaffGroups() {
         return groupService.findAllStaffGroup();
     }
@@ -40,7 +41,7 @@ public class GroupController {
     public void insertAchievementToGroup(@PathVariable String id, @RequestBody List<Achievement> achievement){
         groupService.addAchievementToGroup(id, achievement);
     }
-    @DeleteMapping("/del-achievement/{id}")
+    @PatchMapping("/del-achievement/{id}")
     public void deleteAchievementFrom (@PathVariable String id, @RequestBody Achievement achievement) {
         groupService.deleteAchievementFromGroup( id, achievement);
     }
@@ -49,7 +50,7 @@ public class GroupController {
     public void insertAwardsToGroup(@PathVariable String id, @RequestBody List<Award> awards){
         groupService.addAwardToGroup(id, awards);
     }
-    @DeleteMapping("/del-award/{id}")
+    @PatchMapping("/del-award/{id}")
     public void deleteAwardFromGroup (@PathVariable String id, @RequestBody Award award) {
         groupService.deleteAwardFromGroup( id, award);
     }
@@ -58,7 +59,7 @@ public class GroupController {
     public void insertBazaarsToGroup(@PathVariable String id, @RequestBody List<Bazaar> bazaars){
         groupService.addBazaarToGroup(id, bazaars);
     }
-    @DeleteMapping("/del-bazaar/{id}")
+    @PatchMapping("/del-bazaar/{id}")
     public void deleteBazaarFromGroup (@PathVariable String id, @RequestBody Bazaar bazaar) {
         groupService.deleteBazaarFromGroup( id, bazaar);
     }
