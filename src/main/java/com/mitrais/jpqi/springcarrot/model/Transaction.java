@@ -28,7 +28,6 @@ public class Transaction {
     private Basket detail_from;
     private Basket detail_to;
     private Freezer freezer_from;
-    @DBRef
     private Item requested_item;
     @DBRef
     private SocialFoundation socialFoundation;

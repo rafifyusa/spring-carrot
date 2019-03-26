@@ -25,8 +25,8 @@ public class ItemController  {
 
     // Create
     @PostMapping
-    public void create(@RequestBody Item item) {
-        itemService.createItem(item);
+    public Map<String, String> create(@RequestBody Item item) {
+        return itemService.createItem(item);
     }
 
     // Edit or Update
@@ -85,6 +85,7 @@ public class ItemController  {
      */
     @PostMapping("uploadImage/{id}")
     public void patchUploadImage(@RequestBody Map<String, String> param, @PathVariable String id) {
+//        System.out.println("reniii");
         itemService.picturePatch(param.get("img"), id);
     }
 }

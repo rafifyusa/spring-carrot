@@ -1,9 +1,6 @@
 package com.mitrais.jpqi.springcarrot.controller;
 
-import com.mitrais.jpqi.springcarrot.model.Achievement;
-import com.mitrais.jpqi.springcarrot.model.Award;
-import com.mitrais.jpqi.springcarrot.model.Bazaar;
-import com.mitrais.jpqi.springcarrot.model.Group;
+import com.mitrais.jpqi.springcarrot.model.*;
 import com.mitrais.jpqi.springcarrot.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -63,15 +60,12 @@ public class GroupController {
     public void deleteBazaarFromGroup (@PathVariable String id, @RequestBody Bazaar bazaar) {
         groupService.deleteBazaarFromGroup( id, bazaar);
     }
-
-
-/*    @PatchMapping("{id}")
-    public void insertMember(@RequestBody List<Employee> employee, @PathVariable int id){
-        groupService.insertMemberToGroup(id, employee);
+    @PatchMapping("/add-social/{id}")
+    public void insertSocialFoundationsToGroup(@PathVariable String id, @RequestBody List<SocialFoundation> socialFoundations) {
+        groupService.addSocialFoundationToGroup(id, socialFoundations);
     }
-
-    @PatchMapping("/delete/{id}")
-    public void deleteMember(@RequestBody Employee employee, @PathVariable int id){
-        groupService.deleteMemberFromGroup(id, employee);
-    }*/
+    @PatchMapping("/del-social/{id}")
+    public void deleteSocialFoundationFromGroup(@PathVariable String id, @RequestBody SocialFoundation socialFoundation) {
+        groupService.deleteSocialFoundationFromGroup(id, socialFoundation);
+    }
 }

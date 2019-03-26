@@ -23,7 +23,7 @@ public class RewardService {
         rewardRepository.save(reward);
      }
 
-    public void updateRewardIntoDB (Reward reward, int id) {
+    public void updateRewardIntoDB (Reward reward, String id) {
         Optional<Reward> cr = rewardRepository.findById(id);
         if (cr.isPresent()) {
             Reward rw = cr.get();
@@ -36,7 +36,7 @@ public class RewardService {
         return rewardRepository.findAll();
     }
 
-    public Reward findRewardById (int id) {
+    public Reward findRewardById (String id) {
         Optional<Reward> reward = rewardRepository.findById(id);
         if (reward.isPresent()) {
             return reward.get();
@@ -44,7 +44,7 @@ public class RewardService {
         return null;
     }
 
-    public void removeRewardById (int id) {
+    public void removeRewardById (String id) {
         rewardRepository.deleteById(id);
     }
 }

@@ -1,38 +1,39 @@
 package com.mitrais.jpqi.springcarrot.service;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.mitrais.jpqi.springcarrot.model.Bazaar;
 import com.mitrais.jpqi.springcarrot.model.Item;
 import com.mitrais.jpqi.springcarrot.repository.ItemRepository;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
-
     private ItemRepository itemRepository;
+
+    Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+            "cloud_name", "dc1lp90qy",
+            "api_key", "194312298198378",
+            "api_secret", "FCxNYbqo0okfaWU_GDPhJdKR0TQ"));
 
     public ItemService(ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
     }
 
     // Create new item
-    public void createItem(Item item) {
-        itemRepository.save(item);
+    public Map<String, String> createItem(Item item) {
+        Map<String, String> hasil = new HashMap<>();
+        hasil.put("id", itemRepository.save(item).getId());
+        return hasil;
     }
 
     // Edit/Update
@@ -44,6 +45,7 @@ public class ItemService {
     // Delete
     public void deleteItem(String id) {
         itemRepository.deleteById(id);
+
     }
 
     // Show All
@@ -116,7 +118,9 @@ public class ItemService {
     }
 
     public List<Item> findAllByBazaarId(String id) {
-        return itemRepository.findByBazaar( new ObjectId(id));
+//        return itemRepository.findByBazaar( new ObjectId(id));
+        List<Item> mm = itemRepository.findByBazaar( new ObjectId(id));
+        return mm;
     }
 
     public List<Item> findAllByMultipleBazaarId(List<Bazaar> id) {
@@ -127,8 +131,9 @@ public class ItemService {
             a[i[0]] = new ObjectId(e.getId());
             i[0]++;
         });
-        return itemRepository.findByMultipleBazaar(a);
-//        return null;
+
+        List<Item> mm = itemRepository.findByMultipleBazaar(a);
+        return mm;
     }
     public List<Item> findAllByExchangeRateAmount (int emplooyeCarrot) {
         return itemRepository.findAll().stream()
@@ -138,49 +143,24 @@ public class ItemService {
 
     // Upload image for item
     public String storeImage(String imageString, String id) {
-        // Path File
-        String pathFile = "src\\main\\resources\\images\\";
-        String outputFileLocation = null;
-
-        //Decode image string
         byte[] imageByteArray = Base64.getDecoder().decode(imageString);
+        String url = "";
         try {
-            File dir = new File(pathFile);
-
-            if(!dir.exists()) {
-                System.out.println("Creating directory: " + dir.getName());
-                boolean result = false;
-
-                try {
-                    dir.mkdir();
-                    result = true;
-                } catch (SecurityException se) {
-                    se.printStackTrace();
-                }
-
-                if (result) {
-                    System.out.println("Directory created");
-                }
-            }
-
-            // Rename picture by id
-            outputFileLocation = pathFile + id + ".jpg";
-
-            new FileOutputStream(outputFileLocation).write(imageByteArray);
-
+            Map uploadResult = cloudinary.uploader().upload(imageByteArray, ObjectUtils.asMap("folder", "pictures/",
+                    "public_id", id));
+            url = (String) uploadResult.get("secure_url");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return  id + ".jpg";
+        return  url;
     }
 
     // Patch Upload Image for Item
     public void picturePatch (String imageString, String id) {
-
-        // Find item
+//        // Find item
         Item item = itemRepository.findById(id).orElse(null);
-
+//
         if (item != null) {
             // Set all field as it's except pictureUrl field
             item.setItemName(item.getItemName());

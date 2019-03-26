@@ -62,6 +62,11 @@ public class TransactionController {
         return transactionService.countCarrotSpentForSharing(id);
     }
 
+    @GetMapping("by-bazaar/{id}")
+    public List<Transaction> getAllTransactionByBazaarId(@PathVariable String id) {
+        return transactionService.findTransactionByBazaarId(id);
+    }
+
     /*@GetMapping("mostearned")
     public List<CarrotCount> getEmployeeByCarrotEarned (){
         return transactionService.findAllEmployeeSortedByCarrotEarned();

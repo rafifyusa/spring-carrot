@@ -1,5 +1,7 @@
 package com.mitrais.jpqi.springcarrot.service;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.google.gson.Gson;
 import com.mitrais.jpqi.springcarrot.model.Basket;
 import com.mitrais.jpqi.springcarrot.model.Employee;
@@ -38,6 +40,11 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
     @Autowired
     MongoTemplate mongoTemplate;
+
+    Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+            "cloud_name", "dc1lp90qy",
+            "api_key", "194312298198378",
+            "api_secret", "FCxNYbqo0okfaWU_GDPhJdKR0TQ"));
 
     public EmployeeServiceUsingDB(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
@@ -279,41 +286,18 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
     //Upload File
     public String storeImage(String imageString, String id) {
-        // Path File
-        String pathFile = "src\\main\\resources\\images\\";
-        String outputFileLocation = null;
-
-        // Decode image string int
         byte[] imageByteArray = Base64.getDecoder().decode(imageString);
+        String url = "";
         try {
-            File dir = new File(pathFile);
-
-            if (!dir.exists()) {
-                System.out.println("Creating directory : " + dir.getName());
-                boolean result = false;
-
-                try {
-                    dir.mkdir();
-                    result = true;
-                } catch (SecurityException se) {
-                    se.printStackTrace();
-                }
-
-                if (result) {
-                    System.out.println("Directory created");
-                }
-            }
-
-            // Rename picture by id
-            outputFileLocation = pathFile + id + ".jpg";
-
-            new FileOutputStream(outputFileLocation).write(imageByteArray);
-
+            Map uploadResult = cloudinary.uploader().upload(imageByteArray, ObjectUtils.asMap("folder", "pictures/",
+                    "public_id", id));
+            url = (String) uploadResult.get("secure_url");
+            System.out.println(uploadResult.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return id + ".jpg";
+        return  url;
     }
 
     // Patch upload images
@@ -370,5 +354,6 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         });
         return map;
     }
+
 }
 
