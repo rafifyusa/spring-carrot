@@ -1,10 +1,7 @@
 package com.mitrais.jpqi.springcarrot.service;
 
 import com.google.gson.Gson;
-import com.mitrais.jpqi.springcarrot.model.Achievement;
-import com.mitrais.jpqi.springcarrot.model.Award;
-import com.mitrais.jpqi.springcarrot.model.Bazaar;
-import com.mitrais.jpqi.springcarrot.model.Group;
+import com.mitrais.jpqi.springcarrot.model.*;
 import com.mitrais.jpqi.springcarrot.repository.GroupRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,19 +78,32 @@ public class GroupService {
     public void addBazaarToGroup (String id, List<Bazaar> bazaars) {
         Optional<Group> g = groupRepository.findById(id);
         if(g.isPresent()) {
+            Group group = g.get();
 
+            if (group.getBazaars() == null) {
+                group.setBazaars(new ArrayList<>());
+            }
+
+            //System.out.println(new Gson().toJson(group));
+            List<Bazaar> bazaarList = group.getBazaars();
+            bazaarList.addAll(bazaars);
+
+            group.setBazaars(bazaarList);
+            groupRepository.save(group);
         }
-        Group group = g.get();
+    }
 
-        if (group.getBazaars() == null) {
-            group.setBazaars(new ArrayList<>());
+    public void addSocialFoundationToGroup (String id, List<SocialFoundation> socialFoundations) {
+        Group group = findGroupById(id);
+
+        if(group.getSocialFoundations() == null) {
+            group.setSocialFoundations(new ArrayList<>());
         }
 
-        System.out.println(new Gson().toJson(group));
-        List<Bazaar> bazaarList = group.getBazaars();
-        bazaars.forEach( e -> bazaarList.add(e));
+        List<SocialFoundation> socialFoundationList = group.getSocialFoundations();
+        socialFoundationList.addAll(socialFoundations);
 
-        group.setBazaars(bazaarList);
+        group.setSocialFoundations(socialFoundationList);
         groupRepository.save(group);
     }
 
@@ -128,6 +138,12 @@ public class GroupService {
             }
             groupRepository.save(g);
         }
+    }
+
+    public void deleteSocialFoundationFromGroup(String id, SocialFoundation socialFoundation) {
+        Group group = findGroupById(id);
+        group.getSocialFoundations().remove(socialFoundation);
+        groupRepository.save(group);
     }
 
 }

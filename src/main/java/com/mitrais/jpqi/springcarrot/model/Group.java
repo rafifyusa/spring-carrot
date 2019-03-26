@@ -29,12 +29,15 @@ public class Group {
     List<Award> awards;
     @DBRef
     List<Bazaar> bazaars;
+    @DBRef
+    List<SocialFoundation> socialFoundations;
 
     //Constructors
     public Group(){}
 
     public Group(String id, String name, Type type, LocalDateTime created_at,
-                 List<Achievement> achievements, List<Award> awards, List<Bazaar> bazaars) {
+                 List<Achievement> achievements, List<Award> awards, List<Bazaar> bazaars,
+                 List<SocialFoundation> socialFoundations) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -42,6 +45,7 @@ public class Group {
         this.achievements = achievements;
         this.awards = awards;
         this.bazaars = bazaars;
+        this.socialFoundations = socialFoundations;
     }
 
     //Getters & Setters
@@ -72,6 +76,10 @@ public class Group {
     public List<Bazaar> getBazaars() { return bazaars; }
 
     public void setBazaars(List<Bazaar> bazaars) { this.bazaars = bazaars; }
+
+    public List<SocialFoundation> getSocialFoundations() { return socialFoundations; }
+
+    public void setSocialFoundations(List<SocialFoundation> socialFoundations) { this.socialFoundations = socialFoundations; }
 
     @Override
     public boolean equals(Object o) {
