@@ -1,9 +1,14 @@
 package com.mitrais.jpqi.springcarrot.controller;
 
 import com.mitrais.jpqi.springcarrot.model.CarrotCount;
+import com.mitrais.jpqi.springcarrot.model.Hasil;
 import com.mitrais.jpqi.springcarrot.model.Transaction;
 import com.mitrais.jpqi.springcarrot.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +19,8 @@ import java.util.List;
 public class TransactionController {
     @Autowired
     TransactionService transactionService;
+    @Autowired
+    MongoTemplate mongoTemplate;
 
     @GetMapping
     List<Transaction> findAllTransactions() {
@@ -59,5 +66,22 @@ public class TransactionController {
     public List<CarrotCount> getEmployeeByCarrotEarned (){
         return transactionService.findAllEmployeeSortedByCarrotEarned();
     }*/
+
+    @GetMapping("tesnya")
+    public  List<Hasil> gee() {
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.project()
+                        .andExpression("detail_from.id").as("foo")
+                        .andExpression("carrot_amt").as("carrot_amt")
+                        .andExpression("detail_from").as("kk"),
+                Aggregation.group("foo").sum("carrot_amt").as("total")
+                        .last("kk").as("kk"),
+                Aggregation.project()
+                        .andExpression("total").as("total")
+                        .andExpression("foo").as("id")
+                        .andExpression("kk").as("detail"));
+        AggregationResults<Hasil> groupResults = this.mongoTemplate.aggregate(aggregation, Transaction.class, Hasil.class);
+        return groupResults.getMappedResults();
+    }
 
 }
