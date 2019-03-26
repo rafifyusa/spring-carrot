@@ -228,6 +228,10 @@ public class TransactionService {
         return result;
     }
 
+    public List<Transaction> findTransactionByBazaarId (String id) {
+        return transactionRepository.findTransactionByBazaarId(new ObjectId(id));
+    }
+
     public int countCarrotSpentForRewardItem (String id) {
         List<Transaction> reward_transaction = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id));
 
