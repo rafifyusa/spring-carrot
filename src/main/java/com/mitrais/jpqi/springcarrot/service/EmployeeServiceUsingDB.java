@@ -97,24 +97,20 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     }
 
     public Map<String, String> findEmployeeByCredential(Map<String, String> body) {
-        Optional<Employee> employee = employeeRepository.findByEmailAddressAndPassword(body.get("email"), body.get("password"));
-//        List<Employee> emp = employeeRepository.findAll().stream()
-//                .filter(e -> e.getEmailAddress().equals(body.get("email")))
-//                .filter(e->e.getPassword().equals(body.get("password")))
-//                .collect(Collectors.toList());
-
+        Optional<Employee> employee = employeeRepository
+                                        .findByEmailAddressAndPassword(body.get("email"), body.get("password"));
         Map<String, String> kembalian = new HashMap<>();
-
+        System.out.println("is present " + employee.isPresent());
         if (employee.isPresent()) {
             Gson gson = new Gson();
             Employee emp = employee.get();
             Optional<Basket> basket = basketRepository.findByEmployee(new ObjectId(emp.getId()));
             basket.ifPresent(basket1 -> kembalian.put("basket", gson.toJson(basket1)));
-            kembalian.put("status", "berhasil");
+            kembalian.put("status", "true");
             kembalian.put("message", "employee ditemukan");
             kembalian.put("employee", gson.toJson(emp));
         } else {
-            kembalian.put("status", "gagal");
+            kembalian.put("status", "false");
             kembalian.put("message", "employee tidak ditemukan");
         }
         return kembalian;
