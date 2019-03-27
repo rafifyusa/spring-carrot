@@ -90,4 +90,19 @@ public class Basket {
     public void setEmployee(Employee employee) {
         this.employee = employee;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Basket basket = (Basket) o;
+
+        return id.equals(basket.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }

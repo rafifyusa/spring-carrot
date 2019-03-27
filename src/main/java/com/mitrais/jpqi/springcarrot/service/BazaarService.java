@@ -2,6 +2,7 @@ package com.mitrais.jpqi.springcarrot.service;
 
 import com.mitrais.jpqi.springcarrot.model.Bazaar;
 import com.mitrais.jpqi.springcarrot.repository.BazaarRepository;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -63,4 +64,7 @@ public class BazaarService {
         bazaarRepository.save(temp);
     }
 
+    public Bazaar findByOwnerId(String id) {
+        return bazaarRepository.findBazaarByOwnerId(new ObjectId(id));
+    }
 }

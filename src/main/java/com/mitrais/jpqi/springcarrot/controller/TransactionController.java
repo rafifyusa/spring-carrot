@@ -1,12 +1,22 @@
 package com.mitrais.jpqi.springcarrot.controller;
 
 import com.mitrais.jpqi.springcarrot.model.CarrotCount;
+import com.mitrais.jpqi.springcarrot.model.HostingCount;
 import com.mitrais.jpqi.springcarrot.model.Transaction;
 import com.mitrais.jpqi.springcarrot.service.TransactionService;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @CrossOrigin
 @RestController
@@ -14,6 +24,9 @@ import java.util.List;
 public class TransactionController {
     @Autowired
     TransactionService transactionService;
+
+    @Autowired
+    MongoTemplate mongoTemplate;
 
     @GetMapping
     List<Transaction> findAllTransactions() {
@@ -64,5 +77,20 @@ public class TransactionController {
     public List<CarrotCount> getEmployeeByCarrotEarned (){
         return transactionService.findAllEmployeeSortedByCarrotEarned();
     }*/
+
+    @GetMapping("sort-by-most-earn")
+    public List<HostingCount> sortByMostEarn() {
+        Aggregation agg = newAggregation(
+                group("detail_from.$id").sum("carrot_amt").as("total")
+                        .push("detail_from.id").as("name")
+        );
+
+        AggregationResults<HostingCount> groupResults
+                = mongoTemplate.aggregate(agg, Transaction.class, HostingCount.class);
+        List<HostingCount> result = groupResults.getMappedResults();
+        return result;
+//        return transactionService.sortByMostEarn();
+//        return null;
+    }
 
 }

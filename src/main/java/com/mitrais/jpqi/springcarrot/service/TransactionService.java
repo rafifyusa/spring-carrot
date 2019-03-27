@@ -268,6 +268,11 @@ public class TransactionService {
         List <Transaction> pendingTransactions = mongoTemplate.find(query, Transaction.class);
         return  pendingTransactions;
     }
+
+    public List<HostingCount> sortByMostEarn() {
+        return null;
+//        return transactionRepository.sortByMostEarn();
+    }
 /*    //TODO sortbyspentcarrots
     public List<Employee> findAllEmployeeSortedBySpentCarrotForRewards () {
 

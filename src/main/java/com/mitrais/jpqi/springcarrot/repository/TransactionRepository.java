@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.repository;
 
+import com.mitrais.jpqi.springcarrot.model.HostingCount;
 import com.mitrais.jpqi.springcarrot.model.Transaction;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -17,6 +18,8 @@ public interface TransactionRepository extends MongoRepository<Transaction, Stri
     @Query("{'type' : ?0}")
     List<Transaction> findTransactionByType (ObjectId id);
 
-    @Query("{'requested_item.bazaar.$id': ?0")
+    @Query("{'requested_item.bazaar.$id': ?0}")
     List<Transaction> findTransactionByBazaarId (ObjectId id);
+//    @Query("{$group: {id : null, total:{$sum: 1}}}")
+//    List<HostingCount> sortByMostEarn();
 }
