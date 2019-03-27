@@ -284,6 +284,25 @@ public class TransactionService {
         AggregationResults<Hasil> groupResults = this.mongoTemplate.aggregate(aggregation, Transaction.class, Hasil.class);
         return groupResults.getMappedResults();
     }
+
+    public List<Hasil> getTotalEarnedAmt(String id) {
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.project()
+                        .andExpression("detail_to.id").as("foo")
+                        .andExpression("carrot_amt").as("carrot_amt")
+                        .andExpression("detail_to").as("kk")
+                        .andExpression("status").as("status")
+                        .andExpression("detail_to.employee.id").as("employeeid"),
+                Aggregation.match(Criteria.where("foo").is(new ObjectId(id))),
+                Aggregation.group("foo").sum("carrot_amt").as("total")
+                        .last("kk").as("kk"),
+                Aggregation.project()
+                        .andExpression("total").as("total")
+                        .andExpression("foo").as("id")
+                        .andExpression("kk").as("detail"));
+        AggregationResults<Hasil> groupResults = this.mongoTemplate.aggregate(aggregation, Transaction.class, Hasil.class);
+        return groupResults.getMappedResults();
+    }
 /*    //TODO sortbyspentcarrots
     public List<Employee> findAllEmployeeSortedBySpentCarrotForRewards () {
 

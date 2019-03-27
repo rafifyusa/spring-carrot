@@ -73,4 +73,9 @@ public class TransactionController {
         return transactionService.sortByMostEarn();
     }
 
+    @GetMapping("total-earned/{id}")
+    public  List<Hasil> getEmployeeTotalEarnedCarrot(@PathVariable String id) {
+        return transactionService.getTotalEarnedAmt(id);
+    }
+
 }
