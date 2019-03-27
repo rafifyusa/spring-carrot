@@ -23,13 +23,15 @@ public class GroupService {
         groupRepository.save(group);
     }
 
-    public void updateGroup(Group group) {
+    public void updateGroup(String id, Group group) {
+        group.setId(id);
         groupRepository.save(group);
     }
 
+    public void deleteGroupById(String id) {groupRepository.deleteById(id);}
+
     public List<Group> findAllGroup() { return groupRepository.findAll(); }
 
-    public void deleteGroupById(String id) {groupRepository.deleteById(id);}
 
     public Group findGroupById (String id) {
         if (groupRepository.findById(id).isPresent()) {
