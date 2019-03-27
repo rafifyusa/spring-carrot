@@ -42,6 +42,11 @@ public class TransactionService {
 
     public List<Transaction> findAllTransactions() {return transactionRepository.findAll();}
 
+    public void updateTransaction(String id, Transaction transaction) {
+        transaction.setId(id);
+        transactionRepository.save(transaction);
+    }
+
     public void createTransaction(Transaction transaction) {
 
         if (transaction.getType() == Transaction.Type.REWARD) {
@@ -215,16 +220,12 @@ public class TransactionService {
         }
     }
 
-    public void updateTransaction(String id, Transaction transaction) {
-        transaction.setId(id);
-        transactionRepository.save(transaction);
-    }
 
     public List<Transaction> findTransactionByEmployee (String id) {
         List<Transaction> temp = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id));
         List<Transaction> result = transactionRepository.findDetailToByEmployeeId(new ObjectId(id));
 
-        temp.forEach( t -> result.add(t));
+        result.addAll(temp);
         return result;
     }
 
@@ -233,9 +234,7 @@ public class TransactionService {
     }
 
     public int countCarrotSpentForRewardItem (String id) {
-        List<Transaction> reward_transaction = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id));
-
-        int total_spent = reward_transaction.stream()
+        int total_spent = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id)).stream()
                 .filter(e -> e.getType() == Transaction.Type.BAZAAR)
                 .mapToInt( a->a.getCarrot_amt()).sum();
 
@@ -243,9 +242,7 @@ public class TransactionService {
     }
 
     public int countCarrotSpentForSharing (String id) {
-        List<Transaction> reward_transaction = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id));
-
-        int total_spent = reward_transaction.stream()
+        int total_spent = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id)).stream()
                 .filter(e -> e.getType() == Transaction.Type.SHARED)
                 .mapToInt( a->a.getCarrot_amt()).sum();
 
@@ -267,6 +264,21 @@ public class TransactionService {
         query.addCriteria(Criteria.where("status").is("PENDING"));
         List <Transaction> pendingTransactions = mongoTemplate.find(query, Transaction.class);
         return  pendingTransactions;
+    }
+
+    public List<Transaction> findTransactionByType (String status) {
+        List <Transaction> transactions = transactionRepository.findTransactionByType(status);
+        return  transactions;
+    }
+
+    public List<Transaction> findTransactionByTypeAndDate(String status, LocalDateTime startDate, LocalDateTime endDate) {
+/*        Query query = new Query();
+        query.addCriteria(Criteria.where("transaction_date").gte(startDate).lt(endDate)
+                .andOperator(Criteria.where("type").is(status)));
+
+        List<Transaction> transactions = mongoTemplate.find(query, Transaction.class);*/
+        List<Transaction> transactions = transactionRepository.findTransactionbByTypeAndDate(status, startDate, endDate);
+        return transactions;
     }
 
     public List<Hasil> sortByMostEarn() {

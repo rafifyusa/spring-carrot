@@ -5,6 +5,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TransactionRepository extends MongoRepository<Transaction, String> {
@@ -14,9 +15,15 @@ public interface TransactionRepository extends MongoRepository<Transaction, Stri
     @Query("{'detail_from.employee.$id': ?0}")
     List<Transaction>  findDetailFromByEmployeeId (ObjectId id);
 
-    @Query("{'type' : ?0}")
-    List<Transaction> findTransactionByType (ObjectId id);
+/*    @Query("{'type' : ?0}")
+    List<Transaction> findTransactionByType (ObjectId id);*/
 
     @Query("{'requested_item.bazaar.$id': ?0}")
     List<Transaction> findTransactionByBazaarId (ObjectId id);
+
+    @Query("{'type': ?0}")
+    List<Transaction> findTransactionByType (String type);
+
+    @Query("{'type': ?0, 'transaction_date':{$gte: ?1, $lte: ?2}}")
+    List<Transaction> findTransactionbByTypeAndDate(String type, LocalDateTime startDate, LocalDateTime endDate);
 }

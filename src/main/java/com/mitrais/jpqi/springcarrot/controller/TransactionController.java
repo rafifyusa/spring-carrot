@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.TimeZone;
 
 @CrossOrigin
 @RestController
@@ -61,6 +64,27 @@ public class TransactionController {
     @GetMapping("by-bazaar/{id}")
     public List<Transaction> getAllTransactionByBazaarId(@PathVariable String id) {
         return transactionService.findTransactionByBazaarId(id);
+    }
+
+    @GetMapping("by-status")
+    public List<Transaction> getAllTransactionByStatus(@RequestParam String type) {
+        return transactionService.findTransactionByType(type);
+    }
+
+    @GetMapping("by-date-status")
+    public List<Transaction> getAllTransactionByStatusAndDate(@RequestParam String type,
+                                                              @RequestParam Long startDate,
+                                                              @RequestParam Long endDate) {
+
+        LocalDateTime startDateC =
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(startDate),
+                        TimeZone.getDefault().toZoneId());
+
+        LocalDateTime endDateC =
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(endDate),
+                        TimeZone.getDefault().toZoneId());
+
+        return transactionService.findTransactionByTypeAndDate(type, startDateC, endDateC);
     }
 
     /*@GetMapping("mostearned")
