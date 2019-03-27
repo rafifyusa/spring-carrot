@@ -34,6 +34,12 @@ public class GroupController {
         groupService.insertGroup(group);
     }
 
+    @PutMapping("{id}")
+    public void updateGroup(@PathVariable String id, @RequestBody Group group) {groupService.updateGroup(id,group);}
+
+    @DeleteMapping("{id}")
+    public void deleteGroup(@PathVariable String id) {groupService.deleteGroupById(id);}
+
     @PatchMapping("/add-achievement/{id}")
     public void insertAchievementToGroup(@PathVariable String id, @RequestBody List<Achievement> achievement){
         groupService.addAchievementToGroup(id, achievement);
