@@ -269,9 +269,20 @@ public class TransactionService {
         return  pendingTransactions;
     }
 
-    public List<HostingCount> sortByMostEarn() {
-        return null;
-//        return transactionRepository.sortByMostEarn();
+    public List<Hasil> sortByMostEarn() {
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.project()
+                        .andExpression("detail_to.id").as("foo")
+                        .andExpression("carrot_amt").as("carrot_amt")
+                        .andExpression("detail_to").as("kk"),
+                Aggregation.group("foo").sum("carrot_amt").as("total")
+                        .last("kk").as("kk"),
+                Aggregation.project()
+                        .andExpression("total").as("total")
+                        .andExpression("foo").as("id")
+                        .andExpression("kk").as("detail"));
+        AggregationResults<Hasil> groupResults = this.mongoTemplate.aggregate(aggregation, Transaction.class, Hasil.class);
+        return groupResults.getMappedResults();
     }
 /*    //TODO sortbyspentcarrots
     public List<Employee> findAllEmployeeSortedBySpentCarrotForRewards () {
