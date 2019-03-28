@@ -139,9 +139,10 @@ public class EmployeeController {
     }
 
     @PostMapping("uploadImage/{id}")
-    public void patchUploadImage(@RequestBody Map<String, String> param, @PathVariable String id) {
+    public Employee patchUploadImage(@RequestBody Map<String, String> param, @PathVariable String id) {
         System.out.println(param.get("img"));
         employeeServiceUsingDB.picturePatch(param.get("img"), id);
+        return employeeServiceUsingDB.getEmployeeById(id);
     }
 
     //---------------------------- TEST BED ---------------------------------//
