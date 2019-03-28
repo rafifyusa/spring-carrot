@@ -75,7 +75,7 @@ public class TransactionController {
     public List<Transaction> getAllTransactionByStatusAndDate(@RequestParam String type,
                                                               @RequestParam Long startDate,
                                                               @RequestParam Long endDate) {
-
+        //convert the timestamp to dates
         LocalDateTime startDateC =
                 LocalDateTime.ofInstant(Instant.ofEpochMilli(startDate),
                         TimeZone.getDefault().toZoneId());

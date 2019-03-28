@@ -24,6 +24,8 @@ public class Group {
     private Type type;
     private LocalDateTime created_at;
     @DBRef
+    private Employee owner;
+    @DBRef
     List<Achievement> achievements;
     @DBRef
     List<Award> awards;
@@ -35,13 +37,14 @@ public class Group {
     //Constructors
     public Group(){}
 
-    public Group(String id, String name, Type type, LocalDateTime created_at,
+    public Group(String id, String name, Type type, LocalDateTime created_at, Employee owner,
                  List<Achievement> achievements, List<Award> awards, List<Bazaar> bazaars,
                  List<SocialFoundation> socialFoundations) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.created_at = created_at;
+        this.owner = owner;
         this.achievements = achievements;
         this.awards = awards;
         this.bazaars = bazaars;
@@ -80,6 +83,10 @@ public class Group {
     public List<SocialFoundation> getSocialFoundations() { return socialFoundations; }
 
     public void setSocialFoundations(List<SocialFoundation> socialFoundations) { this.socialFoundations = socialFoundations; }
+
+    public Employee getOwner() { return owner; }
+
+    public void setOwner(Employee owner) { this.owner = owner; }
 
     @Override
     public boolean equals(Object o) {
