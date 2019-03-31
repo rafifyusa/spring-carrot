@@ -6,9 +6,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
+
 
 @Document(collection = "carrots")
 public class Carrot {
@@ -25,18 +24,21 @@ public class Carrot {
     private Basket basket;
     @DBRef
     private Freezer freezer;
+    @DBRef
+    private Barn barn;
     private boolean usable = true;
 
     public Carrot() {}
 
     public Carrot(String id, Type type, LocalDateTime created_at,
-                  LocalDateTime updated_at, Basket basket, Freezer freezer, boolean usable) {
+                  LocalDateTime updated_at, Basket basket, Freezer freezer, Barn barn,boolean usable) {
         this.id = id;
         this.type = type;
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.basket = basket;
         this.freezer = freezer;
+        this.barn = barn;
         this.usable = usable;
 
     }
@@ -69,6 +71,10 @@ public class Carrot {
     public Freezer getFreezer() { return freezer; }
 
     public void setFreezer(Freezer freezer) { this.freezer = freezer; }
+
+    public Barn getBarn() { return barn; }
+
+    public void setBarn(Barn barn) { this.barn = barn; }
 
     public boolean isUsable() { return usable; }
 

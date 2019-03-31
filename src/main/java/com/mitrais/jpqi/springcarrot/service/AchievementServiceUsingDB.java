@@ -22,7 +22,7 @@ public class AchievementServiceUsingDB implements AchievementService{
 
     @Override
     public Optional<Achievement> findByAchievementId(String id) {
-        return achievementRepository.findById(Integer.valueOf(id));
+        return achievementRepository.findById(id);
     }
 
     @Override
@@ -45,12 +45,12 @@ public class AchievementServiceUsingDB implements AchievementService{
 
     @Override
     public void deleteAchievement(String id) {
-        achievementRepository.deleteById(Integer.valueOf(id));
+        achievementRepository.deleteById(id);
     }
 
     @Override
     public void partialUpdateAchievement(String id, Achievement achievement) {
-        Achievement temp = achievementRepository.findById(Integer.valueOf(id)).orElse(null);
+        Achievement temp = achievementRepository.findById(id).orElse(null);
 
         if (temp != null){
             if (achievement.getId() != null){

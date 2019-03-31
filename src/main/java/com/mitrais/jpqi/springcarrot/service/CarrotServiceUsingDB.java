@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.service;
 
+import com.mitrais.jpqi.springcarrot.model.Barn;
 import com.mitrais.jpqi.springcarrot.model.Basket;
 import com.mitrais.jpqi.springcarrot.model.Carrot;
 import com.mitrais.jpqi.springcarrot.repository.CarrotRepository;
@@ -55,17 +56,19 @@ public class CarrotServiceUsingDB implements CarrotService {
     }
 
     public List<Carrot> findUsableCarrotByFreezerId(String id) {
-        List<Carrot> usableCarrots = carrotRepository.findByFreezerId(new ObjectId(id))
+        List<Carrot> usableCarrotsByFreezer = carrotRepository.findByFreezerId(new ObjectId(id))
                 .stream().filter(e-> e.isUsable())
                 .collect(Collectors.toList());
-        return usableCarrots;
+        return usableCarrotsByFreezer;
     }
 
-    public void createFrozenCarrotOnBarnCreation(long count) {
+    public void createFrozenCarrotOnBarnCreation(long count, String barnId) {
         for (int i = 0; i < count; i++) {
             Carrot c = new Carrot();
             c.setType(Carrot.Type.FRESH);
             c.setCreated_at(LocalDateTime.now());
+            c.setBarn( new Barn());
+            c.getBarn().setId(barnId);
             carrotRepository.save(c);
         }
     }

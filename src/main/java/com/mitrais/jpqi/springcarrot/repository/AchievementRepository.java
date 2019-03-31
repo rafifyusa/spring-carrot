@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.Query;
 
 import java.util.List;
 
-public interface AchievementRepository extends MongoRepository<Achievement, Integer> {
+public interface AchievementRepository extends MongoRepository<Achievement, String> {
     @Query("{'role': ?0}")
     List<Achievement> findByRole(String role);
 }

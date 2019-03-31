@@ -8,15 +8,18 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BarnService {
-    @Autowired
-    BarnRepository barnRepository;
+    private final BarnRepository barnRepository;
+
+    private final CarrotServiceUsingDB carrotServiceUsingDB;
 
     @Autowired
-    CarrotServiceUsingDB carrotServiceUsingDB;
+    public BarnService(CarrotServiceUsingDB carrotServiceUsingDB, BarnRepository barnRepository) {
+        this.carrotServiceUsingDB = carrotServiceUsingDB;
+        this.barnRepository = barnRepository;
+    }
 
     public List<Barn> findAllBarn () {return barnRepository.findAll(); }
 
@@ -29,7 +32,8 @@ public class BarnService {
     public void createBarn (Barn barn) {
         if (barn.isStatus()) {
             long count = barn.getTotalCarrot();
-            carrotServiceUsingDB.createFrozenCarrotOnBarnCreation(count);
+            String barnId = barn.getId();
+            carrotServiceUsingDB.createFrozenCarrotOnBarnCreation(count, barnId);
         }
         barnRepository.save(barn);
     }
@@ -48,7 +52,7 @@ public class BarnService {
             barn.setAwards(new ArrayList<>());
         }
         List<Award> awardList = barn.getAwards();
-        awards.forEach( e -> awardList.add(e));
+        awardList.addAll(awards);
 
         barn.setAwards(awardList);
         barnRepository.save(barn);
