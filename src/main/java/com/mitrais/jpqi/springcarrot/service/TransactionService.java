@@ -271,7 +271,7 @@ public class TransactionService {
         return  transactions;
     }
 
-    public List<Transaction> findTransactionByTypeAndDate(String status, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<Transaction> findTransactionByTypeAndDate(String[] status, LocalDateTime startDate, LocalDateTime endDate) {
 /*        Query query = new Query();
         query.addCriteria(Criteria.where("transaction_date").gte(startDate).lt(endDate)
                 .andOperator(Criteria.where("type").is(status)));
