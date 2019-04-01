@@ -2,6 +2,7 @@ package com.mitrais.jpqi.springcarrot.controller;
 
 import com.mitrais.jpqi.springcarrot.model.Freezer;
 import com.mitrais.jpqi.springcarrot.repository.FreezerRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,11 @@ public class    FreezerController {
         }
         List<Freezer> fr = freezerRepository.findAll();
         return fr;
+    }
+
+    @GetMapping("by-owner/{id}")
+    public Freezer findFrezeerByOwner(@PathVariable String id) {
+        return freezerRepository.findByOwner(new ObjectId(id));
     }
 
     @PostMapping
