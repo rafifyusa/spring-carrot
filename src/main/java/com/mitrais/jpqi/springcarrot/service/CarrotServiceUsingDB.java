@@ -62,13 +62,19 @@ public class CarrotServiceUsingDB implements CarrotService {
         return usableCarrotsByFreezer;
     }
 
-    public void createFrozenCarrotOnBarnCreation(long count, String barnId) {
+    public List<Carrot> findFreshCarrotByBarnId(String id) {
+        List<Carrot> usableCarrotsByBarn = carrotRepository.findByBarnId(new ObjectId(id))
+                .stream().filter(e-> e.getType() == Carrot.Type.FRESH)
+                .collect(Collectors.toList());
+        return usableCarrotsByBarn;
+    }
+
+    public void createFrozenCarrotOnBarnCreation(long count, Barn barn) {
         for (int i = 0; i < count; i++) {
             Carrot c = new Carrot();
             c.setType(Carrot.Type.FRESH);
             c.setCreated_at(LocalDateTime.now());
-            c.setBarn( new Barn());
-            c.getBarn().setId(barnId);
+            c.setBarn(barn);
             carrotRepository.save(c);
         }
     }
