@@ -75,6 +75,19 @@ public class TransactionController {
     public List<Transaction> getAllTransactionByStatusAndDate(@RequestParam String type,
                                                               @RequestParam Long startDate,
                                                               @RequestParam Long endDate) {
+
+        String[] types = new String[4];
+        switch (type) {
+            case "ALL":
+                types[0] = "SHARED";
+                types[1] = "DONATION";
+                types[2] = "BAZAAR";
+                types[3] = "REWARD";
+                break;
+            default:
+                types[0] = type;
+                break;
+        }
         //convert the timestamp to dates
         LocalDateTime startDateC =
                 LocalDateTime.ofInstant(Instant.ofEpochMilli(startDate),
@@ -83,8 +96,9 @@ public class TransactionController {
         LocalDateTime endDateC =
                 LocalDateTime.ofInstant(Instant.ofEpochMilli(endDate),
                         TimeZone.getDefault().toZoneId());
-
-        return transactionService.findTransactionByTypeAndDate(type, startDateC, endDateC);
+        System.out.println(startDateC);
+        System.out.println(endDateC);
+        return transactionService.findTransactionByTypeAndDate(types, startDateC, endDateC);
     }
 
     /*@GetMapping("mostearned")
