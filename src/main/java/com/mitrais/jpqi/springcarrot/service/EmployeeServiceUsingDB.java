@@ -3,12 +3,10 @@ package com.mitrais.jpqi.springcarrot.service;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.google.gson.Gson;
-import com.mitrais.jpqi.springcarrot.model.Basket;
-import com.mitrais.jpqi.springcarrot.model.Employee;
-import com.mitrais.jpqi.springcarrot.model.Group;
-import com.mitrais.jpqi.springcarrot.model.GroupCount;
+import com.mitrais.jpqi.springcarrot.model.*;
 import com.mitrais.jpqi.springcarrot.repository.BasketRepository;
 import com.mitrais.jpqi.springcarrot.repository.EmployeeRepository;
+import com.mitrais.jpqi.springcarrot.repository.FreezerRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -21,6 +19,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,6 +33,9 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
     @Autowired
     BasketRepository basketRepository;
+
+    @Autowired
+    FreezerRepository freezerRepository;
 
     @Autowired
     GroupService groupService;
@@ -53,6 +55,22 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     @Override
     public void createEmployee(Employee employee) {
         employeeRepository.save(employee);
+
+        if(employee.getRole() == Employee.Role.SENIOR_MANAGER || employee.getRole() == Employee.Role.MANAGER){
+            Freezer freezer = new Freezer();
+            freezer.setName(employee.getName() + "'s Freezer");
+            freezer.setCarrot_amt(0);
+            freezer.setCreated_at(LocalDate.now());
+            freezer.setEmployee(employee);
+            freezerRepository.save(freezer);
+        }
+
+        Basket basket = new Basket();
+        basket.setCarrot_amt(0);
+        basket.setCreated_at(LocalDateTime.now());
+        basket.setEmployee(employee);
+        basket.setName(employee.getName() + "'s Basket");
+        basketRepository.save(basket);
     }
 
     @Override
