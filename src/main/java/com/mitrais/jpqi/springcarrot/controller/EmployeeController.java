@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @CrossOrigin
@@ -67,6 +68,17 @@ public class EmployeeController {
     @PatchMapping("/addgroup/{id}")
     public void insertGroup(@RequestBody List<Group> group, @PathVariable String id){
         employeeServiceUsingDB.insertMemberToGroup(id, group);
+    }
+
+    // Delete achievement from employee
+    @PatchMapping("/del-achievement/{id}")
+    public void deleteAchievementFromEmployee (@PathVariable String id, @RequestBody Achievement achievement) {
+        employeeServiceUsingDB.deleteAchievementGroup( id, achievement);}
+
+    //inserting achievement to employee
+    @PatchMapping("/add-achievement/{id}")
+    public void insertAchievement(@RequestBody Achievement achievements, @PathVariable String id){
+        employeeServiceUsingDB.addAchievementToEmployee(id, achievements);
     }
 
     // Patch
@@ -129,6 +141,11 @@ public class EmployeeController {
     @GetMapping("credential")
     public Employee getEmployeeByEmailAndPass(@RequestParam String email, @RequestParam String password) {
         return employeeServiceUsingDB.findByEmailAddressAndPassword(email, password);
+    }
+
+    @GetMapping("achievement")
+    public Set<Achievement> getAnEmployeeAchivement(@RequestParam String empId) {
+        return employeeServiceUsingDB.findAnEmployeeAchievement(empId);
     }
 
     //---------------------------- UPLOAD IMAGE -----------------------------//

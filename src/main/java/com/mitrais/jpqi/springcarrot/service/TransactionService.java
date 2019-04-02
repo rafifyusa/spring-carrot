@@ -37,6 +37,8 @@ public class TransactionService {
     @Autowired
     private SocialFoundationRepository socialFoundationRepository;
     @Autowired
+    private EmployeeServiceUsingDB employeeServiceUsingDB;
+    @Autowired
     MongoTemplate mongoTemplate;
 
 
@@ -171,19 +173,21 @@ public class TransactionService {
                 Freezer f_from = transaction.getFreezer_from();
                 Basket b_to = transaction.getDetail_to();
 
-                System.out.println(b_to.getId());
-
-                //Change the carrot amount in manager's freezer
-                Optional<Freezer> f = freezerRepository.findById(f_from.getId());
-                Freezer freezer= f.get();
-                freezer.setCarrot_amt((freezer.getCarrot_amt() - transaction.getCarrot_amt()));
-                freezerRepository.save(freezer);
+                //Add the achievement to employee
+                String empId = transaction.getDetail_to().getEmployee().getId();
+                employeeServiceUsingDB.addAchievementToEmployee(empId, transaction.getAchievementClaimed());
 
                 //Edit the recipient carrot amount in basket
                 Optional<Basket> b = basketRepository.findById(b_to.getId());
                 Basket basket = b.get();
                 basket.setCarrot_amt((basket.getCarrot_amt() + transaction.getCarrot_amt()));
                 basketRepository.save(basket);
+
+                //Change the carrot amount in manager's freezer
+                Optional<Freezer> f = freezerRepository.findById(f_from.getId());
+                Freezer freezer= f.get();
+                freezer.setCarrot_amt((freezer.getCarrot_amt() - transaction.getCarrot_amt()));
+                freezerRepository.save(freezer);
 
                 //update the carrots in manager's freezer into employee's basket
                 List<Carrot> carrots = carrotRepository.findByFreezerId(new ObjectId(f_from.getId()));

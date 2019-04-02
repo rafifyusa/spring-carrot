@@ -376,5 +376,34 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         });
         return map;
     }
+
+    public void addAchievementToEmployee (String id, Achievement achievement) {
+        Optional<Employee> employee = employeeRepository.findById(id);
+        if (employee.isPresent()) {
+            Employee emp = employee.get();
+            if (emp.getAchievement() == null) {
+                emp.setAchievement(new HashSet<>());
+            }
+            emp.getAchievement().add(achievement);
+            employeeRepository.save((emp));
+        }
+    }
+
+    public void deleteAchievementGroup(String id, Achievement achievement){
+        Optional<Employee> employee = employeeRepository.findById(id);
+        if (employee.isPresent()) {
+            Employee emp = employee.get();
+            if (emp.getAchievement() != null) {
+                emp.getAchievement().remove(achievement);
+            }
+            employeeRepository.save(emp);
+        }
+    }
+
+    public Set<Achievement> findAnEmployeeAchievement(String id) {
+        return getEmployeeById(id).getAchievement();
+    }
 }
+
+
 
