@@ -4,6 +4,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.google.gson.Gson;
 import com.mitrais.jpqi.springcarrot.model.*;
+import com.mitrais.jpqi.springcarrot.oauth2.JwtTokenProvider;
 import com.mitrais.jpqi.springcarrot.repository.BasketRepository;
 import com.mitrais.jpqi.springcarrot.repository.EmployeeRepository;
 import com.mitrais.jpqi.springcarrot.repository.FreezerRepository;
@@ -27,7 +28,8 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @Service
 public class EmployeeServiceUsingDB implements EmployeeService {
-
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
     @Autowired
     EmployeeRepository employeeRepository;
 
@@ -115,18 +117,24 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     }
 
     public Map<String, String> findEmployeeByCredential(Map<String, String> body) {
+
         Optional<Employee> employee = employeeRepository
                                         .findByEmailAddressAndPassword(body.get("email"), body.get("password"));
         Map<String, String> kembalian = new HashMap<>();
         System.out.println("is present " + employee.isPresent());
         if (employee.isPresent()) {
-            Gson gson = new Gson();
             Employee emp = employee.get();
+            List<Employee.Role> role = new ArrayList<>();
+            role.add(emp.getRole());
+            String token = jwtTokenProvider.createToken(body.get("email"), role);
+
+            Gson gson = new Gson();
             Optional<Basket> basket = basketRepository.findByEmployee(new ObjectId(emp.getId()));
             basket.ifPresent(basket1 -> kembalian.put("basket", gson.toJson(basket1)));
             kembalian.put("status", "true");
             kembalian.put("message", "employee ditemukan");
             kembalian.put("employee", gson.toJson(emp));
+            kembalian.put("token", token);
         } else {
             kembalian.put("status", "false");
             kembalian.put("message", "employee tidak ditemukan");

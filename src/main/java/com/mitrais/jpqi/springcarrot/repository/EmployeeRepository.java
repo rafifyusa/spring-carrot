@@ -20,6 +20,9 @@ public interface EmployeeRepository extends MongoRepository<Employee, String> {
     @Query("{'emailAddress': ?0, 'password': ?1}")
     Optional<Employee> findByEmailAddressAndPassword(String email, String password);
 
+    @Query("{'emailAddress': ?0}")
+    Optional<Employee> findByEmailAddress(String email);
+
     @Query("{'group':{$elemMatch:{$id : ?0}}}")
     List<Employee> findByGroupId(ObjectId id);
 }

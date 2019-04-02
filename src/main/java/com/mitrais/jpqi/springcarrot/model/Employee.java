@@ -2,6 +2,7 @@ package com.mitrais.jpqi.springcarrot.model;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -116,7 +117,7 @@ public class Employee {
     public void setAchievement(Set<Achievement> achievement) { this.achievement = achievement; }
 
     // Enum for roles or position
-    public enum Role {
+    public enum Role implements GrantedAuthority {
         STAFF,
         ADMIN,
         UNKNOWN,
@@ -125,6 +126,9 @@ public class Employee {
         ROOT_ADMIN,
         STAKEHOLDER,
         SENIOR_MANAGER;
+        public String getAuthority() {
+            return name();
+        }
     }
 
     public enum SpvLevel{
