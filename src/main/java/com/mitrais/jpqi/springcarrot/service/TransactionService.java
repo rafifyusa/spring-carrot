@@ -55,30 +55,6 @@ public class TransactionService {
                 Freezer f_from = transaction.getFreezer_from();
                 Basket b_to = transaction.getDetail_to();
 
-                //Change the carrot amount in manager's freezer
-                Optional<Freezer> f = freezerRepository.findById(f_from.getId());
-                Freezer freezer= f.get();
-                freezer.setCarrot_amt((freezer.getCarrot_amt() - transaction.getCarrot_amt()));
-                freezerRepository.save(freezer);
-
-                //Edit the recipient carrot amount in basket
-                Optional<Basket> b = basketRepository.findByEmployee(new ObjectId(b_to.getId()));
-                Basket basket = b.get();
-                basket.setCarrot_amt((basket.getCarrot_amt() + transaction.getCarrot_amt()));
-                basketRepository.save(basket);
-
-                //update the carrots in manager's freezer into employee's basket
-                List<Carrot> carrots = carrotRepository.findByFreezerId(new ObjectId(f_from.getId()));
-                int count = transaction.getCarrot_amt();
-
-                for (int i = 0 ; i < count ; i++) {
-                    Carrot c = carrots.get(i);
-                    c.setBasket( new Basket());
-                    c.getBasket().setId(b_to.getId());
-                    c.setFreezer(null);
-                    c.setType(Carrot.Type.NORMAL);
-                    carrotRepository.save(c);
-                }
                 transaction.setFrom(f_from.getName());
                 transaction.setTo(b_to.getName());
             }
@@ -178,41 +154,89 @@ public class TransactionService {
     public void approveTransaction(String id) {
         if (transactionRepository.findById(id).isPresent()) {
             Transaction transaction = transactionRepository.findById(id).get();
-            if (transaction.getType() == Transaction.Type.BAZAAR
-                    ||(transaction.getSocialFoundation().getTotal_carrot()
-                    >= transaction.getSocialFoundation().getMin_carrot())) {
-                Basket requester = transaction.getDetail_from();
-                List<Carrot> pendingCarrots = carrotRepository.findByBasketId(new ObjectId(requester.getId()))
-                        .stream().filter(c -> !c.isUsable()).collect(Collectors.toList());
+            if (transaction.getType() == Transaction.Type.BAZAAR) {
+                makeApprovedTransaction(transaction);
+            }
+            if(transaction.getType() == Transaction.Type.DONATION){
+                if (transaction.getSocialFoundation().getTotal_carrot()
+                        < transaction.getSocialFoundation().getMin_carrot()){
+                    return;
+                }
+                else{
+                    makeApprovedTransaction(transaction);
+                }
+            }
 
+            if (transaction.getType() == Transaction.Type.REWARD) {
+                Freezer f_from = transaction.getFreezer_from();
+                Basket b_to = transaction.getDetail_to();
+
+                System.out.println(b_to.getId());
+
+                //Change the carrot amount in manager's freezer
+                Optional<Freezer> f = freezerRepository.findById(f_from.getId());
+                Freezer freezer= f.get();
+                freezer.setCarrot_amt((freezer.getCarrot_amt() - transaction.getCarrot_amt()));
+                freezerRepository.save(freezer);
+
+                //Edit the recipient carrot amount in basket
+                Optional<Basket> b = basketRepository.findById(b_to.getId());
+                Basket basket = b.get();
+                basket.setCarrot_amt((basket.getCarrot_amt() + transaction.getCarrot_amt()));
+                basketRepository.save(basket);
+
+                //update the carrots in manager's freezer into employee's basket
+                List<Carrot> carrots = carrotRepository.findByFreezerId(new ObjectId(f_from.getId()));
                 int count = transaction.getCarrot_amt();
-                for (int i = 0; i<count;i++) {
-                    Carrot c = pendingCarrots.get(i);
-                    c.setType(Carrot.Type.INACTIVE);
-                    c.setBasket(null);
+
+                for (int i = 0 ; i < count ; i++) {
+                    Carrot c = carrots.get(i);
+                    c.setBasket( new Basket());
+                    c.getBasket().setId(b_to.getId());
+                    c.setFreezer(null);
+                    c.setType(Carrot.Type.NORMAL);
                     carrotRepository.save(c);
                 }
+                transaction.setFrom(f_from.getName());
+                transaction.setTo(b_to.getName());
             }
             transaction.setStatus(Transaction.Status.APPROVED);
             transactionRepository.save(transaction);
         }
     }
 
+    public void makeApprovedTransaction (Transaction transaction) {
+        Basket requester = transaction.getDetail_from();
+        List<Carrot> pendingCarrots = carrotRepository.findByBasketId(new ObjectId(requester.getId()))
+                .stream().filter(c -> !c.isUsable()).collect(Collectors.toList());
+
+        int count = transaction.getCarrot_amt();
+        requester.setCarrot_amt(requester.getCarrot_amt()-count);
+        basketRepository.save(requester);
+        for (int i = 0; i<count;i++) {
+            Carrot c = pendingCarrots.get(i);
+            c.setType(Carrot.Type.INACTIVE);
+            c.setBasket(null);
+            carrotRepository.save(c);
+        }
+    }
     public void declineTransaction(String id) {
         if (transactionRepository.findById(id).isPresent()) {
             Transaction transaction = transactionRepository.findById(id).get();
-            if (transaction.getType() == Transaction.Type.BAZAAR
-                    ||(transaction.getSocialFoundation().getTotal_carrot()
-                    < transaction.getSocialFoundation().getMin_carrot())) {
-                Basket requester = transaction.getDetail_from();
-                List<Carrot> pendingCarrots = carrotRepository.findByBasketId(new ObjectId(requester.getId()))
-                        .stream().filter(c -> !c.isUsable()).collect(Collectors.toList());
+            if (transaction.getType() == Transaction.Type.BAZAAR) {
+                makeDeclinedTransaction(transaction);
 
-                int count = transaction.getCarrot_amt();
-                for (int i = 0; i<count;i++) {
-                    Carrot c = pendingCarrots.get(i);
-                    c.setUsable(true);
-                    carrotRepository.save(c);
+                Item requested_Item = transaction.getRequested_item();
+                Optional<Item> i = itemRepository.findById(requested_Item.getId());
+                Item item = i.get();
+                item.setItemSold((item.getItemSold() -1));
+                item.setTotalItem((item.getTotalItem() +1));
+                itemRepository.save(item);
+            }
+            if (transaction.getType() == Transaction.Type.DONATION) {
+                if(transaction.getSocialFoundation().getTotal_carrot()
+                        < transaction.getSocialFoundation().getMin_carrot()){
+                    makeDeclinedTransaction(transaction);
                 }
             }
             transaction.setStatus(Transaction.Status.DECLINED);
@@ -220,12 +244,29 @@ public class TransactionService {
         }
     }
 
+    public void makeDeclinedTransaction (Transaction transaction) {
+        Basket requester = transaction.getDetail_from();
+        List<Carrot> pendingCarrots = carrotRepository.findByBasketId(new ObjectId(requester.getId()))
+                .stream().filter(c -> !c.isUsable()).collect(Collectors.toList());
+
+        int count = transaction.getCarrot_amt();
+        requester.setCarrot_amt(requester.getCarrot_amt()+count);
+        basketRepository.save(requester);
+        for (int i = 0; i<count;i++) {
+            Carrot c = pendingCarrots.get(i);
+            c.setUsable(true);
+            carrotRepository.save(c);
+        }
+    }
 
     public List<Transaction> findTransactionByEmployee (String id) {
+
         List<Transaction> temp = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id));
+        List<Transaction> temp1 = transactionRepository.findFreezerFromByEmployeeId(new ObjectId(id));
         List<Transaction> result = transactionRepository.findDetailToByEmployeeId(new ObjectId(id));
 
         result.addAll(temp);
+        result.addAll(temp1);
         return result;
     }
 
