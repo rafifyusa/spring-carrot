@@ -62,11 +62,14 @@ public class CarrotServiceUsingDB implements CarrotService {
         return usableCarrotsByFreezer;
     }
 
-    public List<Carrot> findFreshCarrotByBarnId(String id) {
+/*    public List<Carrot> findFreshCarrotByBarnId(String id) {
         List<Carrot> usableCarrotsByBarn = carrotRepository.findByBarnId(new ObjectId(id))
                 .stream().filter(e-> e.getType() == Carrot.Type.FRESH)
                 .collect(Collectors.toList());
         return usableCarrotsByBarn;
+    }*/
+    public List<Carrot> findFreshCarrotByBarnId(String id) {
+        return carrotRepository.findCarrotByBarnIdAndType(new ObjectId(id),"FRESH");
     }
 
     public void createFrozenCarrotOnBarnCreation(long count, Barn barn) {

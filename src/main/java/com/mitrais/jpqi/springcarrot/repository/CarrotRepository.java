@@ -18,4 +18,7 @@ public interface CarrotRepository extends MongoRepository<Carrot, String> {
 
     @Query("{'barn.$id': ?0}")
     List<Carrot> findByBarnId(ObjectId id);
+
+    @Query("{'barn.$id': ?0, 'type': ?1}")
+    List<Carrot> findCarrotByBarnIdAndType(ObjectId barnId, String type);
 }

@@ -39,6 +39,8 @@ public class TransactionService {
     @Autowired
     private EmployeeServiceUsingDB employeeServiceUsingDB;
     @Autowired
+    private BarnService barnService;
+    @Autowired
     MongoTemplate mongoTemplate;
 
 
@@ -147,10 +149,63 @@ public class TransactionService {
 
         }
 
+        if(transaction.getType() == Transaction.Type.FUNNEL){
+            funnelTransaction(transaction);
+        }
         //set the transaction date
         if (transaction.getTransaction_date() == null) { transaction.setTransaction_date(LocalDateTime.now()); }
         transaction.setStatus(Transaction.Status.PENDING);
         transactionRepository.save(transaction);
+    }
+
+    public void funnelTransaction(Transaction transaction){
+        //Funnel for From SM to M
+        if(transaction.getFreezer_from() != null){
+            Freezer f_from = freezerRepository.findByOwner(new ObjectId(transaction.getFreezer_from().getId()));
+            Freezer f_to = freezerRepository.findByOwner(new ObjectId(transaction.getFreezer_to().getId()));
+
+            //Update Freezer amount of SM
+            double newCarrotAmount = f_from.getCarrot_amt() - transaction.getCarrot_amt();
+            f_from.setCarrot_amt(newCarrotAmount);
+            freezerRepository.save(f_from);
+
+            //Update Freezer amount of M
+            double newCarrotAmount1 = f_to.getCarrot_amt() + transaction.getCarrot_amt();
+            f_to.setCarrot_amt(newCarrotAmount1);
+            freezerRepository.save(f_to);
+
+            //Update carrot ownership
+            List<Carrot> carrots = carrotRepository.findByFreezerId(new ObjectId(f_from.getId()));
+            carrots.forEach(carrot -> {
+                carrot.setFreezer(f_to);
+                carrot.setUpdated_at(LocalDateTime.now());
+                carrotRepository.save(carrot);
+            });
+        }
+        //Funnel for from Barn to SM
+        else if (transaction.getFreezer_from() == null) {
+            Freezer f_to = freezerRepository.findByOwner(new ObjectId(transaction.getFreezer_to().getId()));
+            Barn barn = barnService.findBarnById(transaction.getBarn().getId());
+
+            //Update SM freezer amount
+            double newCarrotAmount = f_to.getCarrot_amt() + transaction.getCarrot_amt();
+            f_to.setCarrot_amt(newCarrotAmount);
+            freezerRepository.save(f_to);
+
+            //Update Barn carrot left
+            long newCarrotLeft = barn.getCarrotLeft() - transaction.getCarrot_amt();
+            barn.setCarrotLeft(newCarrotLeft);
+            barnService.createBarn(barn);
+
+            //Update Carrot ownership
+            List<Carrot> carrots = carrotRepository.findCarrotByBarnIdAndType(new ObjectId(barn.getId()), "FRESH");
+            carrots.forEach(carrot -> {
+                carrot.setFreezer(f_to);
+                carrot.setUpdated_at(LocalDateTime.now());
+                carrot.setType(Carrot.Type.FROZEN);
+                carrotRepository.save(carrot);
+            });
+        }
     }
 
     public void approveTransaction(String id) {

@@ -38,4 +38,8 @@ public class CarrotController {
         carrotServiceUsingDB.updateCarrot(carrot);
     }
 
+    @GetMapping("fresh-by-barn")
+    public List<Carrot> getFreshCarrotsByBarnId (@RequestParam String barnId){
+        return carrotServiceUsingDB.findFreshCarrotByBarnId(barnId);}
+
 }
