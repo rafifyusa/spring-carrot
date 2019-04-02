@@ -31,6 +31,8 @@ public class Transaction {
     private Item requested_item;
     @DBRef
     private SocialFoundation socialFoundation;
+    @DBRef
+    private Achievement achievementClaimed;
     private String description;
     private int carrot_amt;
     private LocalDateTime transaction_date;
@@ -41,7 +43,7 @@ public class Transaction {
 
     public Transaction(String id, Type type, String from, String to, Basket detail_from,
                        Basket detail_to, Freezer freezer_from, Item requested_item, String description,
-                       SocialFoundation socialFoundation, int carrot_amt,
+                       SocialFoundation socialFoundation, Achievement achievementClaimed, int carrot_amt,
                        LocalDateTime transaction_date, Status status) {
         this.id = id;
         this.type = type;
@@ -53,6 +55,7 @@ public class Transaction {
         this.requested_item = requested_item;
         this.description = description;
         this.socialFoundation = socialFoundation;
+        this.achievementClaimed = achievementClaimed;
         this.carrot_amt = carrot_amt;
         this.transaction_date = transaction_date;
         this.status = status;
@@ -124,6 +127,10 @@ public class Transaction {
     public SocialFoundation getSocialFoundation() { return socialFoundation; }
 
     public void setSocialFoundation(SocialFoundation socialFoundation) { this.socialFoundation = socialFoundation; }
+
+    public Achievement getAchievementClaimed() { return achievementClaimed; }
+
+    public void setAchievementClaimed(Achievement achievementClaimed) { this.achievementClaimed = achievementClaimed; }
 
     public Status getStatus() { return status; }
 
