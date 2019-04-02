@@ -306,6 +306,7 @@ public class TransactionService {
                         .andExpression("status").as("status")
                         .andExpression("detail_to.employee.id").as("employeeid"),
                 Aggregation.match(Criteria.where("foo").is(new ObjectId(id))),
+                Aggregation.match(Criteria.where("status").is("APPROVED")),
                 Aggregation.group("foo").sum("carrot_amt").as("total")
                         .last("kk").as("kk"),
                 Aggregation.project()
