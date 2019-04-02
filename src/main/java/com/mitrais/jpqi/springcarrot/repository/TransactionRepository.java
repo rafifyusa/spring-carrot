@@ -15,6 +15,9 @@ public interface TransactionRepository extends MongoRepository<Transaction, Stri
     @Query("{'detail_from.employee.$id': ?0}")
     List<Transaction>  findDetailFromByEmployeeId (ObjectId id);
 
+    @Query("{'freezer_from.employee.$id': ?0}")
+    List<Transaction>  findFreezerFromByEmployeeId (ObjectId id);
+
 /*    @Query("{'type' : ?0}")
     List<Transaction> findTransactionByType (ObjectId id);*/
 
