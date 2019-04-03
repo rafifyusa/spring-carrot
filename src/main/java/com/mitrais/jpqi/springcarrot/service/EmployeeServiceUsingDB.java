@@ -131,6 +131,8 @@ public class EmployeeServiceUsingDB implements EmployeeService {
             Gson gson = new Gson();
             Optional<Basket> basket = basketRepository.findByEmployee(new ObjectId(emp.getId()));
             basket.ifPresent(basket1 -> kembalian.put("basket", gson.toJson(basket1)));
+            Freezer freezer = freezerRepository.findByOwner(new ObjectId(emp.getId()));
+            kembalian.put("freezer", gson.toJson(freezer));
             kembalian.put("status", "true");
             kembalian.put("message", "employee ditemukan");
             kembalian.put("employee", gson.toJson(emp));
