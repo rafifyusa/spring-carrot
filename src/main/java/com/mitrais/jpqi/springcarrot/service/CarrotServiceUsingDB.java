@@ -1,9 +1,13 @@
 package com.mitrais.jpqi.springcarrot.service;
 
+import com.google.gson.Gson;
 import com.mitrais.jpqi.springcarrot.model.Barn;
 import com.mitrais.jpqi.springcarrot.model.Basket;
 import com.mitrais.jpqi.springcarrot.model.Carrot;
 import com.mitrais.jpqi.springcarrot.repository.CarrotRepository;
+import com.mitrais.jpqi.springcarrot.responses.CarrotResponse;
+import com.mitrais.jpqi.springcarrot.responses.Response;
+import com.mongodb.WriteResult;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -31,8 +35,21 @@ public class CarrotServiceUsingDB implements CarrotService {
     }
 
     @Override
-    public void createCarrot(Carrot carrot) {
-        carrotRepository.save(carrot);
+    public CarrotResponse createCarrot(Carrot carrot) {
+        CarrotResponse res = new CarrotResponse();
+        try {
+            System.out.println("execute");
+            carrotRepository.save(carrot);
+            res.setStatus(true);
+            res.setMessage("carrot successfully added");
+            System.out.println(new Gson().toJson(res));
+            return res;
+        } catch (NullPointerException e) {
+            res.setStatus(false);
+            res.setMessage(e.getMessage());
+            System.out.println(new Gson().toJson(res));
+            return res;
+        }
     }
 
     @Override

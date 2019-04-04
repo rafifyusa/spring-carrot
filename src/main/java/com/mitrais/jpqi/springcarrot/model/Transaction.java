@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.model;
 
+import com.mongodb.WriteResult;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -9,8 +10,7 @@ import javax.persistence.Id;
 import java.time.LocalDateTime;
 
 @Document("transactions")
-public class Transaction {
-
+public class Transaction{
     public enum Type{
         BAZAAR, REWARD, SHARED, DONATION, FUNNEL
     }
@@ -40,8 +40,8 @@ public class Transaction {
     private LocalDateTime transaction_date;
     private Status status;
 
-    public Transaction(){}
-
+    public Transaction(){
+    }
 
     public Transaction(String id, Type type, String from, String to, Basket detail_from,
                        Basket detail_to, Freezer freezer_from, Freezer freezer_to, Item requested_item, String description,
@@ -64,7 +64,6 @@ public class Transaction {
         this.transaction_date = transaction_date;
         this.status = status;
     }
-
     //Getter & Setters
     public String getId() {
         return id;

@@ -2,6 +2,7 @@ package com.mitrais.jpqi.springcarrot.controller;
 
 import com.mitrais.jpqi.springcarrot.model.Hasil;
 import com.mitrais.jpqi.springcarrot.model.Transaction;
+import com.mitrais.jpqi.springcarrot.responses.TransactionResponse;
 import com.mitrais.jpqi.springcarrot.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -37,8 +38,8 @@ public class TransactionController {
     }
 
     @PostMapping
-    public void createTransaction(@RequestBody Transaction transaction) {
-        transactionService.createTransaction(transaction);
+    public TransactionResponse createTransaction(@RequestBody Transaction transaction) {
+        return transactionService.createTransaction(transaction);
     }
 
     @PatchMapping("approve")

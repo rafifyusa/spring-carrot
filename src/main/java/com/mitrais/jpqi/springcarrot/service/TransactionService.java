@@ -2,6 +2,8 @@ package com.mitrais.jpqi.springcarrot.service;
 
 import com.mitrais.jpqi.springcarrot.model.*;
 import com.mitrais.jpqi.springcarrot.repository.*;
+import com.mitrais.jpqi.springcarrot.responses.TransactionResponse;
+import com.mongodb.WriteResult;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -43,7 +45,6 @@ public class TransactionService {
     @Autowired
     MongoTemplate mongoTemplate;
 
-
     public List<Transaction> findAllTransactions() {return transactionRepository.findAll();}
 
     public void updateTransaction(String id, Transaction transaction) {
@@ -51,7 +52,7 @@ public class TransactionService {
         transactionRepository.save(transaction);
     }
 
-    public void createTransaction(Transaction transaction) {
+    public TransactionResponse createTransaction(Transaction transaction) {
 
         if (transaction.getType() == Transaction.Type.REWARD) {
             //Codes if the transaction is a reward (from manager freezer to employee's basket)
@@ -155,7 +156,17 @@ public class TransactionService {
         //set the transaction date
         if (transaction.getTransaction_date() == null) { transaction.setTransaction_date(LocalDateTime.now()); }
         transaction.setStatus(Transaction.Status.PENDING);
-        transactionRepository.save(transaction);
+
+        TransactionResponse res = new TransactionResponse();
+        try {
+            transactionRepository.save(transaction);
+            res.setStatus(true);
+            res.setMessage("transaction successfully added");
+        } catch (NullPointerException e) {
+            res.setStatus(false);
+            res.setMessage(e.getMessage());
+        }
+        return res;
     }
 
     public void funnelTransaction(Transaction transaction){

@@ -4,6 +4,8 @@ import com.mitrais.jpqi.springcarrot.model.Basket;
 import com.mitrais.jpqi.springcarrot.model.Carrot;
 import com.mitrais.jpqi.springcarrot.model.Employee;
 import com.mitrais.jpqi.springcarrot.repository.CarrotRepository;
+import com.mitrais.jpqi.springcarrot.responses.CarrotResponse;
+import com.mitrais.jpqi.springcarrot.responses.Response;
 import com.mitrais.jpqi.springcarrot.service.CarrotService;
 import com.mitrais.jpqi.springcarrot.service.CarrotServiceUsingDB;
 //import javafx.scene.layout.BackgroundImage;
@@ -29,8 +31,9 @@ public class CarrotController {
     }
 
     @PostMapping
-    void createCarrots(@RequestBody Carrot carrot) {
-        carrotServiceUsingDB.createCarrot(carrot);
+    public CarrotResponse createCarrots(@RequestBody Carrot carrot) {
+        System.out.println("disisni");
+        return carrotServiceUsingDB.createCarrot(carrot);
     }
 
     @PatchMapping

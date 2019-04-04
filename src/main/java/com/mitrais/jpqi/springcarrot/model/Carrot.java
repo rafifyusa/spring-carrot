@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.model;
 
+import com.mongodb.WriteResult;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -11,6 +12,9 @@ import java.time.LocalDateTime;
 
 @Document(collection = "carrots")
 public class Carrot {
+    public Carrot() {
+    }
+
     public enum Type{
         NORMAL, FROZEN, INACTIVE, FRESH
     }
@@ -27,8 +31,6 @@ public class Carrot {
     @DBRef
     private Barn barn;
     private boolean usable = true;
-
-    public Carrot() {}
 
     public Carrot(String id, Type type, LocalDateTime created_at,
                   LocalDateTime updated_at, Basket basket, Freezer freezer, Barn barn,boolean usable) {
