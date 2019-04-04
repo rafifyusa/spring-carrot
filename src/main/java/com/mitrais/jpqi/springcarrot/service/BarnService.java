@@ -57,6 +57,8 @@ public class BarnService {
         BarnResponse res = new BarnResponse();
         try {
             barnRepository.save(barn);
+            long count = barn.getBudgetPerStaff()*employeeService.getStaffRole("STAFF").getListEmployee().size();
+            carrotServiceUsingDB.createFrozenCarrotOnBarnCreation(count, barn);
             res.setStatus(true);
             res.setMessage("Barn successfully inserted");
         } catch (NullPointerException e) {

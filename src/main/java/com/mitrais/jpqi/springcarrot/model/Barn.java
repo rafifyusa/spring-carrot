@@ -20,12 +20,13 @@ public class Barn {
     private Long carrotLeft;
     private boolean status;
     private boolean released;
+    private long budgetPerStaff;
     @DBRef
     private List<Award> awards;
 
     public Barn(){}
     public Barn(String id, String name, Employee owner, LocalDate startPeriod, LocalDate endPeriod,
-                Long totalCarrot, Long carrotLeft, boolean status, boolean released, List<Award> awards) {
+                Long totalCarrot, Long carrotLeft, boolean status, boolean released,long budgetPerStaff, List<Award> awards) {
         this.id = id;
         this.name = name;
         this.owner = owner;
@@ -35,6 +36,7 @@ public class Barn {
         this.carrotLeft = carrotLeft;
         this.status = status;
         this.released = released;
+        this.budgetPerStaff = budgetPerStaff;
         this.awards = awards;
     }
 
@@ -79,4 +81,8 @@ public class Barn {
     public List<Award> getAwards() { return awards; }
 
     public void setAwards(List<Award> awards) { this.awards = awards; }
+
+    public long getBudgetPerStaff() { return budgetPerStaff; }
+
+    public void setBudgetPerStaff(long budgetPerStaff) { this.budgetPerStaff = budgetPerStaff; }
 }
