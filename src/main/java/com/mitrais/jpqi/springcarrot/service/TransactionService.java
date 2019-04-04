@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.service;
 
+import com.google.gson.Gson;
 import com.mitrais.jpqi.springcarrot.model.*;
 import com.mitrais.jpqi.springcarrot.repository.*;
 import com.mitrais.jpqi.springcarrot.responses.TransactionResponse;
@@ -45,16 +46,33 @@ public class TransactionService {
     @Autowired
     MongoTemplate mongoTemplate;
 
-    public List<Transaction> findAllTransactions() {return transactionRepository.findAll();}
+    public TransactionResponse findAllTransactions() {
+        TransactionResponse res = new TransactionResponse();
+        res.setStatus(true);
+        res.setMessage("find all transaction");
+        res.setListTransaction(transactionRepository.findAll());
+        return res;
+    }
 
-    public void updateTransaction(String id, Transaction transaction) {
-        transaction.setId(id);
-        transactionRepository.save(transaction);
+    public TransactionResponse updateTransaction(String id, Transaction transaction) {
+        TransactionResponse res = new TransactionResponse();
+        try {
+            transaction.setId(id);
+            transactionRepository.save(transaction);
+            res.setStatus(true);
+            res.setMessage("transaction successfully updated");
+        } catch (NullPointerException e) {
+            res.setStatus(false);
+            res.setMessage(e.getMessage());
+        }
+        return res;
     }
 
     public TransactionResponse createTransaction(Transaction transaction) {
-
+        TransactionResponse res = new TransactionResponse();
         if (transaction.getType() == Transaction.Type.REWARD) {
+            System.out.println(new Gson().toJson(transaction.getAchievementClaimed()));
+            System.out.println(new Gson().toJson(transaction));
             //Codes if the transaction is a reward (from manager freezer to employee's basket)
             if (transaction.getFreezer_from() != null) {
                 Freezer f_from = transaction.getFreezer_from();
@@ -146,6 +164,9 @@ public class TransactionService {
             }
             else {
                 System.out.println("Insufficient amount");
+                res.setStatus(false);
+                res.setMessage("Insufficient amount");
+                return res;
             }
 
         }
@@ -157,7 +178,6 @@ public class TransactionService {
         if (transaction.getTransaction_date() == null) { transaction.setTransaction_date(LocalDateTime.now()); }
         transaction.setStatus(Transaction.Status.PENDING);
 
-        TransactionResponse res = new TransactionResponse();
         try {
             transactionRepository.save(transaction);
             res.setStatus(true);
@@ -196,7 +216,7 @@ public class TransactionService {
         //Funnel for from Barn to SM
         else if (transaction.getFreezer_from() == null) {
             Freezer f_to = freezerRepository.findByOwner(new ObjectId(transaction.getFreezer_to().getId()));
-            Barn barn = barnService.findBarnById(transaction.getBarn().getId());
+            Barn barn = barnService.findBarnById(transaction.getBarn().getId()).getBarn();
 
             //Update SM freezer amount
             double newCarrotAmount = f_to.getCarrot_amt() + transaction.getCarrot_amt();
@@ -219,7 +239,9 @@ public class TransactionService {
         }
     }
 
-    public void approveTransaction(String id) {
+    public TransactionResponse approveTransaction(String id) {
+        TransactionResponse res = new TransactionResponse();
+
         if (transactionRepository.findById(id).isPresent()) {
             Transaction transaction = transactionRepository.findById(id).get();
             if (transaction.getType() == Transaction.Type.BAZAAR) {
@@ -228,7 +250,10 @@ public class TransactionService {
             if(transaction.getType() == Transaction.Type.DONATION){
                 if (transaction.getSocialFoundation().getTotal_carrot()
                         < transaction.getSocialFoundation().getMin_carrot()){
-                    return;
+                    // gagal
+                    res.setStatus(false);
+                    res.setMessage("total carrot less than minimum carrot exchange");
+                    return res;
                 }
                 else{
                     makeApprovedTransaction(transaction);
@@ -271,10 +296,23 @@ public class TransactionService {
                 transaction.setTo(b_to.getName());
             }
             transaction.setStatus(Transaction.Status.APPROVED);
-            transactionRepository.save(transaction);
+            try {
+                transactionRepository.save(transaction);
+                res.setStatus(true);
+                res.setMessage("transaction approved");
+            } catch (NullPointerException e) {
+                res.setStatus(false);
+                res.setMessage(e.getMessage());
+            }
+            return res;
         }
+
+        res.setStatus(false);
+        res.setMessage("transaction not found");
+        return res;
     }
 
+    //used by another method
     public void makeApprovedTransaction (Transaction transaction) {
         Basket requester = transaction.getDetail_from();
         List<Carrot> pendingCarrots = carrotRepository.findByBasketId(new ObjectId(requester.getId()))
@@ -290,7 +328,9 @@ public class TransactionService {
             carrotRepository.save(c);
         }
     }
-    public void declineTransaction(String id) {
+
+    public TransactionResponse declineTransaction(String id) {
+        TransactionResponse res = new TransactionResponse();
         if (transactionRepository.findById(id).isPresent()) {
             Transaction transaction = transactionRepository.findById(id).get();
             if (transaction.getType() == Transaction.Type.BAZAAR) {
@@ -310,10 +350,24 @@ public class TransactionService {
                 }
             }
             transaction.setStatus(Transaction.Status.DECLINED);
-            transactionRepository.save(transaction);
+
+            try {
+                transactionRepository.save(transaction);
+                res.setStatus(true);
+                res.setMessage("transaction declined");
+            } catch (NullPointerException e) {
+                res.setStatus(false);
+                res.setMessage(e.getMessage());
+            }
+            return res;
         }
+
+        res.setStatus(false);
+        res.setMessage("transaction not found");
+        return res;
     }
 
+    //used by another method
     public void makeDeclinedTransaction (Transaction transaction) {
         Basket requester = transaction.getDetail_from();
         List<Carrot> pendingCarrots = carrotRepository.findByBasketId(new ObjectId(requester.getId()))
@@ -329,19 +383,35 @@ public class TransactionService {
         }
     }
 
-    public List<Transaction> findTransactionByEmployee (String id) {
-
+    public TransactionResponse findTransactionByEmployee (String id) {
+        TransactionResponse res = new TransactionResponse();
         List<Transaction> temp = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id));
         List<Transaction> temp1 = transactionRepository.findFreezerFromByEmployeeId(new ObjectId(id));
         List<Transaction> result = transactionRepository.findDetailToByEmployeeId(new ObjectId(id));
 
         result.addAll(temp);
         result.addAll(temp1);
-        return result;
+        res.setStatus(true);
+        if (result.size() > 0) {
+            res.setMessage("Transaction found");
+        } else {
+            res.setMessage("Transaction not found");
+        }
+        res.setListTransaction(result);
+        return res;
     }
 
-    public List<Transaction> findTransactionByBazaarId (String id) {
-        return transactionRepository.findTransactionByBazaarId(new ObjectId(id));
+    public TransactionResponse findTransactionByBazaarId (String id) {
+        TransactionResponse res = new TransactionResponse();
+        List<Transaction> transactionList = transactionRepository.findTransactionByBazaarId(new ObjectId(id));
+        res.setStatus(true);
+        if (transactionList.size() > 0) {
+            res.setMessage("Transaction found");
+        } else {
+            res.setMessage("Transaction not found");
+        }
+        res.setListTransaction(transactionList);
+        return res;
     }
 
     public int countCarrotSpentForRewardItem (String id) {
@@ -370,26 +440,47 @@ public class TransactionService {
         return total_spent;
     }
 
-    public List<Transaction> findAllPendingTransaction () {
+    public TransactionResponse findAllPendingTransaction () {
+        TransactionResponse res = new TransactionResponse();
         Query query = new Query();
         query.addCriteria(Criteria.where("status").is("PENDING"));
         List <Transaction> pendingTransactions = mongoTemplate.find(query, Transaction.class);
-        return  pendingTransactions;
+        res.setStatus(true);
+        if (pendingTransactions.size() > 0) {
+            res.setMessage("Transaction found");
+        } else {
+            res.setMessage("Transaction not found");
+        }
+        res.setListTransaction(pendingTransactions);
+        return res;
     }
 
-    public List<Transaction> findTransactionByType (String status) {
+    public TransactionResponse findTransactionByType (String status) {
+        TransactionResponse res = new TransactionResponse();
         List <Transaction> transactions = transactionRepository.findTransactionByType(status);
-        return  transactions;
+        res.setStatus(true);
+        if (transactions.size() > 0) {
+            res.setMessage("Transaction found");
+        } else {
+            res.setMessage("Transaction not found");
+        }
+        res.setListTransaction(transactions);
+        return res;
     }
 
-    public List<Transaction> findTransactionByTypeAndDate(String[] status, LocalDateTime startDate, LocalDateTime endDate) {
-/*        Query query = new Query();
-        query.addCriteria(Criteria.where("transaction_date").gte(startDate).lt(endDate)
-                .andOperator(Criteria.where("type").is(status)));
-
-        List<Transaction> transactions = mongoTemplate.find(query, Transaction.class);*/
-        List<Transaction> transactions = transactionRepository.findTransactionbByTypeAndDate(status, startDate, endDate);
-        return transactions;
+    public TransactionResponse findTransactionByTypeAndDate(String[] status, LocalDateTime startDate,
+                                                          LocalDateTime endDate) {
+        TransactionResponse res = new TransactionResponse();
+        List<Transaction> transactions = transactionRepository.findTransactionbByTypeAndDate(status,
+                startDate, endDate);
+        res.setStatus(true);
+        if (transactions.size() > 0) {
+            res.setMessage("Transaction found");
+        } else {
+            res.setMessage("Transaction not found");
+        }
+        res.setListTransaction(transactions);
+        return res;
     }
 
     public List<Hasil> sortByMostEarn() {

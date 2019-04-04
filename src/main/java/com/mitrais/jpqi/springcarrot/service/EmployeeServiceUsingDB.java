@@ -8,6 +8,8 @@ import com.mitrais.jpqi.springcarrot.oauth2.JwtTokenProvider;
 import com.mitrais.jpqi.springcarrot.repository.BasketRepository;
 import com.mitrais.jpqi.springcarrot.repository.EmployeeRepository;
 import com.mitrais.jpqi.springcarrot.repository.FreezerRepository;
+import com.mitrais.jpqi.springcarrot.responses.BasketResponse;
+import com.mitrais.jpqi.springcarrot.responses.EmployeeResponse;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -55,7 +57,8 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     }
 
     @Override
-    public void createEmployee(Employee employee) {
+    public EmployeeResponse createEmployee(Employee employee) {
+        EmployeeResponse res = new EmployeeResponse();
         employeeRepository.save(employee);
 
         if(employee.getRole() == Employee.Role.SENIOR_MANAGER || employee.getRole() == Employee.Role.MANAGER){
@@ -72,29 +75,72 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         basket.setCreated_at(LocalDateTime.now());
         basket.setEmployee(employee);
         basket.setName(employee.getName() + "'s Basket");
-        basketRepository.save(basket);
+        try {
+            basketRepository.save(basket);
+            res.setStatus(true);
+            res.setMessage("Employee successfully inserted");
+        } catch (NullPointerException e) {
+            res.setStatus(false);
+            res.setMessage(e.getMessage());
+        }
+        return res;
     }
 
     @Override
-    public void deleteEmployee(String id) {
-        employeeRepository.deleteById(id);
+    public EmployeeResponse deleteEmployee(String id) {
+        EmployeeResponse res = new EmployeeResponse();
+        try {
+            employeeRepository.deleteById(id);
+            res.setStatus(true);
+            res.setMessage("Employee successfully removed");
+        } catch (NullPointerException e) {
+            res.setStatus(false);
+            res.setMessage(e.getMessage());
+        }
+        return res;
     }
 
     @Override
-    public void updateEmployee(String id, Employee employee) {
-        employee.setId(id);
-        employeeRepository.save(employee);
+    public EmployeeResponse updateEmployee(String id, Employee employee) {
+        EmployeeResponse res = new EmployeeResponse();
+        try {
+            employee.setId(id);
+            employeeRepository.save(employee);
+            res.setStatus(true);
+            res.setMessage("Employee successfully updated");
+        } catch (NullPointerException e) {
+            res.setStatus(false);
+            res.setMessage(e.getMessage());
+        }
+        return res;
     }
 
     @Override
-    public List<Employee> getAllEmployee() {
-        return employeeRepository.findAll();
+    public EmployeeResponse getAllEmployee() {
+        EmployeeResponse res = new EmployeeResponse();
+        res.setStatus(true);
+        res.setListEmployee(employeeRepository.findAll());
+        if (res.getListEmployee().size() > 0) {
+            res.setMessage("Employee found");
+        } else{
+            res.setMessage("Employee not found");
+        }
+        return res;
     }
 
     @Override
-    public Employee getEmployeeById(String id) {
+    public EmployeeResponse getEmployeeById(String id) {
+        EmployeeResponse res = new EmployeeResponse();
         Optional<Employee> temp = employeeRepository.findById(id);
-        return temp.orElse(null);
+        if (temp.isPresent()) {
+            res.setEmployee(temp.get());
+            res.setStatus(true);
+            res.setMessage("Employee found");
+        } else {
+            res.setStatus(false);
+            res.setMessage("Employee not found");
+        }
+        return res;
     }
 
     @Override
@@ -145,7 +191,8 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     }
 
     @Override
-    public List<Basket> getRecentDOB() { // get the matching employee's dob with last 2 days.
+    public BasketResponse getRecentDOB() { // get the matching employee's dob with last 2 days.
+        BasketResponse res = new BasketResponse();
         LocalDate localDate = LocalDate.now();
         LocalDate recentDOB1 = localDate.minusDays(1);
         LocalDate recentDOB2 = localDate.minusDays(2);
@@ -164,12 +211,15 @@ public class EmployeeServiceUsingDB implements EmployeeService {
                 listBasket.add(basket1.get());
             }
         });
-        return listBasket;
+        res.setStatus(true);
+        res.setListBasket(listBasket);
+        return res;
     }
 
     // PATCH implementation manual version
     @Override
-    public Employee partialUpdateEmployee(String id, Employee employee) {
+    public EmployeeResponse partialUpdateEmployee(String id, Employee employee) {
+        EmployeeResponse res = new EmployeeResponse();
         Employee temp = employeeRepository.findById(id).orElse(null);
         if (temp != null) {
             if (employee.getId() != null) {
@@ -206,33 +256,41 @@ public class EmployeeServiceUsingDB implements EmployeeService {
                 temp.setGroup(employee.getGroup());
             }
         }
-        employeeRepository.save(temp);
-        return temp;
+        try {
+            employeeRepository.save(temp);
+            res.setStatus(true);
+            res.setMessage("employee successfully updated");
+            res.setEmployee(temp);
+        } catch (NullPointerException e) {
+            res.setStatus(false);
+            res.setMessage(e.getMessage());
+        }
+        return res;
     }
 
     // List employee birthday by role
     @Override
-    public List<Employee> getStaffRole(String role) {
-        return employeeRepository.findByRole(role);
+    public EmployeeResponse getStaffRole(String role) {
+        EmployeeResponse res = new EmployeeResponse();
+        List<Employee>  list = employeeRepository.findByRole(role);
+        res.setStatus(true);
+        res.setListEmployee(list);
+        return res;
     }
-
-    //TODO Create getEmployeeByGroup
-/*    @Override
-    public List<Employee> getEmployeeByGroup(Group group){
-        List<Employee> employeeInGroup = new ArrayList<>();
-
-
-
-        return employeeInGroup;
-    }*/
-
-    public List<Employee> getGroupMember(String id) {
+    public EmployeeResponse getGroupMember(String id) {
+        EmployeeResponse res = new EmployeeResponse();
         List<Employee> members = employeeRepository.findByGroupId(new ObjectId(id));
         if (members.isEmpty()){
             System.out.println("member empty");
-            return null;
+            res.setStatus(false);
+            res.setMessage("member empty");
+        } else {
+            res.setStatus(true);
+            res.setMessage("member found");
+            res.setListEmployee(members);
         }
-        else return members;
+
+        return res;
     }
 
     @Override
@@ -240,7 +298,8 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         return employeeRepository.findBySpvLevel(spvlevel);
     }
 
-    public void insertMemberToGroup(String id, List<Group> group) {
+    public EmployeeResponse insertMemberToGroup(String id, List<Group> group) {
+        EmployeeResponse res = new EmployeeResponse();
         Optional<Employee> employee = employeeRepository.findById(id);
         if (employee.isPresent()) {
             Employee emp = employee.get();
@@ -249,19 +308,43 @@ public class EmployeeServiceUsingDB implements EmployeeService {
             }
 //
             group.forEach(e -> emp.getGroup().add(e));
-            employeeRepository.save((emp));
+            try {
+                employeeRepository.save((emp));
+                res.setStatus(true);
+                res.setMessage("Employee successfully inserted");
+            } catch (NullPointerException e) {
+                res.setStatus(false);
+                res.setMessage(e.getMessage());
+            }
+        } else {
+            res.setStatus(false);
+            res.setMessage("employee not found");
         }
+        return res;
     }
 
-    public void deleteEmployeeGroup(String id, Group group){
+    public EmployeeResponse deleteEmployeeGroup(String id, Group group){
+        EmployeeResponse res = new EmployeeResponse();
         Optional<Employee> employee = employeeRepository.findById(id);
         if (employee.isPresent()) {
             Employee emp = employee.get();
             if (emp.getGroup() != null) {
                 emp.getGroup().remove(group);
             }
-            employeeRepository.save(emp);
+
+            try {
+                employeeRepository.save(emp);
+                res.setStatus(true);
+                res.setMessage("Employee successfully deleted");
+            } catch (NullPointerException e) {
+                res.setStatus(false);
+                res.setMessage(e.getMessage());
+            }
+        } else{
+            res.setStatus(false);
+            res.setMessage("employee not found");
         }
+        return res;
     }
 
     public List<Employee> findAllEmployeeWithoutStaffGroup() {
@@ -296,14 +379,14 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     }
 
     public void makeEmployeeAsAdmin (String id) {
-        Employee emp = getEmployeeById(id);
+        Employee emp = getEmployeeById(id).getEmployee();
         emp.setRole(Employee.Role.ADMIN);
         employeeRepository.save(emp);
     }
 
     public void revokeEmployeefromAdmin(String id, Employee role) {
         System.out.println(role);
-        Employee emp = getEmployeeById(id);
+        Employee emp = getEmployeeById(id).getEmployee();
         emp.setRole(role.getRole());
         employeeRepository.save(emp);
     }
@@ -325,8 +408,8 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     }
 
     // Patch upload images
-    public void picturePatch (String imageString, String id) {
-
+    public EmployeeResponse picturePatch (String imageString, String id) {
+        EmployeeResponse res = new EmployeeResponse();
         // Find employee first
         Employee employee = employeeRepository.findById(id).orElse(null);
 
@@ -346,7 +429,16 @@ public class EmployeeServiceUsingDB implements EmployeeService {
             String profilePictureLoc = storeImage(imageString, id);
             employee.setProfilePicture(profilePictureLoc);
         }
-        employeeRepository.save(employee);
+        try {
+            employeeRepository.save(employee);
+            res.setStatus(true);
+            res.setMessage("image successfully updated");
+            res.setEmployee(employee);
+        } catch (NullPointerException e) {
+            res.setStatus(false);
+            res.setMessage(e.getMessage());
+        }
+        return res;
     }
 
     /**
@@ -403,7 +495,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     }
 
     public Set<Achievement> findAnEmployeeAchievement(String id) {
-        return getEmployeeById(id).getAchievement();
+        return getEmployeeById(id).getEmployee().getAchievement();
     }
 }
 

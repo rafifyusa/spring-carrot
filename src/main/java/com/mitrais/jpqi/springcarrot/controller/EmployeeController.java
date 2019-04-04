@@ -1,19 +1,10 @@
 package com.mitrais.jpqi.springcarrot.controller;
-
 import com.mitrais.jpqi.springcarrot.model.*;
+import com.mitrais.jpqi.springcarrot.responses.BasketResponse;
+import com.mitrais.jpqi.springcarrot.responses.EmployeeResponse;
 import com.mitrais.jpqi.springcarrot.service.EmployeeServiceUsingDB;
-import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,24 +14,18 @@ import java.util.Set;
 @CrossOrigin
 @RequestMapping("api/employees")
 public class EmployeeController {
-    private ServletContext servletContext;
-
+    @Autowired
     private EmployeeServiceUsingDB employeeServiceUsingDB;
-
-    public EmployeeController(EmployeeServiceUsingDB employeeServiceUsingDB) {
-        this.employeeServiceUsingDB = employeeServiceUsingDB;
-    }
-
     // Create newupdgroup
     @PostMapping
-    public void create(@RequestBody Employee employee) {
-        employeeServiceUsingDB.createEmployee(employee);
+    public EmployeeResponse create(@RequestBody Employee employee) {
+        return employeeServiceUsingDB.createEmployee(employee);
     }
 
     // Update
     @PutMapping("/{id}")
-    public void update(@PathVariable("id") String id, @RequestBody Employee employee) {
-        employeeServiceUsingDB.updateEmployee(id, employee);
+    public EmployeeResponse update(@PathVariable("id") String id, @RequestBody Employee employee) {
+        return employeeServiceUsingDB.updateEmployee(id, employee);
     }
 
     @PatchMapping("admin")
@@ -55,19 +40,19 @@ public class EmployeeController {
 
     // Delete employee
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") String id) {
-        employeeServiceUsingDB.deleteEmployee(id);
+    public EmployeeResponse delete(@PathVariable("id") String id) {
+        return employeeServiceUsingDB.deleteEmployee(id);
     }
 
     // Delete employee's group
     @PatchMapping("/delgroup/{id}")
-    public void deleteGroupFromEmployee (@PathVariable String id, @RequestBody Group group) {
-        employeeServiceUsingDB.deleteEmployeeGroup( id, group);}
+    public EmployeeResponse deleteGroupFromEmployee (@PathVariable String id, @RequestBody Group group) {
+        return employeeServiceUsingDB.deleteEmployeeGroup( id, group);}
 
     //inserting groups to an employee
     @PatchMapping("/addgroup/{id}")
-    public void insertGroup(@RequestBody List<Group> group, @PathVariable String id){
-        employeeServiceUsingDB.insertMemberToGroup(id, group);
+    public EmployeeResponse insertGroup(@RequestBody List<Group> group, @PathVariable String id){
+        return employeeServiceUsingDB.insertMemberToGroup(id, group);
     }
 
     // Delete achievement from employee
@@ -83,32 +68,32 @@ public class EmployeeController {
 
     // Patch
     @PatchMapping("/{id}")
-    public Employee partialUpdate(@PathVariable("id") String id, @RequestBody Employee employee) {
+    public EmployeeResponse partialUpdate(@PathVariable("id") String id, @RequestBody Employee employee) {
         return employeeServiceUsingDB.partialUpdateEmployee(id, employee);
     }
 
     //-----------------------------------------GET MAPPING GROUP----------------------//
     // Get All
     @GetMapping
-    public List<Employee> get() {
+    public EmployeeResponse get() {
         return employeeServiceUsingDB.getAllEmployee();
     }
 
     // Get by Id
     @GetMapping("/{id}")
-    public Employee getById(@PathVariable("id") String id) {
+    public EmployeeResponse getById(@PathVariable("id") String id) {
         return employeeServiceUsingDB.getEmployeeById(id);
     }
 
     // Get birthday list of all employee
     @GetMapping("role")
-    public List<Employee> getBirthday(@RequestParam String role) {
+    public EmployeeResponse getBirthday(@RequestParam String role) {
         return employeeServiceUsingDB.getStaffRole(role);
     }
 
     // Get recent (2 days) birthday of all employees
     @GetMapping("recentdob")
-    public List<Basket> getByRecentDOB() {
+    public BasketResponse getByRecentDOB() {
         return employeeServiceUsingDB.getRecentDOB();
     }
 
@@ -119,7 +104,7 @@ public class EmployeeController {
     }
 
     @GetMapping("group-member/{id}")
-    public List<Employee> getAllMemberOfAGroup(@PathVariable String id) {
+    public EmployeeResponse getAllMemberOfAGroup(@PathVariable String id) {
         return employeeServiceUsingDB.getGroupMember(id);
     }
     @GetMapping("nostaffgroup")
@@ -156,10 +141,9 @@ public class EmployeeController {
     }
 
     @PostMapping("uploadImage/{id}")
-    public Employee patchUploadImage(@RequestBody Map<String, String> param, @PathVariable String id) {
+    public EmployeeResponse patchUploadImage(@RequestBody Map<String, String> param, @PathVariable String id) {
         System.out.println(param.get("img"));
-        employeeServiceUsingDB.picturePatch(param.get("img"), id);
-        return employeeServiceUsingDB.getEmployeeById(id);
+        return employeeServiceUsingDB.picturePatch(param.get("img"), id);
     }
 
     //---------------------------- TEST BED ---------------------------------//

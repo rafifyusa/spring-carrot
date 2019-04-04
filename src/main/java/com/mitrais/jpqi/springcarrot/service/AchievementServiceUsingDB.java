@@ -2,6 +2,7 @@ package com.mitrais.jpqi.springcarrot.service;
 
 import com.mitrais.jpqi.springcarrot.model.Achievement;
 import com.mitrais.jpqi.springcarrot.repository.AchievementRepository;
+import com.mitrais.jpqi.springcarrot.responses.AchievementResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,12 @@ public class AchievementServiceUsingDB implements AchievementService{
     public AchievementServiceUsingDB(AchievementRepository achievementRepository){ this.achievementRepository = achievementRepository;}
 
     @Override
-    public List<Achievement> getAllAchievement() {
-        return achievementRepository.findAll();
+    public AchievementResponse getAllAchievement() {
+        AchievementResponse res = new AchievementResponse();
+        res.setStatus(true);
+        res.setMessage("List Achievement");
+        res.setListAchievement(achievementRepository.findAll());
+        return res;
     }
 
     @Override
@@ -49,7 +54,8 @@ public class AchievementServiceUsingDB implements AchievementService{
     }
 
     @Override
-    public void partialUpdateAchievement(String id, Achievement achievement) {
+    public AchievementResponse partialUpdateAchievement(String id, Achievement achievement) {
+        AchievementResponse res = new AchievementResponse();
         Achievement temp = achievementRepository.findById(id).orElse(null);
 
         if (temp != null){
@@ -75,6 +81,14 @@ public class AchievementServiceUsingDB implements AchievementService{
                 temp.setReasoning(achievement.getReasoning());
             }
         }
-        achievementRepository.save(temp);
+        try {
+            achievementRepository.save(temp);
+            res.setStatus(true);
+            res.setMessage("Achievement successfully updated");
+        } catch (NullPointerException e) {
+            res.setStatus(false);
+            res.setMessage(e.getMessage());
+        }
+        return res;
     }
 }

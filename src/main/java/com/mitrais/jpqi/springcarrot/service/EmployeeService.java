@@ -4,6 +4,8 @@ import com.mitrais.jpqi.springcarrot.model.Basket;
 import com.mitrais.jpqi.springcarrot.model.Employee;
 import com.mitrais.jpqi.springcarrot.model.Group;
 import com.mitrais.jpqi.springcarrot.model.GroupCount;
+import com.mitrais.jpqi.springcarrot.responses.BasketResponse;
+import com.mitrais.jpqi.springcarrot.responses.EmployeeResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,19 +13,19 @@ import java.util.Map;
 
 @Service
 public interface EmployeeService {
-    void createEmployee(Employee employee);
-    void deleteEmployee(String id );
-    void updateEmployee(String id, Employee employee);
-    List<Employee> getAllEmployee();
-    Employee getEmployeeById(String id);
+    EmployeeResponse createEmployee(Employee employee);
+    EmployeeResponse deleteEmployee(String id );
+    EmployeeResponse updateEmployee(String id, Employee employee);
+    EmployeeResponse getAllEmployee();
+    EmployeeResponse getEmployeeById(String id);
     List<GroupCount> getAllEmployeeGroups();
     Map<String, String> findEmployeeByCredential (Map<String, String> body);
-    List<Basket> getRecentDOB();
+    BasketResponse getRecentDOB();
 
-    Employee partialUpdateEmployee(String id, Employee employee);
-    List<Employee> getStaffRole(String role);
+    EmployeeResponse partialUpdateEmployee(String id, Employee employee);
+    EmployeeResponse getStaffRole(String role);
 
     List<Employee> getEmployeeBySpvLevel(String spvlevel);
 
-    void deleteEmployeeGroup(String id, Group group);
+    EmployeeResponse deleteEmployeeGroup(String id, Group group);
 }

@@ -3,6 +3,7 @@ package com.mitrais.jpqi.springcarrot.controller;
 import com.mitrais.jpqi.springcarrot.model.Bazaar;
 import com.mitrais.jpqi.springcarrot.model.Employee;
 import com.mitrais.jpqi.springcarrot.model.Item;
+import com.mitrais.jpqi.springcarrot.responses.ItemResponse;
 import com.mitrais.jpqi.springcarrot.service.ItemService;
 import org.bson.types.ObjectId;
 import org.springframework.context.annotation.Configuration;
@@ -37,18 +38,18 @@ public class ItemController  {
 
     // Delete
     @DeleteMapping("{id}")
-    public void remove(@PathVariable String id) {
-        itemService.deleteItem(id);
+    public ItemResponse remove(@PathVariable String id) {
+        return itemService.deleteItem(id);
     }
 
     // Get all
     @GetMapping
-    public List<Item> get() {
+    public ItemResponse get() {
         return itemService.getAll();
     }
 
     @GetMapping("{id}")
-    public Item getItem(@PathVariable String id) {
+    public ItemResponse getItem(@PathVariable String id) {
         return itemService.findItemById(id);
     }
 

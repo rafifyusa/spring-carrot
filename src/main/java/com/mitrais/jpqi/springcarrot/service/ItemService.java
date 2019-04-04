@@ -5,6 +5,7 @@ import com.cloudinary.utils.ObjectUtils;
 import com.mitrais.jpqi.springcarrot.model.Bazaar;
 import com.mitrais.jpqi.springcarrot.model.Item;
 import com.mitrais.jpqi.springcarrot.repository.ItemRepository;
+import com.mitrais.jpqi.springcarrot.responses.ItemResponse;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -43,22 +44,40 @@ public class ItemService {
     }
 
     // Delete
-    public void deleteItem(String id) {
-        itemRepository.deleteById(id);
-
+    public ItemResponse deleteItem(String id) {
+        ItemResponse res = new ItemResponse();
+        try {
+            itemRepository.deleteById(id);
+            res.setStatus(true);
+            res.setMessage("item successfully deleted");
+        } catch (NullPointerException e) {
+            res.setStatus(false);
+            res.setMessage(e.getMessage());
+        }
+        return res;
     }
 
     // Show All
-    public List<Item> getAll() {
-        return itemRepository.findAll();
+    public ItemResponse getAll() {
+        ItemResponse res = new ItemResponse();
+        res.setStatus(true);
+        res.setMessage("List Item");
+        res.setListItem(itemRepository.findAll());
+        return res;
     }
 
-    public Item findItemById(String id) {
+    public ItemResponse findItemById(String id) {
         Optional<Item> item = itemRepository.findById(id);
+        ItemResponse res = new ItemResponse();
         if (item.isPresent()) {
-            return item.get();
+            res.setStatus(true);
+            res.setMessage("Item Found");
+            res.setItem(item.get());
+        } else {
+            res.setStatus(false);
+            res.setMessage("Item not Found");
         }
-        return null;
+        return res;
     }
 
     // Patch

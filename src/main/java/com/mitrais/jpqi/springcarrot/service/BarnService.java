@@ -4,6 +4,7 @@ import com.mitrais.jpqi.springcarrot.model.*;
 import com.mitrais.jpqi.springcarrot.repository.BarnRepository;
 import com.mitrais.jpqi.springcarrot.repository.CarrotRepository;
 import com.mitrais.jpqi.springcarrot.repository.FreezerRepository;
+import com.mitrais.jpqi.springcarrot.responses.BarnResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,18 +40,30 @@ public class BarnService {
 
     public List<Barn> findAllBarn () {return barnRepository.findAll(); }
 
-    public Barn findBarnById (String id) {
+    public BarnResponse findBarnById (String id) {
+        BarnResponse res = new BarnResponse();
         if (barnRepository.findById(id).isPresent()) {
-            return barnRepository.findById(id).get();
+            res.setStatus(true);
+            res.setMessage("List found");
+            res.setBarn(barnRepository.findById(id).get());
         }
-        else {return null;}
+        else {
+            res.setStatus(true);
+            res.setMessage("Barn not found");
+        }
+        return res;
     }
-    public void createBarn (Barn barn) {
-/*        long carrotDistributed = Math.round(0.75*barn.getTotalCarrot());
-        barn.setCarrotLeft(barn.getTotalCarrot() - carrotDistributed);*/
-        barnRepository.save(barn);
-
-        //funnelBarn(barn);
+    public BarnResponse createBarn (Barn barn) {
+        BarnResponse res = new BarnResponse();
+        try {
+            barnRepository.save(barn);
+            res.setStatus(true);
+            res.setMessage("Barn successfully inserted");
+        } catch (NullPointerException e) {
+            res.setStatus(false);
+            res.setMessage(e.getMessage());
+        }
+        return res;
     }
 
     //Old Funneling function and might be useless
@@ -102,15 +115,35 @@ public class BarnService {
         }
     }*/
 
-    public void deleteBarn (String id) { barnRepository.deleteById(id);}
+    public BarnResponse deleteBarn (String id) {
+        BarnResponse res = new BarnResponse();
+        try {
+            barnRepository.deleteById(id);
+            res.setStatus(true);
+            res.setMessage("Barn successfully deleted");
+        } catch (NullPointerException e) {
+            res.setStatus(false);
+            res.setMessage(e.getMessage());
+        }
+        return res;
+    }
 
-    public void updateBarn (String id, Barn barn) {
-        barn.setId(id);
-        barnRepository.save(barn);
+    public BarnResponse updateBarn (String id, Barn barn) {
+        BarnResponse res = new BarnResponse();
+        try {
+            barn.setId(id);
+            barnRepository.save(barn);
+            res.setStatus(true);
+            res.setMessage("Barn successfully updated");
+        } catch (NullPointerException e) {
+            res.setStatus(false);
+            res.setMessage(e.getMessage());
+        }
+        return res;
     }
 
     public void addAwardsToBarn(String id, List<Award> awards) {
-        Barn barn = findBarnById(id);
+        Barn barn = findBarnById(id).getBarn();
 
         if (barn.getAwards() == null) {
             barn.setAwards(new ArrayList<>());
@@ -123,7 +156,7 @@ public class BarnService {
     }
 
     public void deleteAwardsFromBarn(String id, Award award){
-        Barn barn = findBarnById(id);
+        Barn barn = findBarnById(id).getBarn();
         if (barn.getAwards() != null) {
             barn.getAwards().remove(award);
         }
