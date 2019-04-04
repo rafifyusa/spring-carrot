@@ -129,7 +129,7 @@ public class EmployeeController {
     }
 
     @GetMapping("achievement")
-    public Set<Achievement> getAnEmployeeAchivement(@RequestParam String empId) {
+    public Set<Achievement> getAnEmployeeAchievement(@RequestParam String empId) {
         return employeeServiceUsingDB.findAnEmployeeAchievement(empId);
     }
 
