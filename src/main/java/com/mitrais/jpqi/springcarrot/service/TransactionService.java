@@ -216,7 +216,7 @@ public class TransactionService {
         //Funnel for from Barn to SM
         else if (transaction.getFreezer_from() == null) {
             Freezer f_to = freezerRepository.findByOwner(new ObjectId(transaction.getFreezer_to().getId()));
-            Barn barn = barnService.findBarnById(transaction.getBarn().getId());
+            Barn barn = barnService.findBarnById(transaction.getBarn().getId()).getBarn();
 
             //Update SM freezer amount
             double newCarrotAmount = f_to.getCarrot_amt() + transaction.getCarrot_amt();
