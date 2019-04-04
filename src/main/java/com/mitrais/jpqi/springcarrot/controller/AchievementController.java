@@ -1,6 +1,7 @@
 package com.mitrais.jpqi.springcarrot.controller;
 
 import com.mitrais.jpqi.springcarrot.model.Achievement;
+import com.mitrais.jpqi.springcarrot.responses.AchievementResponse;
 import com.mitrais.jpqi.springcarrot.service.AchievementService;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,7 @@ public class AchievementController {
     public AchievementController(AchievementService achievementService){this.achievementService = achievementService;}
 
     @GetMapping
-    public List<Achievement> getAllAchievement(){
+    public AchievementResponse getAllAchievement(){
         return achievementService.getAllAchievement();
     }
 
@@ -46,8 +47,8 @@ public class AchievementController {
     }
 
     @PatchMapping("{id}")
-    public void partialUpdate(@PathVariable("id") String id, @RequestBody Achievement achievement){
-        achievementService.partialUpdateAchievement(id, achievement);
+    public AchievementResponse partialUpdate(@PathVariable("id") String id, @RequestBody Achievement achievement){
+        return achievementService.partialUpdateAchievement(id, achievement);
     }
 
 }
