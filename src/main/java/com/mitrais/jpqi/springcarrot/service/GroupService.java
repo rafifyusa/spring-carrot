@@ -7,6 +7,9 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -148,4 +151,9 @@ public class GroupService {
         groupRepository.save(group);
     }
 
+    public List<Group> findGroupId(String ownerId) {
+//        System.out.println(ownerId);
+        List<Group> myGroup = groupRepository.findGroupIdByOwner(new ObjectId(ownerId));
+        return myGroup;
+    }
 }

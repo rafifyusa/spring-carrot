@@ -227,7 +227,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     }*/
 
     public List<Employee> getGroupMember(String id) {
-        List<Employee> members = members = employeeRepository.findByGroupId(new ObjectId(id));
+        List<Employee> members = employeeRepository.findByGroupId(new ObjectId(id));
         if (members.isEmpty()){
             System.out.println("member empty");
             return null;
