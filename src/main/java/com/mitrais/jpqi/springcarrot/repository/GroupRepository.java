@@ -8,5 +8,7 @@ import org.springframework.data.mongodb.repository.Query;
 import java.util.List;
 
 public interface GroupRepository extends MongoRepository<Group, String> {
-
+    // Get the
+    @Query("{'owner.$id': ?0}")
+    List<Group> findGroupIdByOwner(ObjectId ownerId);
 }

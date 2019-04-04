@@ -66,12 +66,20 @@ public class GroupController {
     public GroupResponse deleteBazaarFromGroup (@PathVariable String id, @RequestBody Bazaar bazaar) {
         return groupService.deleteBazaarFromGroup( id, bazaar);
     }
+
     @PatchMapping("/add-social/{id}")
     public GroupResponse insertSocialFoundationsToGroup(@PathVariable String id, @RequestBody List<SocialFoundation> socialFoundations) {
         return groupService.addSocialFoundationToGroup(id, socialFoundations);
     }
+
     @PatchMapping("/del-social/{id}")
     public GroupResponse deleteSocialFoundationFromGroup(@PathVariable String id, @RequestBody SocialFoundation socialFoundation) {
         return groupService.deleteSocialFoundationFromGroup(id, socialFoundation);
+    }
+
+    // Get Group Id
+    @GetMapping("/getGroupId/{ownerId}")
+    public List<Group> getGroupIdByOwnerId(@PathVariable String ownerId) {
+        return groupService.findGroupId(ownerId);
     }
 }

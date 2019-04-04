@@ -26,5 +26,3 @@ public interface EmployeeRepository extends MongoRepository<Employee, String> {
     @Query("{'group':{$elemMatch:{$id : ?0}}}")
     List<Employee> findByGroupId(ObjectId id);
 }
-//    @Query(value = "{ 'userId' : ?0, 'questions.questionID' : ?1 }", fields = "{ 'questions.questionID' : 1 }")
-//    List<PracticeQuestion> findByUserIdAndQuestionsQuestionID(int userId, int questionID);
