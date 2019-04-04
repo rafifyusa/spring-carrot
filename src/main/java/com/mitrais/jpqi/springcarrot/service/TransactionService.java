@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.service;
 
+import com.google.gson.Gson;
 import com.mitrais.jpqi.springcarrot.model.*;
 import com.mitrais.jpqi.springcarrot.repository.*;
 import org.bson.types.ObjectId;
@@ -52,6 +53,9 @@ public class TransactionService {
     public void createTransaction(Transaction transaction) {
 
         if (transaction.getType() == Transaction.Type.REWARD) {
+            System.out.println("rewarddd");
+            System.out.println(new Gson().toJson(transaction.getAchievementClaimed()));
+            System.out.println(new Gson().toJson(transaction));
             //Codes if the transaction is a reward (from manager freezer to employee's basket)
             if (transaction.getFreezer_from() != null) {
                 Freezer f_from = transaction.getFreezer_from();
