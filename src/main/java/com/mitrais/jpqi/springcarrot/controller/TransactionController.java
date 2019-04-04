@@ -47,9 +47,19 @@ public class TransactionController {
         return transactionService.approveTransaction(id);
     }
 
+    @PatchMapping("approve-donation")
+    public TransactionResponse approveDonation(@RequestParam String id) {//use social foundation ID
+        return transactionService.approveDonation(id);
+    }
+
     @PatchMapping("decline")
     public TransactionResponse declineTransaction(@RequestParam String id) {
         return transactionService.declineTransaction(id);
+    }
+
+    @PatchMapping("decline-donation")
+    public TransactionResponse declineDonation(@RequestParam String id) {
+        return transactionService.declineDonation(id);
     }
 
     @GetMapping("{id}/spent_for_reward")

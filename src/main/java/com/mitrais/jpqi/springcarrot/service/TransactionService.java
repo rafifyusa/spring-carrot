@@ -70,6 +70,11 @@ public class TransactionService {
 
     public TransactionResponse createTransaction(Transaction transaction) {
         TransactionResponse res = new TransactionResponse();
+
+        //set the transaction date
+        if (transaction.getTransaction_date() == null) { transaction.setTransaction_date(LocalDateTime.now()); }
+        transaction.setStatus(Transaction.Status.PENDING);
+
         if (transaction.getType() == Transaction.Type.REWARD) {
             System.out.println(new Gson().toJson(transaction.getAchievementClaimed()));
             System.out.println(new Gson().toJson(transaction));
@@ -86,7 +91,7 @@ public class TransactionService {
             }
         }
 
-        if (transaction.getType() == Transaction.Type.SHARED) {
+        else if (transaction.getType() == Transaction.Type.SHARED) {
 
             Basket b_from = transaction.getDetail_from();
             Basket b_to = transaction.getDetail_to();
@@ -116,9 +121,11 @@ public class TransactionService {
 
             transaction.setFrom(b_from.getName());
             transaction.setTo(b_to.getName());
+            transaction.setStatus(Transaction.Status.APPROVED);
         }
 
-        if (transaction.getType() == Transaction.Type.BAZAAR
+        // For Donation or claim item in bazaar
+        else if (transaction.getType() == Transaction.Type.BAZAAR
                 || transaction.getType() == Transaction.Type.DONATION) {
             Basket b_from = transaction.getDetail_from();
             Optional<Basket> b = basketRepository.findById(b_from.getId());
@@ -155,6 +162,7 @@ public class TransactionService {
 
                         double newFoundationAmount = sf.getTotal_carrot() + transaction.getCarrot_amt();
                         sf.setTotal_carrot(newFoundationAmount);
+                        sf.getPendingDonations().add(transaction);
                         socialFoundationRepository.save(sf);
 
                         transaction.setFrom(b_from.getName());
@@ -175,9 +183,6 @@ public class TransactionService {
             System.out.println(transaction.toString());
             funnelTransaction(transaction);
         }
-        //set the transaction date
-        if (transaction.getTransaction_date() == null) { transaction.setTransaction_date(LocalDateTime.now()); }
-        transaction.setStatus(Transaction.Status.PENDING);
 
         try {
             transactionRepository.save(transaction);
@@ -248,20 +253,8 @@ public class TransactionService {
             if (transaction.getType() == Transaction.Type.BAZAAR) {
                 makeApprovedTransaction(transaction);
             }
-            if(transaction.getType() == Transaction.Type.DONATION){
-                if (transaction.getSocialFoundation().getTotal_carrot()
-                        < transaction.getSocialFoundation().getMin_carrot()){
-                    // gagal
-                    res.setStatus(false);
-                    res.setMessage("total carrot less than minimum carrot exchange");
-                    return res;
-                }
-                else{
-                    makeApprovedTransaction(transaction);
-                }
-            }
 
-            if (transaction.getType() == Transaction.Type.REWARD) {
+            else if (transaction.getType() == Transaction.Type.REWARD) {
                 Freezer f_from = transaction.getFreezer_from();
                 Basket b_to = transaction.getDetail_to();
 
@@ -310,6 +303,47 @@ public class TransactionService {
 
         res.setStatus(false);
         res.setMessage("transaction not found");
+        return res;
+    }
+
+    public TransactionResponse approveDonation(String sfId) {
+        TransactionResponse res = new TransactionResponse();
+
+        if (socialFoundationRepository.findById(sfId).isPresent()) {
+            SocialFoundation sf = socialFoundationRepository.findById(sfId).get();
+
+            List<Transaction> pendingDonations = sf.getPendingDonations();
+
+            try {
+                pendingDonations.forEach(transaction -> makeApprovedTransaction(transaction));
+                res.setStatus(true);
+                res.setMessage("Donations to this Social Foundation are all successful");
+            } catch (Exception e) {
+                res.setStatus(false);
+                res.setMessage(e.getMessage());
+            }
+        }
+        return res;
+    }
+
+    public TransactionResponse declineDonation(String sfId) {
+        TransactionResponse res = new TransactionResponse();
+
+        if (socialFoundationRepository.findById(sfId).isPresent()) {
+            SocialFoundation sf = socialFoundationRepository.findById(sfId).get();
+
+            List<Transaction> pendingDonations = sf.getPendingDonations();
+
+            try {
+                pendingDonations.forEach(transaction -> makeDeclinedTransaction(transaction));
+                res.setStatus(true);
+                res.setMessage("Donations to this Social Foundation are all successful");
+            } catch (Exception e) {
+                res.setStatus(false);
+                res.setMessage(e.getMessage());
+            }
+        }
+
         return res;
     }
 
