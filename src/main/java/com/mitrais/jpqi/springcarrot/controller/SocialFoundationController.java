@@ -19,7 +19,7 @@ public class SocialFoundationController {
     }
 
     @GetMapping("{id}")
-    public List<SocialFoundation> getById(@PathVariable("id") String id){
+    public SocialFoundationResponse getById(@PathVariable("id") String id){
         return socialFoundationServiceUsingDB.getSocialFoundationById(id);
     }
 

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -75,8 +76,18 @@ public class SocialFoundationServiceUsingDB implements SocialFoundationService{
     }
 
     @Override
-    public List<SocialFoundation> getSocialFoundationById(String id) {
-        return socialFoundationRepository.findAll().stream().filter((sf)->sf.getId().equals(id)).collect(Collectors.toList());
+    public SocialFoundationResponse getSocialFoundationById(String id) {
+        SocialFoundationResponse res = new SocialFoundationResponse();
+        Optional<SocialFoundation> sf = socialFoundationRepository.findById(id);
+        if (sf.isPresent()) {
+            res.setStatus(true);
+            res.setMessage("Social Foundation Found");
+            res.setSocialFoundation(sf.get());
+        } else {
+            res.setStatus(false);
+            res.setMessage("Social Foundation not found");
+        }
+        return res;
     }
 
     @Override

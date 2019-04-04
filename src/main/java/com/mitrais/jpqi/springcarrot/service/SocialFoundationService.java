@@ -12,7 +12,7 @@ public interface SocialFoundationService {
     SocialFoundationResponse deleteSocialFoundation(String id );
     SocialFoundationResponse updateSocialFoundation(String id, SocialFoundation socialFoundation);
     SocialFoundationResponse getAllSocialFoundation();
-    List<SocialFoundation> getSocialFoundationById(String id);
+    SocialFoundationResponse getSocialFoundationById(String id);
 
     SocialFoundationResponse partialUpdate(String id, SocialFoundation socialFoundation);
 }
