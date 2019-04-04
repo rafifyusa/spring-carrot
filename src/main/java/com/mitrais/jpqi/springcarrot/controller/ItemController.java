@@ -39,7 +39,7 @@ public class ItemController  {
     // Delete
     @DeleteMapping("{id}")
     public ItemResponse remove(@PathVariable String id) {
-        return itemService.deleteIgitem(id);
+        return itemService.deleteItem(id);
     }
 
     // Get all
