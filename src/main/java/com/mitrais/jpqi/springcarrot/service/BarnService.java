@@ -46,10 +46,15 @@ public class BarnService {
         else {return null;}
     }
     public void createBarn (Barn barn) {
-        long carrotDistributed = Math.round(0.75*barn.getTotalCarrot());
-        barn.setCarrotLeft(barn.getTotalCarrot() - carrotDistributed);
+/*        long carrotDistributed = Math.round(0.75*barn.getTotalCarrot());
+        barn.setCarrotLeft(barn.getTotalCarrot() - carrotDistributed);*/
         barnRepository.save(barn);
 
+        //funnelBarn(barn);
+    }
+
+    //Old Funneling function and might be useless
+    /*public void funnelBarn (Barn barn) {
         if (barn.isStatus()) {
             long count = barn.getTotalCarrot();
             String barnId = barn.getId();
@@ -95,7 +100,7 @@ public class BarnService {
                 });
             }
         }
-    }
+    }*/
 
     public void deleteBarn (String id) { barnRepository.deleteById(id);}
 

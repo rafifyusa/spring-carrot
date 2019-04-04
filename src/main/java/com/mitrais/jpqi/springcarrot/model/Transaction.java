@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.model;
 
+import com.mongodb.WriteResult;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -9,10 +10,9 @@ import javax.persistence.Id;
 import java.time.LocalDateTime;
 
 @Document("transactions")
-public class Transaction {
-
+public class Transaction{
     public enum Type{
-        BAZAAR, REWARD, SHARED, DONATION
+        BAZAAR, REWARD, SHARED, DONATION, FUNNEL
     }
 
     public enum Status{
@@ -28,22 +28,24 @@ public class Transaction {
     private Basket detail_from;
     private Basket detail_to;
     private Freezer freezer_from;
+    private Freezer freezer_to;
     private Item requested_item;
     @DBRef
     private SocialFoundation socialFoundation;
     @DBRef
     private Achievement achievementClaimed;
+    private Barn barn;
     private String description;
     private int carrot_amt;
     private LocalDateTime transaction_date;
     private Status status;
 
-    public Transaction(){}
-
+    public Transaction(){
+    }
 
     public Transaction(String id, Type type, String from, String to, Basket detail_from,
-                       Basket detail_to, Freezer freezer_from, Item requested_item, String description,
-                       SocialFoundation socialFoundation, Achievement achievementClaimed, int carrot_amt,
+                       Basket detail_to, Freezer freezer_from, Freezer freezer_to, Item requested_item, String description,
+                       SocialFoundation socialFoundation, Achievement achievementClaimed, Barn barn, int carrot_amt,
                        LocalDateTime transaction_date, Status status) {
         this.id = id;
         this.type = type;
@@ -52,15 +54,16 @@ public class Transaction {
         this.detail_from = detail_from;
         this.detail_to = detail_to;
         this.freezer_from = freezer_from;
+        this.freezer_to = freezer_to;
         this.requested_item = requested_item;
         this.description = description;
         this.socialFoundation = socialFoundation;
         this.achievementClaimed = achievementClaimed;
+        this.barn = barn;
         this.carrot_amt = carrot_amt;
         this.transaction_date = transaction_date;
         this.status = status;
     }
-
     //Getter & Setters
     public String getId() {
         return id;
@@ -135,4 +138,12 @@ public class Transaction {
     public Status getStatus() { return status; }
 
     public void setStatus(Status status) { this.status = status; }
+
+    public Freezer getFreezer_to() { return freezer_to; }
+
+    public void setFreezer_to(Freezer freezer_to) { this.freezer_to = freezer_to; }
+
+    public Barn getBarn() { return barn; }
+
+    public void setBarn(Barn barn) { this.barn = barn; }
 }
