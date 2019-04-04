@@ -2,6 +2,7 @@ package com.mitrais.jpqi.springcarrot.controller;
 
 
 import com.mitrais.jpqi.springcarrot.model.SocialFoundation;
+import com.mitrais.jpqi.springcarrot.responses.SocialFoundationResponse;
 import com.mitrais.jpqi.springcarrot.service.SocialFoundationServiceUsingDB;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,30 +24,30 @@ public class SocialFoundationController {
     }
 
     @GetMapping
-    public List<SocialFoundation> get(){
+    public SocialFoundationResponse get(){
         return socialFoundationServiceUsingDB.getAllSocialFoundation();
     }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable("id") String id){
-        socialFoundationServiceUsingDB.deleteSocialFoundation(id);
+    public SocialFoundationResponse delete(@PathVariable("id") String id){
+        return socialFoundationServiceUsingDB.deleteSocialFoundation(id);
     }
 
     //create new
     @PostMapping
-    public void create(@RequestBody SocialFoundation socialFoundation){
-        socialFoundationServiceUsingDB.createSocialFoundation(socialFoundation);
+    public SocialFoundationResponse create(@RequestBody SocialFoundation socialFoundation){
+        return socialFoundationServiceUsingDB.createSocialFoundation(socialFoundation);
     }
 
     //update
     @PutMapping("{id}")
-    public void update(@PathVariable("id") String id, @RequestBody SocialFoundation socialFoundation){
-        socialFoundationServiceUsingDB.updateSocialFoundation(id, socialFoundation);
+    public SocialFoundationResponse update(@PathVariable("id") String id, @RequestBody SocialFoundation socialFoundation){
+        return socialFoundationServiceUsingDB.updateSocialFoundation(id, socialFoundation);
     }
 
     @PatchMapping("{id}")
-    public void partialUpdate(@PathVariable("id") String id, @RequestBody SocialFoundation socialFoundation){
-        socialFoundationServiceUsingDB.partialUpdate(id, socialFoundation);
+    public SocialFoundationResponse partialUpdate(@PathVariable("id") String id, @RequestBody SocialFoundation socialFoundation){
+        return socialFoundationServiceUsingDB.partialUpdate(id, socialFoundation);
     }
 
     // Sorted based on Contribution

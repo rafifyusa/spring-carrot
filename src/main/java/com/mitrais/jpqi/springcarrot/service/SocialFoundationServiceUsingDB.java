@@ -2,6 +2,7 @@ package com.mitrais.jpqi.springcarrot.service;
 
 import com.mitrais.jpqi.springcarrot.model.SocialFoundation;
 import com.mitrais.jpqi.springcarrot.repository.SocialFoundationRepository;
+import com.mitrais.jpqi.springcarrot.responses.SocialFoundationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,24 +23,55 @@ public class SocialFoundationServiceUsingDB implements SocialFoundationService{
     }
 
     @Override
-    public void createSocialFoundation(SocialFoundation socialFoundation) {
-        socialFoundationRepository.save(socialFoundation);
+    public SocialFoundationResponse createSocialFoundation(SocialFoundation socialFoundation) {
+        SocialFoundationResponse res = new SocialFoundationResponse();
+        try {
+            socialFoundationRepository.save(socialFoundation);
+            res.setStatus(true);
+            res.setMessage("social foundation successfully added");
+        } catch (NullPointerException e) {
+            res.setStatus(false);
+            res.setMessage(e.getMessage());
+        }
+        return res;
     }
 
     @Override
-    public void deleteSocialFoundation(String id) {
-        socialFoundationRepository.deleteById(id);
+    public SocialFoundationResponse deleteSocialFoundation(String id) {
+        SocialFoundationResponse res = new SocialFoundationResponse();
+        try {
+            socialFoundationRepository.deleteById(id);
+            res.setStatus(true);
+            res.setMessage("social foundation successfully deleted");
+        } catch (NullPointerException e) {
+            res.setStatus(false);
+            res.setMessage(e.getMessage());
+        }
+        return res;
     }
 
     @Override
-    public void updateSocialFoundation(String id, SocialFoundation socialFoundation) {
-        socialFoundation.setId(id);
-        socialFoundationRepository.save(socialFoundation);
+    public SocialFoundationResponse updateSocialFoundation(String id, SocialFoundation socialFoundation) {
+        SocialFoundationResponse res = new SocialFoundationResponse();
+        try {
+            socialFoundation.setId(id);
+            socialFoundationRepository.save(socialFoundation);
+            res.setStatus(true);
+            res.setMessage("social foundation successfully updated");
+        } catch (NullPointerException e) {
+            res.setStatus(false);
+            res.setMessage(e.getMessage());
+        }
+        return res;
     }
 
     @Override
-    public List<SocialFoundation> getAllSocialFoundation() {
-        return socialFoundationRepository.findAll();
+    public SocialFoundationResponse getAllSocialFoundation() {
+        SocialFoundationResponse res = new SocialFoundationResponse();
+        res.setStatus(true);
+        res.setMessage("List Social Foundation");
+        res.setListSocialFoundation(socialFoundationRepository.findAll());
+        return res;
     }
 
     @Override
@@ -48,7 +80,8 @@ public class SocialFoundationServiceUsingDB implements SocialFoundationService{
     }
 
     @Override
-    public void partialUpdate(String id, SocialFoundation socialFoundation) {
+    public SocialFoundationResponse partialUpdate(String id, SocialFoundation socialFoundation) {
+        SocialFoundationResponse res = new SocialFoundationResponse();
         SocialFoundation sf = socialFoundationRepository.findById(id).orElse(null);
         if (sf != null) {
             if (socialFoundation.getId() != null) {
@@ -70,7 +103,16 @@ public class SocialFoundationServiceUsingDB implements SocialFoundationService{
                 sf.setDescription(socialFoundation.getDescription());
             }
         }
-        socialFoundationRepository.save(sf);
+
+        try {
+            socialFoundationRepository.save(sf);
+            res.setStatus(true);
+            res.setMessage("social foundation successfully updated");
+        } catch (NullPointerException e) {
+            res.setStatus(false);
+            res.setMessage(e.getMessage());
+        }
+        return res;
     }
 
     /**

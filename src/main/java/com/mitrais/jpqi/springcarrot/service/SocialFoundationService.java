@@ -1,17 +1,18 @@
 package com.mitrais.jpqi.springcarrot.service;
 
 import com.mitrais.jpqi.springcarrot.model.SocialFoundation;
+import com.mitrais.jpqi.springcarrot.responses.SocialFoundationResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public interface SocialFoundationService {
-    void createSocialFoundation(SocialFoundation socialFoundation);
-    void deleteSocialFoundation(String id );
-    void updateSocialFoundation(String id, SocialFoundation socialFoundation);
-    List<SocialFoundation> getAllSocialFoundation();
+    SocialFoundationResponse createSocialFoundation(SocialFoundation socialFoundation);
+    SocialFoundationResponse deleteSocialFoundation(String id );
+    SocialFoundationResponse updateSocialFoundation(String id, SocialFoundation socialFoundation);
+    SocialFoundationResponse getAllSocialFoundation();
     List<SocialFoundation> getSocialFoundationById(String id);
 
-    void partialUpdate(String id, SocialFoundation socialFoundation);
+    SocialFoundationResponse partialUpdate(String id, SocialFoundation socialFoundation);
 }
