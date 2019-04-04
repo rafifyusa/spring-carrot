@@ -23,17 +23,17 @@ public class TransactionController {
     MongoTemplate mongoTemplate;
 
     @GetMapping
-    List<Transaction> findAllTransactions() {
+    TransactionResponse findAllTransactions() {
         return transactionService.findAllTransactions();
     }
 
     @GetMapping("pending")
-    List<Transaction> findAllPendingTransactions() {
+    TransactionResponse findAllPendingTransactions() {
         return transactionService.findAllPendingTransaction();
     }
 
     @GetMapping("{id}")
-    List<Transaction> findTransactionsByEmployee(@PathVariable String id) {
+    TransactionResponse findTransactionsByEmployee(@PathVariable String id) {
         return transactionService.findTransactionByEmployee(id);
     }
 
@@ -43,13 +43,13 @@ public class TransactionController {
     }
 
     @PatchMapping("approve")
-    public void approveTransaction(@RequestParam String id) {
-        transactionService.approveTransaction(id);
+    public TransactionResponse approveTransaction(@RequestParam String id) {
+        return transactionService.approveTransaction(id);
     }
 
     @PatchMapping("decline")
-    public void declineTransaction(@RequestParam String id) {
-        transactionService.declineTransaction(id);
+    public TransactionResponse declineTransaction(@RequestParam String id) {
+        return transactionService.declineTransaction(id);
     }
 
     @GetMapping("{id}/spent_for_reward")
@@ -63,17 +63,17 @@ public class TransactionController {
     }
 
     @GetMapping("by-bazaar/{id}")
-    public List<Transaction> getAllTransactionByBazaarId(@PathVariable String id) {
+    public TransactionResponse getAllTransactionByBazaarId(@PathVariable String id) {
         return transactionService.findTransactionByBazaarId(id);
     }
 
     @GetMapping("by-status")
-    public List<Transaction> getAllTransactionByStatus(@RequestParam String type) {
+    public TransactionResponse getAllTransactionByStatus(@RequestParam String type) {
         return transactionService.findTransactionByType(type);
     }
 
     @GetMapping("by-date-status")
-    public List<Transaction> getAllTransactionByStatusAndDate(@RequestParam String type,
+    public TransactionResponse getAllTransactionByStatusAndDate(@RequestParam String type,
                                                               @RequestParam Long startDate,
                                                               @RequestParam Long endDate) {
 
@@ -101,11 +101,6 @@ public class TransactionController {
         System.out.println(endDateC);
         return transactionService.findTransactionByTypeAndDate(types, startDateC, endDateC);
     }
-
-    /*@GetMapping("mostearned")
-    public List<CarrotCount> getEmployeeByCarrotEarned (){
-        return transactionService.findAllEmployeeSortedByCarrotEarned();
-    }*/
 
     @GetMapping("mostearned")
     public  List<Hasil> getEmployeeByCarrotEarned() {
