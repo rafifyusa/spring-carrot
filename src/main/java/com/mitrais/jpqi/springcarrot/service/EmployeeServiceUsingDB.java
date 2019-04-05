@@ -11,6 +11,7 @@ import com.mitrais.jpqi.springcarrot.repository.FreezerRepository;
 import com.mitrais.jpqi.springcarrot.responses.AchievementResponse;
 import com.mitrais.jpqi.springcarrot.responses.BasketResponse;
 import com.mitrais.jpqi.springcarrot.responses.EmployeeResponse;
+import com.mitrais.jpqi.springcarrot.responses.Login;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -163,12 +164,11 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
     }
 
-    public Map<String, String> findEmployeeByCredential(Map<String, String> body) {
-
+    public Login findEmployeeByCredential(Map<String, String> body) {
+        Login res = new Login();
         Optional<Employee> employee = employeeRepository
                                         .findByEmailAddressAndPassword(body.get("email"), body.get("password"));
         Map<String, String> kembalian = new HashMap<>();
-        System.out.println("is present " + employee.isPresent());
         if (employee.isPresent()) {
             Employee emp = employee.get();
             List<Employee.Role> role = new ArrayList<>();
@@ -177,18 +177,20 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
             Gson gson = new Gson();
             Optional<Basket> basket = basketRepository.findByEmployee(new ObjectId(emp.getId()));
-            basket.ifPresent(basket1 -> kembalian.put("basket", gson.toJson(basket1)));
             Freezer freezer = freezerRepository.findByOwner(new ObjectId(emp.getId()));
-            kembalian.put("freezer", gson.toJson(freezer));
-            kembalian.put("status", "true");
-            kembalian.put("message", "employee ditemukan");
-            kembalian.put("employee", gson.toJson(emp));
-            kembalian.put("token", token);
+            res.setStatus(true);
+            res.setMessage("employee ditemukan");
+            res.setEmployee(emp);
+            if (basket.isPresent()) {
+                res.setBasket(basket.get());
+            }
+            res.setFreezer(freezer);
+            res.setToken(token);
         } else {
-            kembalian.put("status", "false");
-            kembalian.put("message", "employee tidak ditemukan");
+            res.setStatus(false);
+            res.setMessage("employee tidak ditemukan");
         }
-        return kembalian;
+        return res;
     }
 
     @Override

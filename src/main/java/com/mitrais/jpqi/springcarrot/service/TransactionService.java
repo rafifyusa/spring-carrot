@@ -19,6 +19,7 @@ import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -134,7 +135,6 @@ public class TransactionService {
                 Double newAmount = basket.getCarrot_amt() - transaction.getCarrot_amt();
                 basket.setCarrot_amt(newAmount);
                 basketRepository.save(basket);
-
                 //update the carrots in sender's basket into recipient's basket
                 List<Carrot> carrots = carrotRepository.findByBasketId(new ObjectId(b_from.getId()));
                 int count = transaction.getCarrot_amt();
@@ -143,7 +143,7 @@ public class TransactionService {
                     c.setUsable(false);
                     carrotRepository.save(c);
                 }
-
+//
                 if (transaction.getType() == Transaction.Type.BAZAAR) {
                     Item requested_Item = transaction.getRequested_item();
                     Optional<Item> i = itemRepository.findById(requested_Item.getId());
@@ -157,11 +157,14 @@ public class TransactionService {
                 }
                 else {
                     SocialFoundation socialFoundation = transaction.getSocialFoundation();
-                    if (socialFoundationRepository.findById(socialFoundation.getId()).isPresent()) {
-                        SocialFoundation sf = socialFoundationRepository.findById(socialFoundation.getId()).get();
-
+                    Optional<SocialFoundation> sfs = socialFoundationRepository.findById(socialFoundation.getId());
+                    if (sfs.isPresent()) {
+                        SocialFoundation sf = sfs.get();
                         double newFoundationAmount = sf.getTotal_carrot() + transaction.getCarrot_amt();
                         sf.setTotal_carrot(newFoundationAmount);
+                        if (sf.getPendingDonations() == null) {
+                            sf.setPendingDonations(new ArrayList<>());
+                        }
                         sf.getPendingDonations().add(transaction);
                         socialFoundationRepository.save(sf);
 

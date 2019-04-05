@@ -1,5 +1,7 @@
 package com.mitrais.jpqi.springcarrot.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
@@ -14,6 +16,7 @@ public class SocialFoundation {
     private double total_carrot;
     private double min_carrot;
     private String description; // describe why is it closed, or for other details information
+    @JsonBackReference
     private List<Transaction> pendingDonations;
 
     public SocialFoundation(){}

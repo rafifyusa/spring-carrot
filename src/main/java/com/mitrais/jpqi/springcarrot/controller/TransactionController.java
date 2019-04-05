@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.controller;
 
+import com.google.gson.Gson;
 import com.mitrais.jpqi.springcarrot.model.Hasil;
 import com.mitrais.jpqi.springcarrot.model.Transaction;
 import com.mitrais.jpqi.springcarrot.responses.TransactionResponse;

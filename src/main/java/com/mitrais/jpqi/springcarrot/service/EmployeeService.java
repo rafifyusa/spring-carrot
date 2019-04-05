@@ -6,6 +6,7 @@ import com.mitrais.jpqi.springcarrot.model.Group;
 import com.mitrais.jpqi.springcarrot.model.GroupCount;
 import com.mitrais.jpqi.springcarrot.responses.BasketResponse;
 import com.mitrais.jpqi.springcarrot.responses.EmployeeResponse;
+import com.mitrais.jpqi.springcarrot.responses.Login;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public interface EmployeeService {
     EmployeeResponse getAllEmployee();
     EmployeeResponse getEmployeeById(String id);
     List<GroupCount> getAllEmployeeGroups();
-    Map<String, String> findEmployeeByCredential (Map<String, String> body);
+    Login findEmployeeByCredential (Map<String, String> body);
     BasketResponse getRecentDOB();
 
     EmployeeResponse partialUpdateEmployee(String id, Employee employee);

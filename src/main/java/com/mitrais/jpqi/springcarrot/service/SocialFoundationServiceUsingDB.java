@@ -1,15 +1,13 @@
 package com.mitrais.jpqi.springcarrot.service;
 
+import com.google.gson.Gson;
 import com.mitrais.jpqi.springcarrot.model.SocialFoundation;
 import com.mitrais.jpqi.springcarrot.repository.SocialFoundationRepository;
 import com.mitrais.jpqi.springcarrot.responses.SocialFoundationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -71,7 +69,8 @@ public class SocialFoundationServiceUsingDB implements SocialFoundationService{
         SocialFoundationResponse res = new SocialFoundationResponse();
         res.setStatus(true);
         res.setMessage("List Social Foundation");
-        res.setListSocialFoundation(socialFoundationRepository.findAll());
+        List<SocialFoundation> list = socialFoundationRepository.findAll();
+        res.setListSocialFoundation(list);
         return res;
     }
 

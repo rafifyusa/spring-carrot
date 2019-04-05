@@ -1,6 +1,7 @@
 package com.mitrais.jpqi.springcarrot.controller;
 
 import com.mitrais.jpqi.springcarrot.model.Employee;
+import com.mitrais.jpqi.springcarrot.responses.Login;
 import com.mitrais.jpqi.springcarrot.service.EmployeeServiceUsingDB;
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,7 +20,7 @@ public class LoginController {
     private EmployeeServiceUsingDB employeeServiceUsingDB;
 
     @PostMapping
-    public Map<String, String> findUserByEmailAndPassword (@RequestBody Map<String, String> body) {
+    public Login findUserByEmailAndPassword (@RequestBody Map<String, String> body) {
         return this.employeeServiceUsingDB.findEmployeeByCredential(body);
     }
 
