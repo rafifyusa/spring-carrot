@@ -192,8 +192,8 @@ public class TransactionService {
     public void funnelTransaction(Transaction transaction){
         //Funnel for From SM to M
         if(transaction.getFreezer_from() != null){
-            Freezer f_from = freezerRepository.findByOwner(new ObjectId(transaction.getFreezer_from().getId()));
-            Freezer f_to = freezerRepository.findByOwner(new ObjectId(transaction.getFreezer_to().getId()));
+            Freezer f_from = freezerRepository.findByOwner(new ObjectId(transaction.getFreezer_from().getEmployee().getId()));
+            Freezer f_to = freezerRepository.findByOwner(new ObjectId(transaction.getFreezer_to().getEmployee().getId()));
 
             //Update Freezer amount of SM
             double newCarrotAmount = f_from.getCarrot_amt() - transaction.getCarrot_amt();

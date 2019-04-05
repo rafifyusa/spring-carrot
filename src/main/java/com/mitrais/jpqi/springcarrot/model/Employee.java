@@ -8,6 +8,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Document(collection = "employees")
@@ -25,7 +26,7 @@ public class Employee {
     @DBRef
     private Employee supervisor;
     @DBRef
-    private Set<Achievement> achievement;
+    private List<Achievement> achievement;
 
     @Enumerated(EnumType.STRING)
     public Role role;
@@ -38,7 +39,7 @@ public class Employee {
 
     public Employee(String id, String name, LocalDate dob, String address, Role role, String password,
                     String profilePicture, String emailAddress, Set<Group> group, Employee supervisor,
-                    SpvLevel spvLevel, Set<Achievement> achievement) {
+                    SpvLevel spvLevel, List<Achievement> achievement) {
         this.id = id;
         this.name = name;
         this.dob = dob;
@@ -50,6 +51,14 @@ public class Employee {
         this.group = group;
         this.supervisor = supervisor;
         this.spvLevel = spvLevel;
+        this.achievement = achievement;
+    }
+
+    public List<Achievement> getAchievement() {
+        return achievement;
+    }
+
+    public void setAchievement(List<Achievement> achievement) {
         this.achievement = achievement;
     }
 
@@ -111,10 +120,6 @@ public class Employee {
 
     public Set<Group> getGroup() { return group; }
     public void setGroup(Set<Group> group) { this.group = group; }
-
-    public Set<Achievement> getAchievement() { return achievement; }
-
-    public void setAchievement(Set<Achievement> achievement) { this.achievement = achievement; }
 
     // Enum for roles or position
     public enum Role implements GrantedAuthority {

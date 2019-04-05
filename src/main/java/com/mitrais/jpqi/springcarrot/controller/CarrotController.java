@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.controller;
 
+import com.google.gson.Gson;
 import com.mitrais.jpqi.springcarrot.model.Basket;
 import com.mitrais.jpqi.springcarrot.model.Carrot;
 import com.mitrais.jpqi.springcarrot.model.Employee;
@@ -32,7 +33,6 @@ public class CarrotController {
 
     @PostMapping
     public CarrotResponse createCarrots(@RequestBody Carrot carrot) {
-        System.out.println("disisni");
         return carrotServiceUsingDB.createCarrot(carrot);
     }
 

@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.controller;
 import com.mitrais.jpqi.springcarrot.model.*;
+import com.mitrais.jpqi.springcarrot.responses.AchievementResponse;
 import com.mitrais.jpqi.springcarrot.responses.BasketResponse;
 import com.mitrais.jpqi.springcarrot.responses.EmployeeResponse;
 import com.mitrais.jpqi.springcarrot.service.EmployeeServiceUsingDB;
@@ -129,7 +130,7 @@ public class EmployeeController {
     }
 
     @GetMapping("achievement")
-    public Set<Achievement> getAnEmployeeAchivement(@RequestParam String empId) {
+    public AchievementResponse getAnEmployeeAchivement(@RequestParam String empId) {
         return employeeServiceUsingDB.findAnEmployeeAchievement(empId);
     }
 

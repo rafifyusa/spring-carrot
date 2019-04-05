@@ -8,6 +8,7 @@ import com.mitrais.jpqi.springcarrot.oauth2.JwtTokenProvider;
 import com.mitrais.jpqi.springcarrot.repository.BasketRepository;
 import com.mitrais.jpqi.springcarrot.repository.EmployeeRepository;
 import com.mitrais.jpqi.springcarrot.repository.FreezerRepository;
+import com.mitrais.jpqi.springcarrot.responses.AchievementResponse;
 import com.mitrais.jpqi.springcarrot.responses.BasketResponse;
 import com.mitrais.jpqi.springcarrot.responses.EmployeeResponse;
 import org.bson.types.ObjectId;
@@ -476,7 +477,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         if (employee.isPresent()) {
             Employee emp = employee.get();
             if (emp.getAchievement() == null) {
-                emp.setAchievement(new HashSet<>());
+                emp.setAchievement(new ArrayList<>());
             }
             emp.getAchievement().add(achievement);
             employeeRepository.save((emp));
@@ -494,8 +495,12 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         }
     }
 
-    public Set<Achievement> findAnEmployeeAchievement(String id) {
-        return getEmployeeById(id).getEmployee().getAchievement();
+    public AchievementResponse findAnEmployeeAchievement(String id) {
+        AchievementResponse res = new AchievementResponse();
+        res.setStatus(true);
+        res.setMessage("List Achievement");
+        res.setListAchievement(getEmployeeById(id).getEmployee().getAchievement());
+        return res;
     }
 }
 

@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.controller;
 
+import com.google.gson.Gson;
 import com.mitrais.jpqi.springcarrot.model.Bazaar;
 import com.mitrais.jpqi.springcarrot.model.Employee;
 import com.mitrais.jpqi.springcarrot.model.Item;
@@ -72,6 +73,7 @@ public class ItemController  {
 
     @PostMapping("findByMultipleBazaarId")
     public List<Item> findByMultipleBazaarId(@RequestBody List<Bazaar> id) {
+        System.out.println(new Gson().toJson(id));
         return itemService.findAllByMultipleBazaarId(id);
 //        return null;
     }
