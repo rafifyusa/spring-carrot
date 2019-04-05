@@ -3,6 +3,7 @@ package com.mitrais.jpqi.springcarrot.model;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
+import java.util.List;
 
 @Document("socialFoundation")
 public class SocialFoundation {
@@ -13,16 +14,19 @@ public class SocialFoundation {
     private double total_carrot;
     private double min_carrot;
     private String description; // describe why is it closed, or for other details information
+    private List<Transaction> pendingDonations;
 
     public SocialFoundation(){}
 
-    public SocialFoundation(String id, String name, Boolean status, double total_carrot, double min_carrot, String description){
+    public SocialFoundation(String id, String name, Boolean status, double total_carrot, double min_carrot,
+                            String description, List<Transaction> pendingDonations){
         this.id = id;
         this.name = name;
         this.status = status;
         this.total_carrot = total_carrot;
         this.min_carrot = min_carrot;
         this.description = description;
+        this.pendingDonations = pendingDonations;
     }
 
     public String getId() {
@@ -72,6 +76,10 @@ public class SocialFoundation {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public List<Transaction> getPendingDonations() { return pendingDonations; }
+
+    public void setPendingDonations(List<Transaction> pendingDonations) { this.pendingDonations = pendingDonations; }
 
     @Override
     public boolean equals(Object o) {

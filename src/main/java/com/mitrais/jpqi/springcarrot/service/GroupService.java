@@ -8,6 +8,9 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -17,6 +20,8 @@ import java.util.stream.Collectors;
 public class GroupService {
     @Autowired
     private GroupRepository groupRepository;
+    @Autowired
+    private EmployeeServiceUsingDB employeeServiceUsingDB;
     @Autowired
     private MongoTemplate mongoTemplate;
 
@@ -281,4 +286,29 @@ public class GroupService {
         return res;
     }
 
+    public List<Group> findGroupId(String ownerId) {
+        List<Group> myGroup = groupRepository.findGroupIdByOwner(new ObjectId(ownerId));
+        return myGroup;
+    }
+
+    public long sumOfStaff(String groupId) {
+        long sum = 0;
+        Group group = findGroupById(groupId).getGroup();
+
+        if (group.getType() == Group.Type.MANAGEMENT) {
+            List<Employee> memberOfSMGroup = employeeServiceUsingDB.getGroupMember(group.getOwner().getId()).getListEmployee();
+            for (int j = 0; j<memberOfSMGroup.size(); j++){
+                List<Group> mGroup = findGroupId(memberOfSMGroup.get(j).getId());
+                for (int i = 0; i < mGroup.size(); i++) {
+                    List<Employee> memberOfMGroup = employeeServiceUsingDB.getGroupMember(mGroup.get(i).getId()).getListEmployee();
+                    sum += memberOfMGroup.size();
+                }
+            }
+        }
+        else {
+            List<Employee> memberOfMGroup = employeeServiceUsingDB.getGroupMember(group.getId()).getListEmployee();
+            sum += memberOfMGroup.size();
+        }
+        return sum;
+    }
 }
