@@ -287,6 +287,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
             System.out.println("member empty");
             res.setStatus(false);
             res.setMessage("member empty");
+            res.setListEmployee(members);
         } else {
             res.setStatus(true);
             res.setMessage("member found");

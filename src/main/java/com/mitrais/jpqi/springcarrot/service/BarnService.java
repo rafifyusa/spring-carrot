@@ -8,6 +8,9 @@ import com.mitrais.jpqi.springcarrot.responses.BarnResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -164,5 +167,12 @@ public class BarnService {
         }
         barnRepository.save(barn);
 
+    }
+
+    public List<Barn> getLatestBarn() {
+        int year = Year.now().getValue();
+        LocalDateTime start = LocalDateTime.of(year,Month.JANUARY,1,0,0,0);
+        System.out.println(start);
+        return barnRepository.findBarnByStatusAndByStartPeriod(true, start, LocalDateTime.now());
     }
 }

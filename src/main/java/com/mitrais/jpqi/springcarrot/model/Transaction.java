@@ -34,6 +34,7 @@ public class Transaction{
     private SocialFoundation socialFoundation;
     @DBRef
     private Achievement achievementClaimed;
+    @DBRef
     private Barn barn;
     private String description;
     private int carrot_amt;

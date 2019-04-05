@@ -40,4 +40,8 @@ public class BarnController {
     public void delAwardsFromBarn (@PathVariable String id, @RequestBody Award awards) {
         barnService.deleteAwardsFromBarn(id,awards);
     }
+    @GetMapping("/current-barn")
+    public Barn getCurrentBarn() {
+        return barnService.getLatestBarn().get(0);
+    }
 }
