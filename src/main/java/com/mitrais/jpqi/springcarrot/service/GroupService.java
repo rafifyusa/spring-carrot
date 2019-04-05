@@ -311,4 +311,14 @@ public class GroupService {
         }
         return sum;
     }
+
+    // Get Group Id (Only Management Group)
+    public List<Group> findManagementGroupIdByOwner(String ownerId) {
+        List<Group> myGroup = groupRepository.findGroupIdByOwner(new ObjectId(ownerId)).stream()
+                .filter(g -> g.getType().equals(Group.Type.MANAGEMENT))
+                .collect(Collectors.toList());
+        System.out.println(myGroup.size());
+        return myGroup;
+    }
+
 }
