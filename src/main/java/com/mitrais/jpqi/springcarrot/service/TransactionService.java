@@ -183,7 +183,7 @@ public class TransactionService {
             System.out.println(transaction.toString());
             funnelTransaction(transaction);
         }
-
+        System.out.println("=====Finished updating other entity=====");
         try {
             transactionRepository.save(transaction);
             res.setStatus(true);
@@ -221,16 +221,19 @@ public class TransactionService {
         }
         //Funnel for from Barn to SM
         else if (transaction.getFreezer_from() == null) {
-            Freezer f_to = freezerRepository.findByOwner(new ObjectId(transaction.getFreezer_to().getId()));
+            System.out.println("=====Inside Funnel Barn=====");
+            Freezer f_to = freezerRepository.findByOwner(new ObjectId(transaction.getFreezer_to().getEmployee().getId()));
             Barn barn = barnService.findBarnById(transaction.getBarn().getId()).getBarn();
 
             //Update SM freezer amount
             double newCarrotAmount = f_to.getCarrot_amt() + transaction.getCarrot_amt();
+
             f_to.setCarrot_amt(newCarrotAmount);
             freezerRepository.save(f_to);
 
             //Update Barn carrot left
             long newCarrotLeft = barn.getCarrotLeft() - transaction.getCarrot_amt();
+            System.out.println(newCarrotLeft);
             barn.setCarrotLeft(newCarrotLeft);
             barnService.createBarn(barn);
 
