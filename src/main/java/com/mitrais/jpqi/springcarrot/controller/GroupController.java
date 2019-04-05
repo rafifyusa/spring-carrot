@@ -83,8 +83,8 @@ public class GroupController {
         return groupService.findGroupId(ownerId);
     }
 
-    @GetMapping("staff-sum")
-    public long getStaffSumOfGroup(@RequestParam String id) {
+    @GetMapping("staff-sum/{id}")
+    public long getStaffSumOfGroup(@PathVariable String id) {
         return groupService.sumOfStaff(id);
     }
 

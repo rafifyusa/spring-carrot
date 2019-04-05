@@ -296,12 +296,15 @@ public class GroupService {
         Group group = findGroupById(groupId).getGroup();
 
         if (group.getType() == Group.Type.MANAGEMENT) {
-            List<Employee> memberOfSMGroup = employeeServiceUsingDB.getGroupMember(group.getOwner().getId()).getListEmployee();
+            List<Employee> memberOfSMGroup = employeeServiceUsingDB.getGroupMember(group.getId()).getListEmployee();
             for (int j = 0; j<memberOfSMGroup.size(); j++){
                 List<Group> mGroup = findGroupId(memberOfSMGroup.get(j).getId());
+                //mGroup.forEach(gg -> System.out.println(gg.getId()));
                 for (int i = 0; i < mGroup.size(); i++) {
                     List<Employee> memberOfMGroup = employeeServiceUsingDB.getGroupMember(mGroup.get(i).getId()).getListEmployee();
+                    //System.out.println(memberOfMGroup.size());
                     sum += memberOfMGroup.size();
+                    //System.out.println("Sum:" + sum);
                 }
             }
         }
