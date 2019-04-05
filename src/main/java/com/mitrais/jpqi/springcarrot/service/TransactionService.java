@@ -354,8 +354,8 @@ public class TransactionService {
                 .stream().filter(c -> !c.isUsable()).collect(Collectors.toList());
 
         int count = transaction.getCarrot_amt();
-        requester.setCarrot_amt(requester.getCarrot_amt()-count);
-        basketRepository.save(requester);
+/*        requester.setCarrot_amt(requester.getCarrot_amt()-count);
+        basketRepository.save(requester);*/
         for (int i = 0; i<count;i++) {
             Carrot c = pendingCarrots.get(i);
             c.setType(Carrot.Type.INACTIVE);
