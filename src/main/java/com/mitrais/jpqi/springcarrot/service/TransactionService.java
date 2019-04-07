@@ -544,7 +544,9 @@ public class TransactionService {
                         .andExpression("foo").as("id")
                         .andExpression("kk").as("detail"));
         AggregationResults<Hasil> groupResults = this.mongoTemplate.aggregate(aggregation, Transaction.class, Hasil.class);
-        return groupResults.getMappedResults();
+        List<Hasil> temp = groupResults.getMappedResults();
+        List<Hasil> result = temp.subList(0,temp.size()-1);
+        return result;
     }
 
     public List<Hasil> getTotalEarnedAmt(String id) {
