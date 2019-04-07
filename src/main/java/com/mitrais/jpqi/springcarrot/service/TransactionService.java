@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import static org.springframework.data.domain.Sort.Direction.ASC;
@@ -21,6 +22,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -46,6 +48,10 @@ public class TransactionService {
     private BarnService barnService;
     @Autowired
     MongoTemplate mongoTemplate;
+    @Autowired
+    private NotificationService notificationService;
+    @Autowired
+    SimpMessagingTemplate template;
 
     public TransactionResponse findAllTransactions() {
         TransactionResponse res = new TransactionResponse();
@@ -154,6 +160,10 @@ public class TransactionService {
 
                     transaction.setFrom(b_from.getName());
                     transaction.setTo(item.getBazaar().getBazaarName());
+                    Notification notif = new Notification();
+                    notif.setRead(false);
+                    notif.setDetail(b_from.getEmployee().getName() + " bought an item from bazaar");
+                    this.sendNotifToAdmin(notif);
                 }
                 else {
                     SocialFoundation socialFoundation = transaction.getSocialFoundation();
@@ -559,6 +569,39 @@ public class TransactionService {
         AggregationResults<Hasil> groupResults = this.mongoTemplate.aggregate(aggregation, Transaction.class, Hasil.class);
         return groupResults.getMappedResults();
     }
+    public static void setTimeout(Runnable runnable, int delay){
+        new Thread(() -> {
+            try {
+                Thread.sleep(delay);
+                runnable.run();
+            }
+            catch (Exception e){
+                System.err.println(e);
+            }
+        }).start();
+    }
+    private void sendNotifToAdmin(Notification notification) {
+        List<Employee> list = employeeServiceUsingDB.getStaffRole("ADMIN").getListEmployee();
+        ListIterator<Employee> obj = list.listIterator();
+        final int[] i = {0};
+        while (obj.hasNext()) {
+            try {
+                Thread.sleep(4000);
+                Employee emp = obj.next();
+                emp.setName(emp.getName() + i[0]);
+                notification.setId(ObjectId.get().toString());
+                System.out.println(emp.getName());
+                System.out.println(emp.getId());
+                notification.setOwner(emp);
+                template.convertAndSend("/topic/reply", notification);
+                notificationService.createNotif(notification);
+                i[0]++;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 /*    //TODO sortbyspentcarrots
     public List<Employee> findAllEmployeeSortedBySpentCarrotForRewards () {
 
