@@ -45,6 +45,8 @@ public class TransactionService {
     @Autowired
     private BarnService barnService;
     @Autowired
+    private BarnRepository barnRepository;
+    @Autowired
     MongoTemplate mongoTemplate;
 
     public TransactionResponse findAllTransactions() {
@@ -185,6 +187,7 @@ public class TransactionService {
         if(transaction.getType() == Transaction.Type.FUNNEL){
             System.out.println(transaction.toString());
             funnelTransaction(transaction);
+            transaction.setStatus(Transaction.Status.APPROVED);
         }
         System.out.println("=====Finished updating other entity=====");
         try {
@@ -216,11 +219,13 @@ public class TransactionService {
 
             //Update carrot ownership
             List<Carrot> carrots = carrotRepository.findByFreezerId(new ObjectId(f_from.getId()));
-            carrots.forEach(carrot -> {
-                carrot.setFreezer(f_to);
-                carrot.setUpdated_at(LocalDateTime.now());
-                carrotRepository.save(carrot);
-            });
+            int count = transaction.getCarrot_amt();
+            for (int i = 0 ; i < count ; i++) {
+                Carrot c = carrots.get(i);
+                c.setFreezer(f_to);
+                c.setUpdated_at(LocalDateTime.now());
+                carrotRepository.save(c);
+            }
         }
         //Funnel for from Barn to SM
         else if (transaction.getFreezer_from() == null) {
@@ -238,16 +243,18 @@ public class TransactionService {
             long newCarrotLeft = barn.getCarrotLeft() - transaction.getCarrot_amt();
             System.out.println(newCarrotLeft);
             barn.setCarrotLeft(newCarrotLeft);
-            barnService.createBarn(barn);
+            barnRepository.save(barn);
 
             //Update Carrot ownership
             List<Carrot> carrots = carrotRepository.findCarrotByBarnIdAndType(new ObjectId(barn.getId()), "FRESH");
-            carrots.forEach(carrot -> {
-                carrot.setFreezer(f_to);
-                carrot.setUpdated_at(LocalDateTime.now());
-                carrot.setType(Carrot.Type.FROZEN);
-                carrotRepository.save(carrot);
-            });
+            int count = transaction.getCarrot_amt();
+            for (int i = 0 ; i < count ; i++) {
+                Carrot c = carrots.get(i);
+                c.setFreezer(f_to);
+                c.setUpdated_at(LocalDateTime.now());
+                c.setType(Carrot.Type.FROZEN);
+                carrotRepository.save(c);
+            }
         }
     }
 
