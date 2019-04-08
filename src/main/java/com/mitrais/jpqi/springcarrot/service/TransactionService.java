@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import static org.springframework.data.domain.Sort.Direction.ASC;
@@ -21,6 +22,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -45,7 +47,13 @@ public class TransactionService {
     @Autowired
     private BarnService barnService;
     @Autowired
+    private BarnRepository barnRepository;
+    @Autowired
     MongoTemplate mongoTemplate;
+    @Autowired
+    private NotificationService notificationService;
+    @Autowired
+    SimpMessagingTemplate template;
 
     public TransactionResponse findAllTransactions() {
         TransactionResponse res = new TransactionResponse();
@@ -154,6 +162,10 @@ public class TransactionService {
 
                     transaction.setFrom(b_from.getName());
                     transaction.setTo(item.getBazaar().getBazaarName());
+                    Notification notif = new Notification();
+                    notif.setRead(false);
+                    notif.setDetail(b_from.getEmployee().getName() + " bought an item from bazaar");
+                    this.sendNotifToAdmin(notif);
                 }
                 else {
                     SocialFoundation socialFoundation = transaction.getSocialFoundation();
@@ -185,6 +197,7 @@ public class TransactionService {
         if(transaction.getType() == Transaction.Type.FUNNEL){
             System.out.println(transaction.toString());
             funnelTransaction(transaction);
+            transaction.setStatus(Transaction.Status.APPROVED);
         }
         System.out.println("=====Finished updating other entity=====");
         try {
@@ -216,11 +229,13 @@ public class TransactionService {
 
             //Update carrot ownership
             List<Carrot> carrots = carrotRepository.findByFreezerId(new ObjectId(f_from.getId()));
-            carrots.forEach(carrot -> {
-                carrot.setFreezer(f_to);
-                carrot.setUpdated_at(LocalDateTime.now());
-                carrotRepository.save(carrot);
-            });
+            int count = transaction.getCarrot_amt();
+            for (int i = 0 ; i < count ; i++) {
+                Carrot c = carrots.get(i);
+                c.setFreezer(f_to);
+                c.setUpdated_at(LocalDateTime.now());
+                carrotRepository.save(c);
+            }
         }
         //Funnel for from Barn to SM
         else if (transaction.getFreezer_from() == null) {
@@ -238,16 +253,18 @@ public class TransactionService {
             long newCarrotLeft = barn.getCarrotLeft() - transaction.getCarrot_amt();
             System.out.println(newCarrotLeft);
             barn.setCarrotLeft(newCarrotLeft);
-            barnService.createBarn(barn);
+            barnRepository.save(barn);
 
             //Update Carrot ownership
             List<Carrot> carrots = carrotRepository.findCarrotByBarnIdAndType(new ObjectId(barn.getId()), "FRESH");
-            carrots.forEach(carrot -> {
-                carrot.setFreezer(f_to);
-                carrot.setUpdated_at(LocalDateTime.now());
-                carrot.setType(Carrot.Type.FROZEN);
-                carrotRepository.save(carrot);
-            });
+            int count = transaction.getCarrot_amt();
+            for (int i = 0 ; i < count ; i++) {
+                Carrot c = carrots.get(i);
+                c.setFreezer(f_to);
+                c.setUpdated_at(LocalDateTime.now());
+                c.setType(Carrot.Type.FROZEN);
+                carrotRepository.save(c);
+            }
         }
     }
 
@@ -537,7 +554,9 @@ public class TransactionService {
                         .andExpression("foo").as("id")
                         .andExpression("kk").as("detail"));
         AggregationResults<Hasil> groupResults = this.mongoTemplate.aggregate(aggregation, Transaction.class, Hasil.class);
-        return groupResults.getMappedResults();
+        List<Hasil> temp = groupResults.getMappedResults();
+        List<Hasil> result = temp.subList(0,temp.size()-1);
+        return result;
     }
 
     public List<Hasil> getTotalEarnedAmt(String id) {
@@ -559,6 +578,39 @@ public class TransactionService {
         AggregationResults<Hasil> groupResults = this.mongoTemplate.aggregate(aggregation, Transaction.class, Hasil.class);
         return groupResults.getMappedResults();
     }
+    public static void setTimeout(Runnable runnable, int delay){
+        new Thread(() -> {
+            try {
+                Thread.sleep(delay);
+                runnable.run();
+            }
+            catch (Exception e){
+                System.err.println(e);
+            }
+        }).start();
+    }
+    private void sendNotifToAdmin(Notification notification) {
+        List<Employee> list = employeeServiceUsingDB.getStaffRole("ADMIN").getListEmployee();
+        ListIterator<Employee> obj = list.listIterator();
+        final int[] i = {0};
+        while (obj.hasNext()) {
+            try {
+                Thread.sleep(4000);
+                Employee emp = obj.next();
+                emp.setName(emp.getName() + i[0]);
+                notification.setId(ObjectId.get().toString());
+                System.out.println(emp.getName());
+                System.out.println(emp.getId());
+                notification.setOwner(emp);
+                template.convertAndSend("/topic/reply", notification);
+                notificationService.createNotif(notification);
+                i[0]++;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 /*    //TODO sortbyspentcarrots
     public List<Employee> findAllEmployeeSortedBySpentCarrotForRewards () {
 
