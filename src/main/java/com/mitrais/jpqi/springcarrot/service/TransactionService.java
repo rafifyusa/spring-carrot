@@ -95,7 +95,7 @@ public class TransactionService {
                 Notification notif = new Notification();
                 notif.setRead(false);
                 notif.setDetail(b_to.getEmployee().getName() + " claimed an achievement");
-                this.sendNotifToEmployee(notif, b_to.getEmployee());
+                this.sendNotifToEmployee(notif, f_from.getEmployee());
             }
             else {
                 //code if the reward is from system (not from manager's freezer )
