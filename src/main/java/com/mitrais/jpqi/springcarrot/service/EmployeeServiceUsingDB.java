@@ -203,6 +203,9 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         String date0 = localDate.toString().substring(5);
         String date1 = recentDOB1.toString().substring(5);
         String date2 = recentDOB2.toString().substring(5);
+
+        System.out.println("date0: " + date0 + "date1: " + date1 + "date2: " + date2);
+
         List<Basket> listBasket = new ArrayList<>();
         List<Employee> emp = employeeRepository.findAll()
                 .stream()

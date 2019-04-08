@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Exercise">
+    <test name="testngTestExercise">
+        <classes>
+            <class name="com.mitrais.jpqi.springcarrot.TestSelenium" />
+            <class name="com.mitrais.jpqi.springcarrot.TestSelenium2" />
+        </classes>
+    </test>
+</suite>
