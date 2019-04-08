@@ -91,6 +91,11 @@ public class TransactionService {
 
                 transaction.setFrom(f_from.getName());
                 transaction.setTo(b_to.getName());
+
+                Notification notif = new Notification();
+                notif.setRead(false);
+                notif.setDetail(b_to.getEmployee().getName() + " claimed an achievement");
+                this.sendNotifToEmployee(notif, b_to.getEmployee());
             }
             else {
                 //code if the reward is from system (not from manager's freezer )
@@ -162,7 +167,7 @@ public class TransactionService {
                     Notification notif = new Notification();
                     notif.setRead(false);
                     notif.setDetail(b_from.getEmployee().getName() + " bought an item from bazaar");
-                    this.sendNotifToAdmin(notif);
+                    this.sendNotifToAdmin(notif, "ADMIN");
                 }
                 else {
                     SocialFoundation socialFoundation = transaction.getSocialFoundation();
@@ -179,6 +184,11 @@ public class TransactionService {
 
                         transaction.setFrom(b_from.getName());
                         transaction.setTo(socialFoundation.getName());
+
+                        Notification notif = new Notification();
+                        notif.setRead(false);
+                        notif.setDetail(b_from.getEmployee().getName() + " donate her/his carrots");
+                        this.sendNotifToAdmin(notif, "ROOT_ADMIN");
                     }
                 }
             }
@@ -587,8 +597,8 @@ public class TransactionService {
             }
         }).start();
     }
-    private void sendNotifToAdmin(Notification notification) {
-        List<Employee> list = employeeServiceUsingDB.getStaffRole("ADMIN").getListEmployee();
+    private void sendNotifToAdmin(Notification notification, String role) {
+        List<Employee> list = employeeServiceUsingDB.getStaffRole(role).getListEmployee();
         ListIterator<Employee> obj = list.listIterator();
         final int[] i = {0};
         while (obj.hasNext()) {
@@ -607,6 +617,15 @@ public class TransactionService {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void sendNotifToEmployee(Notification notification, Employee employee) {
+        notification.setId(ObjectId.get().toString());
+        System.out.println(employee.getName());
+        System.out.println(employee.getId());
+        notification.setOwner(employee);
+        template.convertAndSend("/topic/reply", notification);
+        notificationService.createNotif(notification);
     }
 
 /*    //TODO sortbyspentcarrots
