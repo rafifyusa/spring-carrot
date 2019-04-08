@@ -20,10 +20,7 @@ import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -556,7 +553,8 @@ public class TransactionService {
         AggregationResults<Hasil> groupResults = this.mongoTemplate.aggregate(aggregation, Transaction.class, Hasil.class);
         List<Hasil> temp = groupResults.getMappedResults();
         List<Hasil> result = temp.subList(0,temp.size()-1);
-        return result;
+        result.forEach( e -> System.out.println(e.getDetail().getName()));
+        return result.stream().sorted(Comparator.comparingLong(Hasil::getTotal).reversed()).collect(Collectors.toList());
     }
 
     public List<Hasil> getTotalEarnedAmt(String id) {

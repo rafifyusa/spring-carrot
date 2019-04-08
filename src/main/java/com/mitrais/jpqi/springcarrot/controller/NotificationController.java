@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/notifications")
+@CrossOrigin
 public class NotificationController {
     private NotificationService notificationService;
     public NotificationController(NotificationService notificationService){this.notificationService = notificationService;}
