@@ -345,7 +345,15 @@ public class TransactionService {
             List<Transaction> pendingDonations = sf.getPendingDonations();
 
             try {
-                pendingDonations.forEach(transaction -> makeApprovedTransaction(transaction));
+                pendingDonations.forEach(transaction -> {
+                    makeApprovedTransaction(transaction);
+                    transaction.setStatus(Transaction.Status.APPROVED);
+                    transactionRepository.save(transaction);
+                });
+                sf.setPendingDonations(null);
+                sf.setTotal_carrot(0);
+                socialFoundationRepository.save(sf);
+
                 res.setStatus(true);
                 res.setMessage("Donations to this Social Foundation are all successful");
             } catch (Exception e) {
