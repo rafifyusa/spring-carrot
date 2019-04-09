@@ -2,6 +2,7 @@ package com.mitrais.jpqi.springcarrot.service;
 
 import com.mitrais.jpqi.springcarrot.model.Notification;
 import com.mitrais.jpqi.springcarrot.repository.NotificationRepository;
+import com.mitrais.jpqi.springcarrot.responses.NotificationResponse;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -37,7 +38,13 @@ public class NotificationService {
 
 
     //Functionalities
-    public List<Notification> findNotifByEmployeeId(String id) {
-        return notificationRepository.findAllByEmployeeId(new ObjectId(id));}
+    public NotificationResponse findUnreadNotifByEmployeeId(String id) {
+        NotificationResponse res = new NotificationResponse();
+        List<Notification> list =  notificationRepository.findAllByEmployeeIdAndStatus(new ObjectId(id), false);
+        res.setStatus(true);
+        res.setMessage("List of Notification");
+        res.setListNotification(list);
+        return res;
+    }
 
 }

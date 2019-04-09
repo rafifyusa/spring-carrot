@@ -1,12 +1,14 @@
 package com.mitrais.jpqi.springcarrot.controller;
 
 import com.mitrais.jpqi.springcarrot.model.Notification;
+import com.mitrais.jpqi.springcarrot.responses.NotificationResponse;
 import com.mitrais.jpqi.springcarrot.service.NotificationService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("api/notifications")
 public class NotificationController {
     private NotificationService notificationService;
@@ -37,8 +39,8 @@ public class NotificationController {
     public Notification getNotifById(@PathVariable String id){ return notificationService.findById(id);}
 
     @GetMapping("emp/{id}")
-    public List<Notification> getAllNotifByEmpId (@PathVariable String id) {
-        return notificationService.findNotifByEmployeeId(id);
+    public NotificationResponse getAllUnreadNotifByEmpId (@PathVariable String id) {
+        return notificationService.findUnreadNotifByEmployeeId(id);
     }
 
 }

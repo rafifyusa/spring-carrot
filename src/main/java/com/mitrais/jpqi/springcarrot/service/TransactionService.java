@@ -20,10 +20,7 @@ import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -94,6 +91,11 @@ public class TransactionService {
 
                 transaction.setFrom(f_from.getName());
                 transaction.setTo(b_to.getName());
+
+                Notification notif = new Notification();
+                notif.setRead(false);
+                notif.setDetail(b_to.getEmployee().getName() + " claimed an achievement");
+                this.sendNotifToEmployee(notif, f_from.getEmployee());
             }
             else {
                 //code if the reward is from system (not from manager's freezer )
@@ -165,7 +167,7 @@ public class TransactionService {
                     Notification notif = new Notification();
                     notif.setRead(false);
                     notif.setDetail(b_from.getEmployee().getName() + " bought an item from bazaar");
-                    this.sendNotifToAdmin(notif);
+                    this.sendNotifToAdmin(notif, "ADMIN");
                 }
                 else {
                     SocialFoundation socialFoundation = transaction.getSocialFoundation();
@@ -182,6 +184,11 @@ public class TransactionService {
 
                         transaction.setFrom(b_from.getName());
                         transaction.setTo(socialFoundation.getName());
+
+                        Notification notif = new Notification();
+                        notif.setRead(false);
+                        notif.setDetail(b_from.getEmployee().getName() + " donate her/his carrots");
+                        this.sendNotifToAdmin(notif, "ROOT_ADMIN");
                     }
                 }
             }
@@ -338,7 +345,15 @@ public class TransactionService {
             List<Transaction> pendingDonations = sf.getPendingDonations();
 
             try {
-                pendingDonations.forEach(transaction -> makeApprovedTransaction(transaction));
+                pendingDonations.forEach(transaction -> {
+                    makeApprovedTransaction(transaction);
+                    transaction.setStatus(Transaction.Status.APPROVED);
+                    transactionRepository.save(transaction);
+                });
+                sf.setPendingDonations(null);
+                sf.setTotal_carrot(0);
+                socialFoundationRepository.save(sf);
+
                 res.setStatus(true);
                 res.setMessage("Donations to this Social Foundation are all successful");
             } catch (Exception e) {
@@ -556,7 +571,8 @@ public class TransactionService {
         AggregationResults<Hasil> groupResults = this.mongoTemplate.aggregate(aggregation, Transaction.class, Hasil.class);
         List<Hasil> temp = groupResults.getMappedResults();
         List<Hasil> result = temp.subList(0,temp.size()-1);
-        return result;
+        result.forEach( e -> System.out.println(e.getDetail().getName()));
+        return result.stream().sorted(Comparator.comparingLong(Hasil::getTotal).reversed()).collect(Collectors.toList());
     }
 
     public List<Hasil> getTotalEarnedAmt(String id) {
@@ -589,8 +605,8 @@ public class TransactionService {
             }
         }).start();
     }
-    private void sendNotifToAdmin(Notification notification) {
-        List<Employee> list = employeeServiceUsingDB.getStaffRole("ADMIN").getListEmployee();
+    private void sendNotifToAdmin(Notification notification, String role) {
+        List<Employee> list = employeeServiceUsingDB.getStaffRole(role).getListEmployee();
         ListIterator<Employee> obj = list.listIterator();
         final int[] i = {0};
         while (obj.hasNext()) {
@@ -609,6 +625,15 @@ public class TransactionService {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void sendNotifToEmployee(Notification notification, Employee employee) {
+        notification.setId(ObjectId.get().toString());
+        System.out.println(employee.getName());
+        System.out.println(employee.getId());
+        notification.setOwner(employee);
+        template.convertAndSend("/topic/reply", notification);
+        notificationService.createNotif(notification);
     }
 
 /*    //TODO sortbyspentcarrots
