@@ -6,6 +6,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -23,9 +24,12 @@ public interface EmployeeRepository extends MongoRepository<Employee, String> {
     @Query("{'emailAddress': ?0}")
     Optional<Employee> findByEmailAddress(String email);
 
-    @Query("{'group':{$elemMatch:{$id : ?0}}}")
+    @Query("{'group':{$elemMatch:{$id: ?0}}}")
     List<Employee> findByGroupId(ObjectId id);
 
     @Query("{'role':{$in: ?0}}")
     List<Employee> findByRoles(String[] a);
+
+    @Query("{'dob':{$gte: ?0, $lte: ?1}}")
+    List<Employee> findEmployeeWithBirthDateToday(LocalDateTime start, LocalDateTime end);
 }

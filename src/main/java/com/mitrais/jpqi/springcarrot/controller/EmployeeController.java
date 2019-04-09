@@ -59,7 +59,7 @@ public class EmployeeController {
     // Delete achievement from employee
     @PatchMapping("/del-achievement/{id}")
     public void deleteAchievementFromEmployee (@PathVariable String id, @RequestBody Achievement achievement) {
-        employeeServiceUsingDB.deleteAchievementGroup( id, achievement);}
+        employeeServiceUsingDB.deleteAchievementFromEmployee( id, achievement);}
 
     //inserting achievement to employee
     @PatchMapping("/add-achievement/{id}")
@@ -112,6 +112,12 @@ public class EmployeeController {
     public EmployeeResponse getAllMemberOfAGroup(@PathVariable String id) {
         return employeeServiceUsingDB.getGroupMember(id);
     }
+
+    @PostMapping("multiple-group-member")
+    public EmployeeResponse getAllMemberOfMultipleGroup(@RequestBody List<Group> group) {
+        return employeeServiceUsingDB.getMultipleGroupMember(group);
+    }
+
     @GetMapping("nostaffgroup")
     public List<Employee> getAllEmployeeWithoutGroup() {
         return employeeServiceUsingDB.findAllEmployeeWithoutStaffGroup();

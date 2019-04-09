@@ -27,6 +27,12 @@ public interface TransactionRepository extends MongoRepository<Transaction, Stri
     @Query("{'type': ?0}")
     List<Transaction> findTransactionByType (String type);
 
+    @Query("{'transaction_date':{$gte: ?0, $lte: ?1}}")
+    List<Transaction> findTransactionByDate(LocalDateTime startDate, LocalDateTime endDate);
+
     @Query("{'type': {$in: ?0}, 'transaction_date':{$gte: ?1, $lte: ?2}}")
     List<Transaction> findTransactionbByTypeAndDate(String[] type, LocalDateTime startDate, LocalDateTime endDate);
+
+    @Query("{$or:[{'detail_from.employee.$id': ?0}, {'detail_to.employee.$id': ?0}, {'freezer_from.employee.$id': ?0},{'freezer_to.employee.$id': ?0}]}")
+    List<Transaction> findAllTransactionByAnEmployee(ObjectId id);
 }

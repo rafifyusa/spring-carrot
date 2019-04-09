@@ -62,6 +62,6 @@ public class BasketService {
     }
 
     public Basket findBasketByEmployeeId(String id) {
-        return basketRepository.findBasketByEmployeeId(id);
+        return basketRepository.findBasketByEmployeeId(new ObjectId(id));
     }
 }

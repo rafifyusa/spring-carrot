@@ -48,9 +48,14 @@ public class TransactionController {
         return transactionService.approveTransaction(id);
     }
 
-    @PatchMapping("approve-donation")
-    public TransactionResponse approveDonation(@RequestParam String id) {//use social foundation ID
+    @PatchMapping("approve-donation")//use social foundation ID
+    public TransactionResponse approveDonation(@RequestParam String id) {
         return transactionService.approveDonation(id);
+    }
+
+    @PatchMapping("approve-request")//use transaction id
+    public TransactionResponse approveRequest(@RequestParam String id) {
+        return transactionService.approveRequestTransaction(id);
     }
 
     @PatchMapping("decline")
@@ -84,9 +89,22 @@ public class TransactionController {
     }
 
     @GetMapping("by-date-status")
-    public TransactionResponse getAllTransactionByStatusAndDate(@RequestParam String type,
-                                                              @RequestParam Long startDate,
-                                                              @RequestParam Long endDate) {
+    public TransactionResponse getAllTransactionByStatusAndDate(@RequestParam (required = false) String type,
+                                                              @RequestParam Long startDate, @RequestParam Long endDate) {
+        //convert the timestamp to dates
+        LocalDateTime startDateC =
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(startDate),
+                        TimeZone.getDefault().toZoneId());
+
+        LocalDateTime endDateC =
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(endDate),
+                        TimeZone.getDefault().toZoneId());
+        System.out.println(startDateC);
+        System.out.println(endDateC);
+
+        if (type == null){
+            return transactionService.findTransactionByDate(startDateC, endDateC);
+        }
 
         String[] types = new String[4];
         switch (type) {
@@ -100,16 +118,6 @@ public class TransactionController {
                 types[0] = type;
                 break;
         }
-        //convert the timestamp to dates
-        LocalDateTime startDateC =
-                LocalDateTime.ofInstant(Instant.ofEpochMilli(startDate),
-                        TimeZone.getDefault().toZoneId());
-
-        LocalDateTime endDateC =
-                LocalDateTime.ofInstant(Instant.ofEpochMilli(endDate),
-                        TimeZone.getDefault().toZoneId());
-        System.out.println(startDateC);
-        System.out.println(endDateC);
         return transactionService.findTransactionByTypeAndDate(types, startDateC, endDateC);
     }
 
