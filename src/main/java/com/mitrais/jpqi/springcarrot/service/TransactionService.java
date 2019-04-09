@@ -14,6 +14,8 @@ import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import static org.springframework.data.domain.Sort.Direction.ASC;
@@ -23,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@EnableScheduling
 @Service
 public class TransactionService {
     @Autowired
@@ -203,10 +206,13 @@ public class TransactionService {
 
         }
 
-        if(transaction.getType() == Transaction.Type.FUNNEL){
-            System.out.println(transaction.toString());
+        else if(transaction.getType() == Transaction.Type.FUNNEL){
             funnelTransaction(transaction);
             transaction.setStatus(Transaction.Status.APPROVED);
+        }
+
+        else if(transaction.getType() == Transaction.Type.REQUEST){
+            System.out.println("Creating request for frozen carrot");
         }
         System.out.println("=====Finished updating other entity=====");
         try {
@@ -254,7 +260,6 @@ public class TransactionService {
 
             //Update SM freezer amount
             double newCarrotAmount = f_to.getCarrot_amt() + transaction.getCarrot_amt();
-
             f_to.setCarrot_amt(newCarrotAmount);
             freezerRepository.save(f_to);
 
@@ -275,6 +280,25 @@ public class TransactionService {
                 carrotRepository.save(c);
             }
         }
+    }
+
+    public TransactionResponse approveRequestTransaction (String id){
+        TransactionResponse res = new TransactionResponse();
+
+        if (transactionRepository.findById(id).isPresent()){
+            Transaction transaction = transactionRepository.findById(id).get();
+            try {
+                transaction.setStatus(Transaction.Status.APPROVED);
+                funnelTransaction(transaction);
+                transactionRepository.save(transaction);
+                res.setStatus(true);
+                res.setMessage("transaction approved");
+            } catch (NullPointerException e) {
+                res.setStatus(false);
+                res.setMessage(e.getMessage());
+            }
+        }
+        return res;
     }
 
     public TransactionResponse approveTransaction(String id) {
@@ -652,6 +676,15 @@ public class TransactionService {
         return total_spent;
     }
 
+    @Scheduled(cron = "0 1 0 * * *")
+    public void sendBirthdayCarrot() {
+        System.out.println("Sending birthday carrots");
+
+        List<Employee> employeeHavingBirthday = employeeServiceUsingDB.findAllEmployeeHavingBirthdayToday();
+        employeeHavingBirthday.forEach( emp -> {
+            employeeServiceUsingDB.getElligibility
+        });
+    }
 /*    //TODO sortbyspentcarrots
     public List<Employee> findAllEmployeeSortedBySpentCarrotForRewards () {
 

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Document("transactions")
 public class Transaction{
     public enum Type{
-        BAZAAR, REWARD, SHARED, DONATION, FUNNEL
+        BAZAAR, REWARD, SHARED, DONATION, FUNNEL, REQUEST
     }
 
     public enum Status{
