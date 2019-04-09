@@ -203,11 +203,11 @@ public class TransactionService {
 
         }
 
-        if(transaction.getType() == Transaction.Type.FUNNEL){
-            System.out.println(transaction.toString());
+        else if(transaction.getType() == Transaction.Type.FUNNEL){
             funnelTransaction(transaction);
             transaction.setStatus(Transaction.Status.APPROVED);
         }
+
         System.out.println("=====Finished updating other entity=====");
         try {
             transactionRepository.save(transaction);
@@ -254,7 +254,6 @@ public class TransactionService {
 
             //Update SM freezer amount
             double newCarrotAmount = f_to.getCarrot_amt() + transaction.getCarrot_amt();
-
             f_to.setCarrot_amt(newCarrotAmount);
             freezerRepository.save(f_to);
 
@@ -275,6 +274,25 @@ public class TransactionService {
                 carrotRepository.save(c);
             }
         }
+    }
+
+    public TransactionResponse approveRequestTransaction (String id){
+        TransactionResponse res = new TransactionResponse();
+
+        if (transactionRepository.findById(id).isPresent()){
+            Transaction transaction = transactionRepository.findById(id).get();
+            try {
+                transaction.setStatus(Transaction.Status.APPROVED);
+                funnelTransaction(transaction);
+                transactionRepository.save(transaction);
+                res.setStatus(true);
+                res.setMessage("transaction approved");
+            } catch (NullPointerException e) {
+                res.setStatus(false);
+                res.setMessage(e.getMessage());
+            }
+        }
+        return res;
     }
 
     public TransactionResponse approveTransaction(String id) {
