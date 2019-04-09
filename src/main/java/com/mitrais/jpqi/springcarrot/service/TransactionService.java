@@ -208,6 +208,9 @@ public class TransactionService {
             transaction.setStatus(Transaction.Status.APPROVED);
         }
 
+        else if(transaction.getType() == Transaction.Type.REQUEST){
+            System.out.println("Creating request for frozen carrot");
+        }
         System.out.println("=====Finished updating other entity=====");
         try {
             transactionRepository.save(transaction);
