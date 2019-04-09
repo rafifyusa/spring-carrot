@@ -59,7 +59,7 @@ public class EmployeeController {
     // Delete achievement from employee
     @PatchMapping("/del-achievement/{id}")
     public void deleteAchievementFromEmployee (@PathVariable String id, @RequestBody Achievement achievement) {
-        employeeServiceUsingDB.deleteAchievementGroup( id, achievement);}
+        employeeServiceUsingDB.deleteAchievementFromEmployee( id, achievement);}
 
     //inserting achievement to employee
     @PatchMapping("/add-achievement/{id}")

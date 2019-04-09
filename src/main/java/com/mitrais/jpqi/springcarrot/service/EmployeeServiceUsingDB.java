@@ -504,7 +504,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         }
     }
 
-    public void deleteAchievementGroup(String id, Achievement achievement){
+    public void deleteAchievementFromEmployee(String id, Achievement achievement){
         Optional<Employee> employee = employeeRepository.findById(id);
         if (employee.isPresent()) {
             Employee emp = employee.get();

@@ -164,6 +164,8 @@ public class TransactionService {
 
                     transaction.setFrom(b_from.getName());
                     transaction.setTo(item.getBazaar().getBazaarName());
+
+
                     Notification notif = new Notification();
                     notif.setRead(false);
                     notif.setDetail(b_from.getEmployee().getName() + " bought an item from bazaar");
@@ -422,6 +424,7 @@ public class TransactionService {
                     makeDeclinedTransaction(transaction);
                 }
             }
+
             transaction.setStatus(Transaction.Status.DECLINED);
 
             try {
@@ -434,7 +437,6 @@ public class TransactionService {
             }
             return res;
         }
-
         res.setStatus(false);
         res.setMessage("transaction not found");
         return res;
@@ -458,12 +460,13 @@ public class TransactionService {
 
     public TransactionResponse findTransactionByEmployee (String id) {
         TransactionResponse res = new TransactionResponse();
-        List<Transaction> temp = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id));
-        List<Transaction> temp1 = transactionRepository.findFreezerFromByEmployeeId(new ObjectId(id));
+        List<Transaction> result = transactionRepository.findAllTransactionByAnEmployee(new ObjectId(id));
+/*        List<Transaction> temp1 = transactionRepository.findFreezerFromByEmployeeId(new ObjectId(id));
+        List<Transaction> temp2 = transactionRepository.
         List<Transaction> result = transactionRepository.findDetailToByEmployeeId(new ObjectId(id));
 
         result.addAll(temp);
-        result.addAll(temp1);
+        result.addAll(temp1);*/
         res.setStatus(true);
         if (result.size() > 0) {
             res.setMessage("Transaction found");
@@ -487,32 +490,6 @@ public class TransactionService {
         return res;
     }
 
-    public int countCarrotSpentForRewardItem (String id) {
-        int total_spent = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id)).stream()
-                .filter(e -> e.getType() == Transaction.Type.BAZAAR)
-                .mapToInt( a->a.getCarrot_amt()).sum();
-
-        return total_spent;
-    }
-
-    public int countCarrotSpentForSharing (String id) {
-        int total_spent = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id)).stream()
-                .filter(e -> e.getType() == Transaction.Type.SHARED)
-                .mapToInt( a->a.getCarrot_amt()).sum();
-
-        return total_spent;
-    }
-
-    public int countCarrotSpentForDonation (String id) {
-        List<Transaction> donation_transaction = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id));
-
-        int total_spent = donation_transaction.stream()
-                .filter(e -> e.getType() == Transaction.Type.DONATION)
-                .mapToInt( a->a.getCarrot_amt()).sum();
-
-        return total_spent;
-    }
-
     public TransactionResponse findAllPendingTransaction () {
         TransactionResponse res = new TransactionResponse();
         Query query = new Query();
@@ -531,6 +508,19 @@ public class TransactionService {
     public TransactionResponse findTransactionByType (String status) {
         TransactionResponse res = new TransactionResponse();
         List <Transaction> transactions = transactionRepository.findTransactionByType(status);
+        res.setStatus(true);
+        if (transactions.size() > 0) {
+            res.setMessage("Transaction found");
+        } else {
+            res.setMessage("Transaction not found");
+        }
+        res.setListTransaction(transactions);
+        return res;
+    }
+
+    public TransactionResponse findTransactionByDate(LocalDateTime startDate, LocalDateTime endDate) {
+        TransactionResponse res = new TransactionResponse();
+        List<Transaction> transactions = transactionRepository.findTransactionByDate(startDate, endDate);
         res.setStatus(true);
         if (transactions.size() > 0) {
             res.setMessage("Transaction found");
@@ -634,6 +624,32 @@ public class TransactionService {
         notification.setOwner(employee);
         template.convertAndSend("/topic/reply", notification);
         notificationService.createNotif(notification);
+    }
+
+    public int countCarrotSpentForRewardItem (String id) {
+        int total_spent = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id)).stream()
+                .filter(e -> e.getType() == Transaction.Type.BAZAAR)
+                .mapToInt( a->a.getCarrot_amt()).sum();
+
+        return total_spent;
+    }
+
+    public int countCarrotSpentForSharing (String id) {
+        int total_spent = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id)).stream()
+                .filter(e -> e.getType() == Transaction.Type.SHARED)
+                .mapToInt( a->a.getCarrot_amt()).sum();
+
+        return total_spent;
+    }
+
+    public int countCarrotSpentForDonation (String id) {
+        List<Transaction> donation_transaction = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id));
+
+        int total_spent = donation_transaction.stream()
+                .filter(e -> e.getType() == Transaction.Type.DONATION)
+                .mapToInt( a->a.getCarrot_amt()).sum();
+
+        return total_spent;
     }
 
 /*    //TODO sortbyspentcarrots
