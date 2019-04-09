@@ -112,6 +112,12 @@ public class EmployeeController {
     public EmployeeResponse getAllMemberOfAGroup(@PathVariable String id) {
         return employeeServiceUsingDB.getGroupMember(id);
     }
+
+    @PostMapping("multiple-group-member")
+    public EmployeeResponse getAllMemberOfMultipleGroup(@RequestBody List<Group> group) {
+        return employeeServiceUsingDB.getMultipleGroupMember(group);
+    }
+
     @GetMapping("nostaffgroup")
     public List<Employee> getAllEmployeeWithoutGroup() {
         return employeeServiceUsingDB.findAllEmployeeWithoutStaffGroup();

@@ -24,7 +24,7 @@ public interface EmployeeRepository extends MongoRepository<Employee, String> {
     @Query("{'emailAddress': ?0}")
     Optional<Employee> findByEmailAddress(String email);
 
-    @Query("{'group':{$elemMatch:{$id : ?0}}}")
+    @Query("{'group':{$elemMatch:{$id: ?0}}}")
     List<Employee> findByGroupId(ObjectId id);
 
     @Query("{'role':{$in: ?0}}")

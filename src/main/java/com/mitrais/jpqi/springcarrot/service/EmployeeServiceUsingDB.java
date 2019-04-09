@@ -538,6 +538,26 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         return res;
     }
 
+    public EmployeeResponse getMultipleGroupMember(List<Group> group) {
+        EmployeeResponse res = new EmployeeResponse();
+        List<Employee> empList = new ArrayList<>();
+        group.forEach(g -> {
+            List<Employee> ee = employeeRepository.findByGroupId(new ObjectId(g.getId()));
+            empList.addAll(ee);
+        });
+        if (empList.isEmpty()) {
+            System.out.println("member empty");
+            res.setStatus(false);
+            res.setMessage("member empty");
+            res.setListEmployee(empList);
+        } else {
+            res.setStatus(true);
+            res.setMessage("member found");
+            res.setListEmployee(empList);
+        }
+
+        return res;
+    }
     public List<Employee> findAllEmployeeHavingBirthdayToday(){
         int day = LocalDate.now().getDayOfMonth();
         int month = LocalDate.now().getMonthValue();
