@@ -30,13 +30,13 @@ public class EmployeeController {
     }
 
     @PatchMapping("admin")
-    public void makeAdmin(@RequestParam String id) {
-        employeeServiceUsingDB.makeEmployeeAsAdmin(id);
+    public EmployeeResponse makeAdmin(@RequestParam String id) {
+        return employeeServiceUsingDB.makeEmployeeAsAdmin(id);
     }
 
     @PatchMapping("revoke")
-    public void revokeAdmin(@RequestParam String id, @RequestBody Employee role) {
-        employeeServiceUsingDB.revokeEmployeefromAdmin(id, role);
+    public EmployeeResponse revokeAdmin(@RequestParam String id) {
+        return employeeServiceUsingDB.revokeEmployeefromAdmin(id);
     }
 
     // Delete employee
@@ -92,6 +92,10 @@ public class EmployeeController {
         return employeeServiceUsingDB.getStaffRole(role);
     }
 
+    @PostMapping("roles")
+    public EmployeeResponse findByMultipleBazaarId(@RequestBody List<Employee> roles) {
+        return employeeServiceUsingDB.getStaffRoles(roles);
+    }
     // Get recent (2 days) birthday of all employees
     @GetMapping("recentdob")
     public BasketResponse getByRecentDOB() {

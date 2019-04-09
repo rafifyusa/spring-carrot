@@ -385,17 +385,34 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         return e.get();
     }
 
-    public void makeEmployeeAsAdmin (String id) {
+    public EmployeeResponse makeEmployeeAsAdmin (String id) {
+        EmployeeResponse res = new EmployeeResponse();
         Employee emp = getEmployeeById(id).getEmployee();
         emp.setRole(Employee.Role.ADMIN);
-        employeeRepository.save(emp);
+        try {
+            employeeRepository.save(emp);
+            res.setStatus(true);
+            res.setMessage("Employee's Role changed to ADMIN");
+        }catch (NullPointerException e) {
+            res.setStatus(false);
+            res.setMessage(e.getMessage());
+        }
+        return res;
     }
 
-    public void revokeEmployeefromAdmin(String id, Employee role) {
-        System.out.println(role);
+    public EmployeeResponse revokeEmployeefromAdmin(String id) {
+        EmployeeResponse res = new EmployeeResponse();
         Employee emp = getEmployeeById(id).getEmployee();
-        emp.setRole(role.getRole());
-        employeeRepository.save(emp);
+        emp.setRole(Employee.Role.STAFF);
+        try {
+            employeeRepository.save(emp);
+            res.setStatus(true);
+            res.setMessage("Employee's Role changed to ADMIN");
+        }catch (NullPointerException e) {
+            res.setStatus(false);
+            res.setMessage(e.getMessage());
+        }
+        return res;
     }
 
     //Upload File
@@ -506,6 +523,22 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         res.setStatus(true);
         res.setMessage("List Achievement");
         res.setListAchievement(getEmployeeById(id).getEmployee().getAchievement());
+        return res;
+    }
+
+    public EmployeeResponse getStaffRoles(List<Employee> roles) {
+        EmployeeResponse res = new EmployeeResponse();
+        String[] a = new String[roles.size()];
+        final int[] i = {0};
+        roles.forEach(e -> {
+            a[i[0]] = e.getRole().toString();
+            i[0]++;
+        });
+
+        List<Employee> mm = employeeRepository.findByRoles(a);
+        res.setStatus(true);
+        res.setMessage("List of Employee");
+        res.setListEmployee(mm);
         return res;
     }
 }

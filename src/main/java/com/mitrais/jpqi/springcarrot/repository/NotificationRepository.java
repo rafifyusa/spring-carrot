@@ -8,6 +8,6 @@ import org.springframework.data.mongodb.repository.Query;
 import java.util.List;
 
 public interface NotificationRepository extends MongoRepository<Notification, String> {
-    @Query("{'owner.$id': ?0}")
-    List<Notification> findAllByEmployeeId(ObjectId id);
+    @Query("{'owner.$id': ?0, read: ?1}")
+    List<Notification> findAllByEmployeeIdAndStatus(ObjectId id, Boolean status);
 }
