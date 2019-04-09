@@ -23,8 +23,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -537,6 +536,28 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         res.setMessage("List of Employee");
         res.setListEmployee(mm);
         return res;
+    }
+
+    public List<Employee> findAllEmployeeHavingBirthdayToday(){
+        int day = LocalDate.now().getDayOfMonth();
+        int month = LocalDate.now().getMonthValue();
+        int year = Year.now().getValue();
+        LocalDateTime end = LocalDateTime.of(year,month,day,23,59,59);
+        LocalDateTime start = LocalDateTime.of(year,month,day,0,0,0);
+        return employeeRepository.findEmployeeWithBirthDateToday(start, end);
+    }
+
+    public boolean checkBirthdayCarrotEligibility(String id){
+        Employee emp = getEmployeeById(id).getEmployee();
+        Set<Group> groups= emp.getGroup();
+
+        Award birthdayAward = new Award();
+   /*     for(int i = 0; i<groups.size(); i++){
+            if (groups.)
+        }*/
+
+
+        return false;
     }
 }
 

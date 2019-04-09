@@ -14,6 +14,8 @@ import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import static org.springframework.data.domain.Sort.Direction.ASC;
@@ -23,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@EnableScheduling
 @Service
 public class TransactionService {
     @Autowired
@@ -673,6 +676,15 @@ public class TransactionService {
         return total_spent;
     }
 
+    @Scheduled(cron = "0 1 0 * * *")
+    public void sendBirthdayCarrot() {
+        System.out.println("Sending birthday carrots");
+
+        List<Employee> employeeHavingBirthday = employeeServiceUsingDB.findAllEmployeeHavingBirthdayToday();
+        employeeHavingBirthday.forEach( emp -> {
+            employeeServiceUsingDB.getElligibility
+        });
+    }
 /*    //TODO sortbyspentcarrots
     public List<Employee> findAllEmployeeSortedBySpentCarrotForRewards () {
 

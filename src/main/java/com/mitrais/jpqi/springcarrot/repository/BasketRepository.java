@@ -13,5 +13,5 @@ public interface BasketRepository extends MongoRepository<Basket, String> {
     Optional<Basket> findByEmployee(ObjectId id);
 
     @Query("{'employee.$id': ?0}")
-    Basket findBasketByEmployeeId (String id);
+    Basket findBasketByEmployeeId (ObjectId id);
 }
