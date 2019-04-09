@@ -78,6 +78,7 @@ public class TransactionService {
     }
 
     public TransactionResponse createTransaction(Transaction transaction) {
+        transaction.setId(new ObjectId().toString());
         TransactionResponse res = new TransactionResponse();
 
         //set the transaction date
@@ -218,6 +219,7 @@ public class TransactionService {
         try {
             transactionRepository.save(transaction);
             res.setStatus(true);
+            res.setTransaction(transaction);
             res.setMessage("transaction successfully added");
         } catch (NullPointerException e) {
             res.setStatus(false);
@@ -682,7 +684,7 @@ public class TransactionService {
 
         List<Employee> employeeHavingBirthday = employeeServiceUsingDB.findAllEmployeeHavingBirthdayToday();
         employeeHavingBirthday.forEach( emp -> {
-            employeeServiceUsingDB.getElligibility
+//            employeeServiceUsingDB.getElligibility
         });
     }
 /*    //TODO sortbyspentcarrots
