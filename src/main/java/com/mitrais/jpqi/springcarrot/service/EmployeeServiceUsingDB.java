@@ -547,17 +547,20 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         return employeeRepository.findEmployeeWithBirthDateToday(start, end);
     }
 
-    public boolean checkBirthdayCarrotEligibility(String id){
+    public int checkBirthdayCarrotEligibility(String id){
         Employee emp = getEmployeeById(id).getEmployee();
         Set<Group> groups= emp.getGroup();
+        int eligibleGroup = 0;
 
         Award birthdayAward = new Award();
-   /*     for(int i = 0; i<groups.size(); i++){
-            if (groups.)
-        }*/
+        birthdayAward.setId("5c943ae5b73f4133b45a1da8");
+        for (Group group: groups) {
+            if (group.getAwards().contains(birthdayAward)){
+                eligibleGroup+=1;
+            }
+        }
 
-
-        return false;
+        return eligibleGroup;
     }
 }
 

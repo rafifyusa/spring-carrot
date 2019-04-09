@@ -36,6 +36,8 @@ public class Transaction{
     private Achievement achievementClaimed;
     @DBRef
     private Barn barn;
+    @DBRef
+    private Award award;
     private String description;
     private int carrot_amt;
     private LocalDateTime transaction_date;
@@ -47,7 +49,7 @@ public class Transaction{
     public Transaction(String id, Type type, String from, String to, Basket detail_from,
                        Basket detail_to, Freezer freezer_from, Freezer freezer_to, Item requested_item, String description,
                        SocialFoundation socialFoundation, Achievement achievementClaimed, Barn barn, int carrot_amt,
-                       LocalDateTime transaction_date, Status status) {
+                       LocalDateTime transaction_date, Status status, Award award) {
         this.id = id;
         this.type = type;
         this.from = from;
@@ -64,6 +66,7 @@ public class Transaction{
         this.carrot_amt = carrot_amt;
         this.transaction_date = transaction_date;
         this.status = status;
+        this.award = award;
     }
     //Getter & Setters
     public String getId() {
@@ -147,4 +150,8 @@ public class Transaction{
     public Barn getBarn() { return barn; }
 
     public void setBarn(Barn barn) { this.barn = barn; }
+
+    public Award getAward() { return award; }
+
+    public void setAward(Award award) { this.award = award; }
 }
