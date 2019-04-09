@@ -51,6 +51,8 @@ public class TransactionService {
     @Autowired
     MongoTemplate mongoTemplate;
     @Autowired
+    private AwardRepository awardRepository;
+    @Autowired
     private NotificationService notificationService;
     @Autowired
     SimpMessagingTemplate template;
@@ -102,7 +104,27 @@ public class TransactionService {
                 this.sendNotifToEmployee(notif, f_from.getEmployee());
             }
             else {
-                //code if the reward is from system (not from manager's freezer )
+                Barn barn = barnService.getLatestBarn().get(0);
+                long newAmount = barn.getCarrotLeft() - transaction.getCarrot_amt();
+                barn.setCarrotLeft(newAmount);
+                barnRepository.save(barn);
+
+                Basket b_to = basketRepository.findById(transaction.getDetail_to().getId()).get();
+                double newAmount1 = b_to.getCarrot_amt() + transaction.getCarrot_amt();
+                b_to.setCarrot_amt(newAmount1);
+                basketRepository.save(b_to);
+
+                //Update Carrot ownership
+                List<Carrot> carrots = carrotRepository.findCarrotByBarnIdAndType(new ObjectId(barn.getId()), "FRESH");
+                int count = transaction.getCarrot_amt();
+                for (int i = 0 ; i < count ; i++) {
+                    Carrot c = carrots.get(i);
+                    c.setBasket(b_to);
+                    c.setUpdated_at(LocalDateTime.now());
+                    c.setType(Carrot.Type.NORMAL);
+                    carrotRepository.save(c);
+                }
+                transaction.setStatus(Transaction.Status.APPROVED);
             }
         }
 
@@ -678,14 +700,32 @@ public class TransactionService {
         return total_spent;
     }
 
+    public void sendBirthdayCarrot(int count, Employee emp){
+        Award award = awardRepository.findById("5c943ae5b73f4133b45a1da8").get();
+        Basket basket = basketRepository.findBasketByEmployeeId(new ObjectId(emp.getId()));
+
+        Transaction transaction = new Transaction();
+        transaction.setAward(award);
+        transaction.setDetail_to(basket);
+        transaction.setType(Transaction.Type.REWARD);
+        transaction.setCarrot_amt(award.getCarrot_amt());
+
+        for(int i = 0; i < count; i++){
+            createTransaction(transaction);
+        }
+    }
     @Scheduled(cron = "0 1 0 * * *")
-    public void sendBirthdayCarrot() {
+    public void scheduledBirthdayCarrot() {
         System.out.println("Sending birthday carrots");
 
         List<Employee> employeeHavingBirthday = employeeServiceUsingDB.findAllEmployeeHavingBirthdayToday();
-        employeeHavingBirthday.forEach( emp -> {
-//            employeeServiceUsingDB.getElligibility
-        });
+        for (Employee emp: employeeHavingBirthday
+             ) {
+            int count = employeeServiceUsingDB.checkBirthdayCarrotEligibility(emp.getId());
+            if (count > 0 ){
+                sendBirthdayCarrot(count, emp);
+            }
+        }
     }
 /*    //TODO sortbyspentcarrots
     public List<Employee> findAllEmployeeSortedBySpentCarrotForRewards () {
