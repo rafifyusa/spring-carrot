@@ -102,6 +102,8 @@ public class EmployeeController {
         return employeeServiceUsingDB.getRecentDOB();
     }
 
+    @GetMapping("birthday")
+    public List<Employee> getBirthdayToday() {return employeeServiceUsingDB.findAllEmployeeHavingBirthdayToday();}
     // Get employee group
     @GetMapping("groups")
     public List<GroupCount> getAllGroups() {

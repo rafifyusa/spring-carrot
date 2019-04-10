@@ -20,8 +20,6 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.*;
 import java.util.*;
@@ -307,7 +305,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         if (employee.isPresent()) {
             Employee emp = employee.get();
             if (emp.getGroup() == null) {
-                emp.setGroup(new HashSet<>());
+                emp.setGroup(new ArrayList<>());
             }
 //
             group.forEach(e -> emp.getGroup().add(e));
@@ -477,7 +475,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         // Iterate over all employee in employees list
         employees.forEach(e -> {
             // get group set of an employee
-            Set<Group> mySet = e.getGroup();
+            List<Group> mySet = e.getGroup();
             mySet.forEach(g -> {
                 String key = g.getId();
                 // check if contain the keys or not
@@ -559,23 +557,27 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         return res;
     }
     public List<Employee> findAllEmployeeHavingBirthdayToday(){
-        int day = LocalDate.now().getDayOfMonth();
-        int month = LocalDate.now().getMonthValue();
-        int year = Year.now().getValue();
-        LocalDateTime end = LocalDateTime.of(year,month,day,23,59,59);
-        LocalDateTime start = LocalDateTime.of(year,month,day,0,0,0);
-        return employeeRepository.findEmployeeWithBirthDateToday(start, end);
+        LocalDate today = LocalDate.now();
+        String date = today.toString().substring(5);
+
+        List<Employee> employeesHavingBirthday = employeeRepository.findAll().stream()
+                .filter(emp -> emp.getDob().toString().substring(5).equals(date))
+                .collect(Collectors.toList());
+        return  employeesHavingBirthday;
     }
 
     public int checkBirthdayCarrotEligibility(String id){
         Employee emp = getEmployeeById(id).getEmployee();
-        Set<Group> groups= emp.getGroup();
+        List<Group> groups= emp.getGroup();
         int eligibleGroup = 0;
 
         Award birthdayAward = new Award();
         birthdayAward.setId("5c943ae5b73f4133b45a1da8");
-        for (Group group: groups) {
-            if (group.getAwards().contains(birthdayAward)){
+        for(int i = 0; i< groups.size(); i++){
+            if (groups.get(i).getAwards() == null){
+                System.out.println("dont have birthday award");
+            }
+            else if (groups.get(i).getAwards().contains(birthdayAward)){
                 eligibleGroup+=1;
             }
         }
