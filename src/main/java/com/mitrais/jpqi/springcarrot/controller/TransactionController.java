@@ -1,7 +1,8 @@
 package com.mitrais.jpqi.springcarrot.controller;
 
-import com.google.gson.Gson;
-import com.mitrais.jpqi.springcarrot.model.Hasil;
+import com.mitrais.jpqi.springcarrot.model.Achievement;
+import com.mitrais.jpqi.springcarrot.model.AggregateModel.AchievementEachMonth;
+import com.mitrais.jpqi.springcarrot.model.AggregateModel.Hasil;
 import com.mitrais.jpqi.springcarrot.model.Transaction;
 import com.mitrais.jpqi.springcarrot.responses.TransactionResponse;
 import com.mitrais.jpqi.springcarrot.service.TransactionService;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.TimeZone;
 
 @CrossOrigin
@@ -130,4 +132,8 @@ public class TransactionController {
     public  List<Hasil> getEmployeeTotalEarnedCarrot(@PathVariable String id) {
         return transactionService.getTotalEarnedAmt(id);
     }
+
+    @GetMapping("achieved-achievements")
+    public List<AchievementEachMonth> getAchievementsAchievedInCurrentMonth(){
+        return transactionService.findAchievedAchievementInCurrentMonth();}
 }
