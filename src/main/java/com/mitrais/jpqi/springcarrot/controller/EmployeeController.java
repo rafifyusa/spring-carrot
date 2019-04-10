@@ -146,6 +146,11 @@ public class EmployeeController {
         return employeeServiceUsingDB.findAnEmployeeAchievement(empId);
     }
 
+    @GetMapping("achieved")
+    public EmployeeResponse getAllEmployeeByAchievementId(@RequestParam String id) {
+        return employeeServiceUsingDB.findEmployeesByAchievementId(id);
+    }
+
     //---------------------------- UPLOAD IMAGE -----------------------------//
     @PostMapping("upload")
     public void uploadImage(@RequestBody String imageString) {

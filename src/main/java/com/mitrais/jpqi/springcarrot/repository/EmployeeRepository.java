@@ -28,6 +28,9 @@ public interface EmployeeRepository extends MongoRepository<Employee, String> {
     @Query("{'group':{$elemMatch:{$id: ?0}}}")
     List<Employee> findByGroupId(ObjectId id);
 
+    @Query("{'achievement':{$elemMatch:{$id: ?0}}}")
+    List<Employee> findByAchievementId(ObjectId id);
+
     @Query("{'role':{$in: ?0}}")
     List<Employee> findByRoles(String[] a);
 

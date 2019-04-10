@@ -585,6 +585,21 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
         return eligibleGroup;
     }
+
+    public EmployeeResponse findEmployeesByAchievementId(String id) {
+        EmployeeResponse res = new EmployeeResponse();
+
+        try {
+            res.setListEmployee(employeeRepository.findByAchievementId(new ObjectId(id)));
+            res.setStatus(true);
+            res.setMessage("Employees found");
+        } catch (NullPointerException e) {
+            res.setStatus(false);
+            res.setMessage(e.getMessage());
+        }
+
+        return res;
+    }
 }
 
 
