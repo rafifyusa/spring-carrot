@@ -1,7 +1,11 @@
 package com.mitrais.jpqi.springcarrot.service;
 
 import com.google.gson.Gson;
+import com.mitrais.jpqi.springcarrot.controller.AchievementController;
+import com.mitrais.jpqi.springcarrot.controller.EmailController;
 import com.mitrais.jpqi.springcarrot.model.*;
+import com.mitrais.jpqi.springcarrot.repository.AchievementRepository;
+import com.mitrais.jpqi.springcarrot.repository.EmployeeRepository;
 import com.mitrais.jpqi.springcarrot.repository.GroupRepository;
 import com.mitrais.jpqi.springcarrot.responses.GroupResponse;
 import org.bson.types.ObjectId;
@@ -24,6 +28,15 @@ public class GroupService {
     private EmployeeServiceUsingDB employeeServiceUsingDB;
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    @Autowired
+    EmployeeRepository employeeRepository;
+
+    @Autowired
+    AchievementController achievementController;
+
+    @Autowired
+    EmailController emailController;
 
     public GroupResponse insertGroup(Group group) {
         GroupResponse res = new GroupResponse();
@@ -124,6 +137,16 @@ public class GroupService {
             groupRepository.save(group);
             res.setStatus(true);
             res.setMessage("Achievement successfully added");
+            Optional<Achievement> temp = achievementController.findByAchievementId(achievements.get(0).getId());
+            String subject = ("New Achievement on Carrot to group" + group.getName());
+            String emailBody = ("New Achievement has been added to group" + group.getName() + "\r" +
+                "Achievement Title: " + temp.get().getTitle() + "\r" +
+                "Achievement Description: " + temp.get().getDescription() + "\r" +
+                "Carrot that can be achieved: " + temp.get().getCarrot()
+                );
+            List<Employee> employees = employeeServiceUsingDB.getGroupMember(group.getId()).getListEmployee();
+            List<String> emailList = employees.stream().map(employee -> employee.getEmailAddress()).collect(Collectors.toList());
+            emailController.sendMailContent(emailList, subject, emailBody);
         } catch (NullPointerException e) {
             res.setStatus(false);
             res.setMessage(e.getMessage());

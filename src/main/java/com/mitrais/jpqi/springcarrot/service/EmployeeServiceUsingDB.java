@@ -12,6 +12,7 @@ import com.mitrais.jpqi.springcarrot.responses.AchievementResponse;
 import com.mitrais.jpqi.springcarrot.responses.BasketResponse;
 import com.mitrais.jpqi.springcarrot.responses.EmployeeResponse;
 import com.mitrais.jpqi.springcarrot.responses.Login;
+import com.mitrais.jpqi.springcarrot.controller.EmailController;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -48,6 +49,9 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
     @Autowired
     MongoTemplate mongoTemplate;
+
+    @Autowired
+    EmailController emailController;
 
     Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
             "cloud_name", "dc1lp90qy",
@@ -127,6 +131,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         } else{
             res.setMessage("Employee not found");
         }
+        emailController.sendMail();
         return res;
     }
 

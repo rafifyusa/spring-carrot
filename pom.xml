@@ -85,6 +85,11 @@
 			<artifactId>spring-boot-starter-websocket</artifactId>
 			<version>2.1.4.RELEASE</version>
 		</dependency>
+		<!-- for send email -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
