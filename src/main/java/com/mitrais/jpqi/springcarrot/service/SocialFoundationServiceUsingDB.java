@@ -150,8 +150,9 @@ public class SocialFoundationServiceUsingDB implements SocialFoundationService{
         byte[] imageByteArray = Base64.getDecoder().decode(imageString);
         String url = "";
         try {
-            Map uploadResult = cloudinary.uploader().upload(imageByteArray, ObjectUtils.asMap("folder," +
-                    "pictures/", "public_id", id));
+            Map uploadResult = cloudinary.uploader().upload(imageByteArray, ObjectUtils.asMap("folder", "pictures/",
+                    "public_id", id));
+            url = (String) uploadResult.get("secure_url");
         } catch (IOException e) {
             e.printStackTrace();
         }

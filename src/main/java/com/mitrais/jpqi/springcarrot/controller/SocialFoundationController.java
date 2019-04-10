@@ -59,6 +59,7 @@ public class SocialFoundationController {
 
     @PostMapping("uploadImage/{id}")
     public void uploadImage(@RequestBody Map<String, String> param, @PathVariable String id) {
+        System.out.println("Upload Social Foundation");
         socialFoundationServiceUsingDB.picturePatch(param.get("img"), id);
     }
 }
