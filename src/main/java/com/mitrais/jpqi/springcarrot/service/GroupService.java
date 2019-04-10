@@ -182,13 +182,16 @@ public class GroupService {
         GroupResponse res = new GroupResponse();
         Optional<Group> g = groupRepository.findById(id);
         Group group = g.get();
+        System.out.println(group.getName());
 
         if (group.getAwards() == null) {
             group.setAwards(new ArrayList<>());
         }
-        List<Award> awards_set = group.getAwards();
-        awards.forEach( e -> awards_set.add(e));
 
+        List<Award> awards_set = group.getAwards();
+        System.out.println(awards_set.size());
+        awards_set.addAll(awards);
+        System.out.println("added awards");
         group.setAwards(awards_set);
         try {
             groupRepository.save(group);

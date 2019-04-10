@@ -1,7 +1,8 @@
 package com.mitrais.jpqi.springcarrot.controller;
 
-import com.google.gson.Gson;
-import com.mitrais.jpqi.springcarrot.model.Hasil;
+import com.mitrais.jpqi.springcarrot.model.Achievement;
+import com.mitrais.jpqi.springcarrot.model.AggregateModel.AchievementEachMonth;
+import com.mitrais.jpqi.springcarrot.model.AggregateModel.Hasil;
 import com.mitrais.jpqi.springcarrot.model.Transaction;
 import com.mitrais.jpqi.springcarrot.responses.TransactionResponse;
 import com.mitrais.jpqi.springcarrot.service.TransactionService;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.TimeZone;
 
 @CrossOrigin
@@ -48,9 +50,14 @@ public class TransactionController {
         return transactionService.approveTransaction(id);
     }
 
-    @PatchMapping("approve-donation")
-    public TransactionResponse approveDonation(@RequestParam String id) {//use social foundation ID
+    @PatchMapping("approve-donation")//use social foundation ID
+    public TransactionResponse approveDonation(@RequestParam String id) {
         return transactionService.approveDonation(id);
+    }
+
+    @PatchMapping("approve-request")//use transaction id
+    public TransactionResponse approveRequest(@RequestParam String id) {
+        return transactionService.approveRequestTransaction(id);
     }
 
     @PatchMapping("decline")
@@ -84,9 +91,22 @@ public class TransactionController {
     }
 
     @GetMapping("by-date-status")
-    public TransactionResponse getAllTransactionByStatusAndDate(@RequestParam String type,
-                                                              @RequestParam Long startDate,
-                                                              @RequestParam Long endDate) {
+    public TransactionResponse getAllTransactionByStatusAndDate(@RequestParam (required = false) String type,
+                                                              @RequestParam Long startDate, @RequestParam Long endDate) {
+        //convert the timestamp to dates
+        LocalDateTime startDateC =
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(startDate),
+                        TimeZone.getDefault().toZoneId());
+
+        LocalDateTime endDateC =
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(endDate),
+                        TimeZone.getDefault().toZoneId());
+        System.out.println(startDateC);
+        System.out.println(endDateC);
+
+        if (type == null){
+            return transactionService.findTransactionByDate(startDateC, endDateC);
+        }
 
         String[] types = new String[4];
         switch (type) {
@@ -100,16 +120,6 @@ public class TransactionController {
                 types[0] = type;
                 break;
         }
-        //convert the timestamp to dates
-        LocalDateTime startDateC =
-                LocalDateTime.ofInstant(Instant.ofEpochMilli(startDate),
-                        TimeZone.getDefault().toZoneId());
-
-        LocalDateTime endDateC =
-                LocalDateTime.ofInstant(Instant.ofEpochMilli(endDate),
-                        TimeZone.getDefault().toZoneId());
-        System.out.println(startDateC);
-        System.out.println(endDateC);
         return transactionService.findTransactionByTypeAndDate(types, startDateC, endDateC);
     }
 
@@ -123,4 +133,7 @@ public class TransactionController {
         return transactionService.getTotalEarnedAmt(id);
     }
 
+    @GetMapping("achieved-achievements")
+    public List<AchievementEachMonth> getAchievementsAchievedInCurrentMonth(){
+        return transactionService.findAchievedAchievementInCurrentMonth();}
 }

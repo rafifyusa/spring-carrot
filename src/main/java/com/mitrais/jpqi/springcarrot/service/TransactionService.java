@@ -1,28 +1,30 @@
 package com.mitrais.jpqi.springcarrot.service;
 
-import com.google.gson.Gson;
 import com.mitrais.jpqi.springcarrot.model.*;
+import com.mitrais.jpqi.springcarrot.model.AggregateModel.AchievementEachMonth;
+import com.mitrais.jpqi.springcarrot.model.AggregateModel.Hasil;
 import com.mitrais.jpqi.springcarrot.repository.*;
 import com.mitrais.jpqi.springcarrot.responses.TransactionResponse;
-import com.mongodb.WriteResult;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import static org.springframework.data.domain.Sort.Direction.ASC;
-import static org.springframework.data.domain.Sort.Direction.DESC;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.Year;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@EnableScheduling
 @Service
 public class TransactionService {
     @Autowired
@@ -47,6 +49,8 @@ public class TransactionService {
     private BarnRepository barnRepository;
     @Autowired
     MongoTemplate mongoTemplate;
+    @Autowired
+    private AwardRepository awardRepository;
     @Autowired
     private NotificationService notificationService;
     @Autowired
@@ -75,17 +79,18 @@ public class TransactionService {
     }
 
     public TransactionResponse createTransaction(Transaction transaction) {
+        transaction.setId(new ObjectId().toString());
         TransactionResponse res = new TransactionResponse();
-
+        System.out.println("in create transaction function");
         //set the transaction date
         if (transaction.getTransaction_date() == null) { transaction.setTransaction_date(LocalDateTime.now()); }
         transaction.setStatus(Transaction.Status.PENDING);
 
         if (transaction.getType() == Transaction.Type.REWARD) {
-            System.out.println(new Gson().toJson(transaction.getAchievementClaimed()));
-            System.out.println(new Gson().toJson(transaction));
+            //System.out.println(new Gson().toJson(transaction));
             //Codes if the transaction is a reward (from manager freezer to employee's basket)
             if (transaction.getFreezer_from() != null) {
+                System.out.println("==== In reward manager -> employee ====");
                 Freezer f_from = transaction.getFreezer_from();
                 Basket b_to = transaction.getDetail_to();
 
@@ -98,7 +103,28 @@ public class TransactionService {
                 this.sendNotifToEmployee(notif, f_from.getEmployee());
             }
             else {
-                //code if the reward is from system (not from manager's freezer )
+                System.out.println("==== In reward system -> employee ====");
+                Barn barn = barnService.getLatestBarn().get(0);
+                long newAmount = barn.getCarrotLeft() - transaction.getCarrot_amt();
+                barn.setCarrotLeft(newAmount);
+                barnRepository.save(barn);
+
+                Basket b_to = basketRepository.findById(transaction.getDetail_to().getId()).get();
+                double newAmount1 = b_to.getCarrot_amt() + transaction.getCarrot_amt();
+                b_to.setCarrot_amt(newAmount1);
+                basketRepository.save(b_to);
+
+                //Update Carrot ownership
+                List<Carrot> carrots = carrotRepository.findCarrotByBarnIdAndType(new ObjectId(barn.getId()), "FRESH");
+                int count = transaction.getCarrot_amt();
+                for (int i = 0 ; i < count ; i++) {
+                    Carrot c = carrots.get(i);
+                    c.setBasket(b_to);
+                    c.setUpdated_at(LocalDateTime.now());
+                    c.setType(Carrot.Type.NORMAL);
+                    carrotRepository.save(c);
+                }
+                transaction.setStatus(Transaction.Status.APPROVED);
             }
         }
 
@@ -164,6 +190,8 @@ public class TransactionService {
 
                     transaction.setFrom(b_from.getName());
                     transaction.setTo(item.getBazaar().getBazaarName());
+
+
                     Notification notif = new Notification();
                     notif.setRead(false);
                     notif.setDetail(b_from.getEmployee().getName() + " bought an item from bazaar");
@@ -201,15 +229,19 @@ public class TransactionService {
 
         }
 
-        if(transaction.getType() == Transaction.Type.FUNNEL){
-            System.out.println(transaction.toString());
+        else if(transaction.getType() == Transaction.Type.FUNNEL){
             funnelTransaction(transaction);
             transaction.setStatus(Transaction.Status.APPROVED);
+        }
+
+        else if(transaction.getType() == Transaction.Type.REQUEST){
+            System.out.println("Creating request for frozen carrot");
         }
         System.out.println("=====Finished updating other entity=====");
         try {
             transactionRepository.save(transaction);
             res.setStatus(true);
+            res.setTransaction(transaction);
             res.setMessage("transaction successfully added");
         } catch (NullPointerException e) {
             res.setStatus(false);
@@ -252,7 +284,6 @@ public class TransactionService {
 
             //Update SM freezer amount
             double newCarrotAmount = f_to.getCarrot_amt() + transaction.getCarrot_amt();
-
             f_to.setCarrot_amt(newCarrotAmount);
             freezerRepository.save(f_to);
 
@@ -273,6 +304,25 @@ public class TransactionService {
                 carrotRepository.save(c);
             }
         }
+    }
+
+    public TransactionResponse approveRequestTransaction (String id){
+        TransactionResponse res = new TransactionResponse();
+
+        if (transactionRepository.findById(id).isPresent()){
+            Transaction transaction = transactionRepository.findById(id).get();
+            try {
+                transaction.setStatus(Transaction.Status.APPROVED);
+                funnelTransaction(transaction);
+                transactionRepository.save(transaction);
+                res.setStatus(true);
+                res.setMessage("transaction approved");
+            } catch (NullPointerException e) {
+                res.setStatus(false);
+                res.setMessage(e.getMessage());
+            }
+        }
+        return res;
     }
 
     public TransactionResponse approveTransaction(String id) {
@@ -422,6 +472,7 @@ public class TransactionService {
                     makeDeclinedTransaction(transaction);
                 }
             }
+
             transaction.setStatus(Transaction.Status.DECLINED);
 
             try {
@@ -434,7 +485,6 @@ public class TransactionService {
             }
             return res;
         }
-
         res.setStatus(false);
         res.setMessage("transaction not found");
         return res;
@@ -458,12 +508,13 @@ public class TransactionService {
 
     public TransactionResponse findTransactionByEmployee (String id) {
         TransactionResponse res = new TransactionResponse();
-        List<Transaction> temp = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id));
-        List<Transaction> temp1 = transactionRepository.findFreezerFromByEmployeeId(new ObjectId(id));
+        List<Transaction> result = transactionRepository.findAllTransactionByAnEmployee(new ObjectId(id));
+/*        List<Transaction> temp1 = transactionRepository.findFreezerFromByEmployeeId(new ObjectId(id));
+        List<Transaction> temp2 = transactionRepository.
         List<Transaction> result = transactionRepository.findDetailToByEmployeeId(new ObjectId(id));
 
         result.addAll(temp);
-        result.addAll(temp1);
+        result.addAll(temp1);*/
         res.setStatus(true);
         if (result.size() > 0) {
             res.setMessage("Transaction found");
@@ -487,32 +538,6 @@ public class TransactionService {
         return res;
     }
 
-    public int countCarrotSpentForRewardItem (String id) {
-        int total_spent = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id)).stream()
-                .filter(e -> e.getType() == Transaction.Type.BAZAAR)
-                .mapToInt( a->a.getCarrot_amt()).sum();
-
-        return total_spent;
-    }
-
-    public int countCarrotSpentForSharing (String id) {
-        int total_spent = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id)).stream()
-                .filter(e -> e.getType() == Transaction.Type.SHARED)
-                .mapToInt( a->a.getCarrot_amt()).sum();
-
-        return total_spent;
-    }
-
-    public int countCarrotSpentForDonation (String id) {
-        List<Transaction> donation_transaction = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id));
-
-        int total_spent = donation_transaction.stream()
-                .filter(e -> e.getType() == Transaction.Type.DONATION)
-                .mapToInt( a->a.getCarrot_amt()).sum();
-
-        return total_spent;
-    }
-
     public TransactionResponse findAllPendingTransaction () {
         TransactionResponse res = new TransactionResponse();
         Query query = new Query();
@@ -531,6 +556,19 @@ public class TransactionService {
     public TransactionResponse findTransactionByType (String status) {
         TransactionResponse res = new TransactionResponse();
         List <Transaction> transactions = transactionRepository.findTransactionByType(status);
+        res.setStatus(true);
+        if (transactions.size() > 0) {
+            res.setMessage("Transaction found");
+        } else {
+            res.setMessage("Transaction not found");
+        }
+        res.setListTransaction(transactions);
+        return res;
+    }
+
+    public TransactionResponse findTransactionByDate(LocalDateTime startDate, LocalDateTime endDate) {
+        TransactionResponse res = new TransactionResponse();
+        List<Transaction> transactions = transactionRepository.findTransactionByDate(startDate, endDate);
         res.setStatus(true);
         if (transactions.size() > 0) {
             res.setMessage("Transaction found");
@@ -636,6 +674,107 @@ public class TransactionService {
         notificationService.createNotif(notification);
     }
 
+    public int countCarrotSpentForRewardItem (String id) {
+        int total_spent = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id)).stream()
+                .filter(e -> e.getType() == Transaction.Type.BAZAAR)
+                .mapToInt( a->a.getCarrot_amt()).sum();
+
+        return total_spent;
+    }
+
+    public int countCarrotSpentForSharing (String id) {
+        int total_spent = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id)).stream()
+                .filter(e -> e.getType() == Transaction.Type.SHARED)
+                .mapToInt( a->a.getCarrot_amt()).sum();
+
+        return total_spent;
+    }
+
+    public int countCarrotSpentForDonation (String id) {
+        List<Transaction> donation_transaction = transactionRepository.findDetailFromByEmployeeId(new ObjectId(id));
+
+        int total_spent = donation_transaction.stream()
+                .filter(e -> e.getType() == Transaction.Type.DONATION)
+                .mapToInt( a->a.getCarrot_amt()).sum();
+
+        return total_spent;
+    }
+
+    public List<AchievementEachMonth> findAchievedAchievementInCurrentMonth (){
+        int year = Year.now().getValue();
+        List<AchievementEachMonth> result = new ArrayList<>();
+        for (int i = 1; i < 13; i++){
+            System.out.println("NEW ITERATION");
+            LocalDateTime start = LocalDateTime.of(year, i, 1, 0,0,0 );
+            System.out.println(start);
+            int dayOfMonth = 0;
+            if (i == 1 || i==3 || i ==5 || i==7 || i ==8 || i==10 ||i==12){
+                dayOfMonth = 31;
+            }
+            else if (i == 2){
+                dayOfMonth = 28;
+            }
+            else {
+                dayOfMonth = 30;
+            }
+            LocalDateTime end = LocalDateTime.of(year, i, dayOfMonth, 23,59, 59);
+            System.out.println(end);
+            List<Transaction> currentMonthTransactions = transactionRepository.findTransactionByDate(start,end);
+            System.out.println(currentMonthTransactions.size());
+            if (!currentMonthTransactions.isEmpty()){
+                Set<Achievement> achieved = new HashSet<>();
+                currentMonthTransactions.forEach(t -> {
+                    if (!achieved.contains(t.getAchievementClaimed()) && t.getAchievementClaimed() != null) {
+                        achieved.add(t.getAchievementClaimed());
+                    }
+                });
+                AchievementEachMonth currentMonth = new AchievementEachMonth();
+                currentMonth.setAchievements(achieved);
+                currentMonth.setYear(Year.now().toString());
+                currentMonth.setMonth(Month.of(i).toString());
+                result.add(currentMonth);
+            }
+        }
+
+        return result;
+    }
+
+    public void sendBirthdayCarrot(int count, Employee emp){
+        Award award = awardRepository.findById("5c943ae5b73f4133b45a1da8").get();
+        if( award.isActive()) {
+            Basket basket = basketRepository.findBasketByEmployeeId(new ObjectId(emp.getId()));
+
+            System.out.println("running sendbirthday function");
+            Transaction transaction = new Transaction();
+            transaction.setAward(award);
+            transaction.setDetail_to(basket);
+            transaction.setType(Transaction.Type.REWARD);
+            transaction.setCarrot_amt(award.getCarrot_amt());
+
+            System.out.println("count =  " + count);
+            for(int i = 0; i < count; i++){
+                System.out.println("Iteration =  " + i);
+                createTransaction(transaction);
+                System.out.println("finished createing transaction iter = " + i);
+            }
+        }
+    }
+    @Scheduled(cron = "0 54 10 * * *")
+    public void scheduledBirthdayCarrot() {
+        System.out.println("Scheduler triggered");
+
+        List<Employee> employeeHavingBirthday = employeeServiceUsingDB.findAllEmployeeHavingBirthdayToday();
+
+        for (Employee emp: employeeHavingBirthday
+             ) {
+            int count = employeeServiceUsingDB.checkBirthdayCarrotEligibility(emp.getId());
+            if (count > 0 ){
+                System.out.println("count =  " + count);
+                sendBirthdayCarrot(count, emp);
+                System.out.println("finished sending birthday carrot");
+            }
+        }
+    }
 /*    //TODO sortbyspentcarrots
     public List<Employee> findAllEmployeeSortedBySpentCarrotForRewards () {
 

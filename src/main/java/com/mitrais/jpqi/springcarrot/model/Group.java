@@ -77,7 +77,7 @@ public class Group {
 
     public List<Award> getAwards() { return awards; }
 
-    public void setAwards(List<Award> Awards) { this.awards = awards; }
+    public void setAwards(List<Award> awards) { this.awards = awards; }
 
     public List<Bazaar> getBazaars() { return bazaars; }
 

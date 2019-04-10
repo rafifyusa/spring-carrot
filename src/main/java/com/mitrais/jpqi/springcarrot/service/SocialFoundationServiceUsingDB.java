@@ -1,5 +1,7 @@
 package com.mitrais.jpqi.springcarrot.service;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.google.gson.Gson;
 import com.mitrais.jpqi.springcarrot.model.SocialFoundation;
 import com.mitrais.jpqi.springcarrot.repository.SocialFoundationRepository;
@@ -7,6 +9,7 @@ import com.mitrais.jpqi.springcarrot.responses.SocialFoundationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -15,6 +18,13 @@ public class SocialFoundationServiceUsingDB implements SocialFoundationService{
 
     @Autowired
     SocialFoundationRepository socialFoundationRepository;
+
+
+    // Cloudinary setup
+    Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+            "cloud_name", "dc1lp90qy",
+            "api_key", "194312298198378",
+            "api_secret", "FCxNYbqo0okfaWU_GDPhJdKR0TQ"));
 
     // Constructor
     public SocialFoundationServiceUsingDB(SocialFoundationRepository socialFoundationRepository) {
@@ -134,5 +144,39 @@ public class SocialFoundationServiceUsingDB implements SocialFoundationService{
 //                .sorted(Comparator.comparing
                 .sorted((f1, f2) -> Double.compare(f2.getTotal_carrot(), f1.getTotal_carrot()))
                 .collect(Collectors.toList());
+    }
+
+    private String storeImage(String imageString, String id) {
+        byte[] imageByteArray = Base64.getDecoder().decode(imageString);
+        String url = "";
+        try {
+            Map uploadResult = cloudinary.uploader().upload(imageByteArray, ObjectUtils.asMap("folder", "pictures/",
+                    "public_id", id));
+            url = (String) uploadResult.get("secure_url");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return url;
+    }
+
+    // Patch Methods
+    public void picturePatch(String imageString, String id) {
+        // Find Social foundation first
+        SocialFoundation socialFoundation = socialFoundationRepository.findById(id).orElse(null);
+
+        if (socialFoundation != null) {
+            // Set all field as it is, except picture url field
+            socialFoundation.setName(socialFoundation.getName());
+            socialFoundation.setStatus(socialFoundation.getStatus());
+            socialFoundation.setTotal_carrot(socialFoundation.getTotal_carrot());
+            socialFoundation.setMin_carrot(socialFoundation.getMin_carrot());
+            socialFoundation.setDescription(socialFoundation.getDescription());
+            socialFoundation.setPendingDonations(socialFoundation.getPendingDonations());
+
+            // Set picture url
+            String socialFoundationPicture = storeImage(imageString, id);
+            socialFoundation.setPictureUrl(socialFoundationPicture);
+        }
+        socialFoundationRepository.save(socialFoundation);
     }
 }

@@ -1,9 +1,8 @@
 package com.mitrais.jpqi.springcarrot.service;
 
-import com.mitrais.jpqi.springcarrot.model.Basket;
 import com.mitrais.jpqi.springcarrot.model.Employee;
 import com.mitrais.jpqi.springcarrot.model.Group;
-import com.mitrais.jpqi.springcarrot.model.GroupCount;
+import com.mitrais.jpqi.springcarrot.model.AggregateModel.GroupCount;
 import com.mitrais.jpqi.springcarrot.responses.BasketResponse;
 import com.mitrais.jpqi.springcarrot.responses.EmployeeResponse;
 import com.mitrais.jpqi.springcarrot.responses.Login;

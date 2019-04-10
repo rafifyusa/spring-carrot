@@ -4,6 +4,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.google.gson.Gson;
 import com.mitrais.jpqi.springcarrot.model.*;
+import com.mitrais.jpqi.springcarrot.model.AggregateModel.GroupCount;
 import com.mitrais.jpqi.springcarrot.oauth2.JwtTokenProvider;
 import com.mitrais.jpqi.springcarrot.repository.BasketRepository;
 import com.mitrais.jpqi.springcarrot.repository.EmployeeRepository;
@@ -21,11 +22,8 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -316,7 +314,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         if (employee.isPresent()) {
             Employee emp = employee.get();
             if (emp.getGroup() == null) {
-                emp.setGroup(new HashSet<>());
+                emp.setGroup(new ArrayList<>());
             }
 //
             group.forEach(e -> emp.getGroup().add(e));
@@ -486,7 +484,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         // Iterate over all employee in employees list
         employees.forEach(e -> {
             // get group set of an employee
-            Set<Group> mySet = e.getGroup();
+            List<Group> mySet = e.getGroup();
             mySet.forEach(g -> {
                 String key = g.getId();
                 // check if contain the keys or not
@@ -512,7 +510,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         }
     }
 
-    public void deleteAchievementGroup(String id, Achievement achievement){
+    public void deleteAchievementFromEmployee(String id, Achievement achievement){
         Optional<Employee> employee = employeeRepository.findById(id);
         if (employee.isPresent()) {
             Employee emp = employee.get();
@@ -544,6 +542,70 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         res.setStatus(true);
         res.setMessage("List of Employee");
         res.setListEmployee(mm);
+        return res;
+    }
+
+    public EmployeeResponse getMultipleGroupMember(List<Group> group) {
+        EmployeeResponse res = new EmployeeResponse();
+        List<Employee> empList = new ArrayList<>();
+        group.forEach(g -> {
+            List<Employee> ee = employeeRepository.findByGroupId(new ObjectId(g.getId()));
+            empList.addAll(ee);
+        });
+        if (empList.isEmpty()) {
+            System.out.println("member empty");
+            res.setStatus(false);
+            res.setMessage("member empty");
+            res.setListEmployee(empList);
+        } else {
+            res.setStatus(true);
+            res.setMessage("member found");
+            res.setListEmployee(empList);
+        }
+
+        return res;
+    }
+    public List<Employee> findAllEmployeeHavingBirthdayToday(){
+        LocalDate today = LocalDate.now();
+        String date = today.toString().substring(5);
+
+        List<Employee> employeesHavingBirthday = employeeRepository.findAll().stream()
+                .filter(emp -> emp.getDob().toString().substring(5).equals(date))
+                .collect(Collectors.toList());
+        return  employeesHavingBirthday;
+    }
+
+    public int checkBirthdayCarrotEligibility(String id){
+        Employee emp = getEmployeeById(id).getEmployee();
+        List<Group> groups= emp.getGroup();
+        int eligibleGroup = 0;
+
+        Award birthdayAward = new Award();
+        birthdayAward.setId("5c943ae5b73f4133b45a1da8");
+        for(int i = 0; i< groups.size(); i++){
+            if (groups.get(i).getAwards() == null){
+                System.out.println("dont have birthday award");
+            }
+            else if (groups.get(i).getAwards().contains(birthdayAward)){
+                eligibleGroup+=1;
+            }
+        }
+
+        return eligibleGroup;
+    }
+
+    public EmployeeResponse findEmployeesByAchievementId(String id) {
+        EmployeeResponse res = new EmployeeResponse();
+
+        try {
+            res.setListEmployee(employeeRepository.findByAchievementId(new ObjectId(id)));
+            res.setStatus(true);
+            res.setMessage("Employees found");
+        } catch (NullPointerException e) {
+            res.setStatus(false);
+            res.setMessage(e.getMessage());
+        }
+
         return res;
     }
 }

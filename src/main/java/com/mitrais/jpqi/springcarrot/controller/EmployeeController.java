@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.controller;
 import com.mitrais.jpqi.springcarrot.model.*;
+import com.mitrais.jpqi.springcarrot.model.AggregateModel.GroupCount;
 import com.mitrais.jpqi.springcarrot.responses.AchievementResponse;
 import com.mitrais.jpqi.springcarrot.responses.BasketResponse;
 import com.mitrais.jpqi.springcarrot.responses.EmployeeResponse;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @RestController
 @CrossOrigin
@@ -60,7 +60,7 @@ public class EmployeeController {
     // Delete achievement from employee
     @PatchMapping("/del-achievement/{id}")
     public void deleteAchievementFromEmployee (@PathVariable String id, @RequestBody Achievement achievement) {
-        employeeServiceUsingDB.deleteAchievementGroup( id, achievement);}
+        employeeServiceUsingDB.deleteAchievementFromEmployee( id, achievement);}
 
     //inserting achievement to employee
     @PatchMapping("/add-achievement/{id}")
@@ -103,6 +103,8 @@ public class EmployeeController {
         return employeeServiceUsingDB.getRecentDOB();
     }
 
+    @GetMapping("birthday")
+    public List<Employee> getBirthdayToday() {return employeeServiceUsingDB.findAllEmployeeHavingBirthdayToday();}
     // Get employee group
     @GetMapping("groups")
     public List<GroupCount> getAllGroups() {
@@ -113,6 +115,12 @@ public class EmployeeController {
     public EmployeeResponse getAllMemberOfAGroup(@PathVariable String id) {
         return employeeServiceUsingDB.getGroupMember(id);
     }
+
+    @PostMapping("multiple-group-member")
+    public EmployeeResponse getAllMemberOfMultipleGroup(@RequestBody List<Group> group) {
+        return employeeServiceUsingDB.getMultipleGroupMember(group);
+    }
+
     @GetMapping("nostaffgroup")
     public List<Employee> getAllEmployeeWithoutGroup() {
         return employeeServiceUsingDB.findAllEmployeeWithoutStaffGroup();
@@ -137,6 +145,11 @@ public class EmployeeController {
     @GetMapping("achievement")
     public AchievementResponse getAnEmployeeAchivement(@RequestParam String empId) {
         return employeeServiceUsingDB.findAnEmployeeAchievement(empId);
+    }
+
+    @GetMapping("achieved")
+    public EmployeeResponse getAllEmployeeByAchievementId(@RequestParam String id) {
+        return employeeServiceUsingDB.findEmployeesByAchievementId(id);
     }
 
     //---------------------------- UPLOAD IMAGE -----------------------------//
