@@ -1,7 +1,5 @@
 package com.mitrais.jpqi.springcarrot.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,7 +9,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 @Document(collection = "employees")
 public class Employee {
@@ -24,7 +21,7 @@ public class Employee {
     private String profilePicture;
     private String emailAddress;
     @DBRef
-    private Set<Group> group;
+    private List<Group> group;
     @DBRef
     private Employee supervisor;
     @DBRef
@@ -40,7 +37,7 @@ public class Employee {
     public Employee() {}
 
     public Employee(String id, String name, LocalDate dob, String address, Role role, String password,
-                    String profilePicture, String emailAddress, Set<Group> group, Employee supervisor,
+                    String profilePicture, String emailAddress, List<Group> group, Employee supervisor,
                     SpvLevel spvLevel, List<Achievement> achievement) {
         this.id = id;
         this.name = name;
@@ -113,15 +110,13 @@ public class Employee {
         this.profilePicture = profilePicture;
     }
 
-    public String getEmailAddress() {
-        return emailAddress;
-    }
+    public String getEmailAddress() { return emailAddress; }
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
     }
 
-    public Set<Group> getGroup() { return group; }
-    public void setGroup(Set<Group> group) { this.group = group; }
+    public List<Group> getGroup() { return group; }
+    public void setGroup(List<Group> group) { this.group = group; }
 
     // Enum for roles or position
     public enum Role implements GrantedAuthority {

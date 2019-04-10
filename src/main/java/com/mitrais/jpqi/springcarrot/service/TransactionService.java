@@ -82,16 +82,16 @@ public class TransactionService {
     public TransactionResponse createTransaction(Transaction transaction) {
         transaction.setId(new ObjectId().toString());
         TransactionResponse res = new TransactionResponse();
-
+        System.out.println("in create transaction function");
         //set the transaction date
         if (transaction.getTransaction_date() == null) { transaction.setTransaction_date(LocalDateTime.now()); }
         transaction.setStatus(Transaction.Status.PENDING);
 
         if (transaction.getType() == Transaction.Type.REWARD) {
-            System.out.println(new Gson().toJson(transaction.getAchievementClaimed()));
-            System.out.println(new Gson().toJson(transaction));
+            //System.out.println(new Gson().toJson(transaction));
             //Codes if the transaction is a reward (from manager freezer to employee's basket)
             if (transaction.getFreezer_from() != null) {
+                System.out.println("==== In reward manager -> employee ====");
                 Freezer f_from = transaction.getFreezer_from();
                 Basket b_to = transaction.getDetail_to();
 
@@ -104,6 +104,7 @@ public class TransactionService {
                 this.sendNotifToEmployee(notif, f_from.getEmployee());
             }
             else {
+                System.out.println("==== In reward system -> employee ====");
                 Barn barn = barnService.getLatestBarn().get(0);
                 long newAmount = barn.getCarrotLeft() - transaction.getCarrot_amt();
                 barn.setCarrotLeft(newAmount);
@@ -704,26 +705,33 @@ public class TransactionService {
         Award award = awardRepository.findById("5c943ae5b73f4133b45a1da8").get();
         Basket basket = basketRepository.findBasketByEmployeeId(new ObjectId(emp.getId()));
 
+        System.out.println("running sendbirthday function");
         Transaction transaction = new Transaction();
         transaction.setAward(award);
         transaction.setDetail_to(basket);
         transaction.setType(Transaction.Type.REWARD);
         transaction.setCarrot_amt(award.getCarrot_amt());
 
+        System.out.println("count =  " + count);
         for(int i = 0; i < count; i++){
+            System.out.println("Iteration =  " + i);
             createTransaction(transaction);
+            System.out.println("finished createing transaction iter = " + i);
         }
     }
-    @Scheduled(cron = "0 1 0 * * *")
+    @Scheduled(cron = "0 54 10 * * *")
     public void scheduledBirthdayCarrot() {
-        System.out.println("Sending birthday carrots");
+        System.out.println("Scheduler triggered");
 
         List<Employee> employeeHavingBirthday = employeeServiceUsingDB.findAllEmployeeHavingBirthdayToday();
+
         for (Employee emp: employeeHavingBirthday
              ) {
             int count = employeeServiceUsingDB.checkBirthdayCarrotEligibility(emp.getId());
             if (count > 0 ){
+                System.out.println("count =  " + count);
                 sendBirthdayCarrot(count, emp);
+                System.out.println("finished sending birthday carrot");
             }
         }
     }

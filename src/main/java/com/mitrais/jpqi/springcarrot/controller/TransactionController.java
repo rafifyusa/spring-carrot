@@ -130,5 +130,4 @@ public class TransactionController {
     public  List<Hasil> getEmployeeTotalEarnedCarrot(@PathVariable String id) {
         return transactionService.getTotalEarnedAmt(id);
     }
-
 }
