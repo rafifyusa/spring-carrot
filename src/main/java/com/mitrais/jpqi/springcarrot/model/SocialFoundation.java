@@ -16,19 +16,21 @@ public class SocialFoundation {
     private double total_carrot;
     private double min_carrot;
     private String description; // describe why is it closed, or for other details information
+    private String pictureUrl;
     @JsonBackReference
     private List<Transaction> pendingDonations;
 
     public SocialFoundation(){}
 
     public SocialFoundation(String id, String name, Boolean status, double total_carrot, double min_carrot,
-                            String description, List<Transaction> pendingDonations){
+                            String description, String pictureUrl, List<Transaction> pendingDonations){
         this.id = id;
         this.name = name;
         this.status = status;
         this.total_carrot = total_carrot;
         this.min_carrot = min_carrot;
         this.description = description;
+        this.pictureUrl = pictureUrl;
         this.pendingDonations = pendingDonations;
     }
 
@@ -83,6 +85,14 @@ public class SocialFoundation {
     public List<Transaction> getPendingDonations() { return pendingDonations; }
 
     public void setPendingDonations(List<Transaction> pendingDonations) { this.pendingDonations = pendingDonations; }
+
+    public String getPictureUrl() {
+        return pictureUrl;
+    }
+
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
+    }
 
     @Override
     public boolean equals(Object o) {

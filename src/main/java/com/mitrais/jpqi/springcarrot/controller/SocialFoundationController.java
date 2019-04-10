@@ -7,6 +7,7 @@ import com.mitrais.jpqi.springcarrot.service.SocialFoundationServiceUsingDB;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -54,5 +55,10 @@ public class SocialFoundationController {
     @GetMapping("getSorted")
     public List<SocialFoundation> getSortedSocialFoundation() {
         return socialFoundationServiceUsingDB.getMostContributedSocialFoundation();
+    }
+
+    @PostMapping("uploadImage/{id}")
+    public void uploadImage(@RequestBody Map<String, String> param, @PathVariable String id) {
+        socialFoundationServiceUsingDB.picturePatch(param.get("img"), id);
     }
 }
