@@ -610,7 +610,15 @@ public class TransactionService {
         List<Hasil> temp = groupResults.getMappedResults();
         List<Hasil> result = temp.subList(0,temp.size()-1);
         result.forEach( e -> System.out.println(e.getDetail().getName()));
-        return result.stream().sorted(Comparator.comparingLong(Hasil::getTotal).reversed()).collect(Collectors.toList());
+        return result.stream()
+                .map(e -> {
+                    e.getDetail().getId();
+                    Basket basket = basketRepository.findBasketByEmployeeId(new ObjectId(e.getDetail().getEmployee().getId()));
+                    e.setDetail(basket);
+                    return e;
+                })
+                .sorted(Comparator.comparingLong(Hasil::getTotal).reversed())
+                .collect(Collectors.toList());
     }
 
     public List<Hasil> getTotalEarnedAmt(String id) {
@@ -630,7 +638,14 @@ public class TransactionService {
                         .andExpression("foo").as("id")
                         .andExpression("kk").as("detail"));
         AggregationResults<Hasil> groupResults = this.mongoTemplate.aggregate(aggregation, Transaction.class, Hasil.class);
-        return groupResults.getMappedResults();
+        List<Hasil> hasil =  groupResults.getMappedResults().stream().map(e -> {
+            e.getDetail().getId();
+            Basket basket = basketRepository.findBasketByEmployeeId(new ObjectId(e.getDetail().getEmployee().getId()));
+            e.setDetail(basket);
+            System.out.println(basket.getCarrot_amt());
+            return e;
+        }).collect(Collectors.toList());
+        return hasil;
     }
     public static void setTimeout(Runnable runnable, int delay){
         new Thread(() -> {
