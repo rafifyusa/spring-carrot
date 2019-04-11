@@ -35,13 +35,15 @@ public class Basket {
     public Basket() {
     }
 
-    public Basket(String id, String name, LocalDateTime created_at, LocalDateTime updated_at) {
+    public Basket(String id, String name, LocalDateTime created_at, LocalDateTime updated_at,
+                  Employee employee, double carrot_amt) {
         this.id = id;
         this.name = name;
         this.created_at = created_at;
         this.updated_at = updated_at;
+        this.employee = employee;
+        this.carrot_amt = carrot_amt;
     }
-
 
     public double getCarrot_amt() {
         return carrot_amt;
@@ -90,6 +92,7 @@ public class Basket {
     public void setEmployee(Employee employee) {
         this.employee = employee;
     }
+
 
     @Override
     public boolean equals(Object o) {

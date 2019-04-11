@@ -6,6 +6,33 @@ public class Hasil {
     Basket detail;
     String id;
     Long total;
+    int donation;
+    int shared;
+    int reward;
+
+    public int getDonation() {
+        return donation;
+    }
+
+    public void setDonation(int donation) {
+        this.donation = donation;
+    }
+
+    public int getShared() {
+        return shared;
+    }
+
+    public void setShared(int shared) {
+        this.shared = shared;
+    }
+
+    public int getReward() {
+        return reward;
+    }
+
+    public void setReward(int reward) {
+        this.reward = reward;
+    }
 
     public Basket getDetail() {
         return detail;

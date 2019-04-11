@@ -135,5 +135,20 @@ public class TransactionController {
 
     @GetMapping("achieved-achievements")
     public List<AchievementEachMonth> getAchievementsAchievedInCurrentMonth(){
-        return transactionService.findAchievedAchievementInCurrentMonth();}
+        return transactionService.findAchievedAchievementInCurrentMonth();
+    }
+
+    @GetMapping("employee-by-donation")
+    public List<Hasil> getEmployeeSortedByDonationAmount(){
+        return transactionService.findAllEmployeeSortedByCarrotSpentForDonation();
+    }
+    @GetMapping("employee-by-reward")
+    public List<Hasil> getEmployeeSortedByRewardAmount(){
+        return  transactionService.findAllEmployeeSortedBySpentCarrotForRewards();
+    }
+    @GetMapping("employee-by-sharing")
+    public List<Hasil> getEmployeeSortedByShareAmount(){
+        return  transactionService.findAllEmployeeSortedBySpentCarrotForSharing();
+    }
+
 }
