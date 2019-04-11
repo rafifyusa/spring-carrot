@@ -388,14 +388,21 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         return e.get();
     }
 
-    public EmployeeResponse makeEmployeeAsAdmin (String id) {
+    public EmployeeResponse changeEmployeeRole (String id, String role) {
         EmployeeResponse res = new EmployeeResponse();
         Employee emp = getEmployeeById(id).getEmployee();
-        emp.setRole(Employee.Role.ADMIN);
+        if (role.equals("ADMIN")) {
+            emp.setRole(Employee.Role.ADMIN);
+            res.setMessage("Employee's Role changed to ADMIN");
+        }
+        else {
+            emp.setRole(Employee.Role.MANAGER);
+            res.setMessage("Employee's Role changed to MANAGER");
+        }
+        System.out.println(emp.getRole());
         try {
             employeeRepository.save(emp);
             res.setStatus(true);
-            res.setMessage("Employee's Role changed to ADMIN");
         }catch (NullPointerException e) {
             res.setStatus(false);
             res.setMessage(e.getMessage());
@@ -403,14 +410,14 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         return res;
     }
 
-    public EmployeeResponse revokeEmployeefromAdmin(String id) {
+    public EmployeeResponse revokeEmployeeSpecialRole(String id) {
         EmployeeResponse res = new EmployeeResponse();
         Employee emp = getEmployeeById(id).getEmployee();
         emp.setRole(Employee.Role.STAFF);
         try {
             employeeRepository.save(emp);
             res.setStatus(true);
-            res.setMessage("Employee's Role changed to ADMIN");
+            res.setMessage("Employee's Role changed back to Staff");
         }catch (NullPointerException e) {
             res.setStatus(false);
             res.setMessage(e.getMessage());
