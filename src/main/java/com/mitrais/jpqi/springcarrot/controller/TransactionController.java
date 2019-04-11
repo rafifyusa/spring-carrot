@@ -79,6 +79,10 @@ public class TransactionController {
     public int getTotalSpentForSharing(@PathVariable String id) {
         return transactionService.countCarrotSpentForSharing(id);
     }
+    @GetMapping("total-earned-this-month/{id}")
+    public int getTotalEarnedThisMonth(@PathVariable String id) {
+        return transactionService.countCarrotEarnedThisMonth(id);
+    }
 
     @GetMapping("by-bazaar/{id}")
     public TransactionResponse getAllTransactionByBazaarId(@PathVariable String id) {
@@ -132,6 +136,7 @@ public class TransactionController {
     public  List<Hasil> getEmployeeTotalEarnedCarrot(@PathVariable String id) {
         return transactionService.getTotalEarnedAmt(id);
     }
+
 
     @GetMapping("achieved-achievements")
     public List<AchievementEachMonth> getAchievementsAchievedInCurrentMonth(){
