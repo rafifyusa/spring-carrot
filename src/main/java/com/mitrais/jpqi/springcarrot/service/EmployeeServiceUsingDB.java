@@ -556,6 +556,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
         return res;
     }
+
     public List<Employee> findAllEmployeeHavingBirthdayToday(){
         LocalDate today = LocalDate.now();
         String date = today.toString().substring(5);
