@@ -33,10 +33,10 @@ public class GroupService {
     EmployeeRepository employeeRepository;
 
     @Autowired
-    AchievementController achievementController;
+    private AchievementController achievementController;
 
     @Autowired
-    EmailController emailController;
+    private EmailController emailController;
 
     public GroupResponse insertGroup(Group group) {
         GroupResponse res = new GroupResponse();
@@ -138,8 +138,8 @@ public class GroupService {
             res.setStatus(true);
             res.setMessage("Achievement successfully added");
             Optional<Achievement> temp = achievementController.findByAchievementId(achievements.get(0).getId());
-            String subject = ("New Achievement on Carrot to group" + group.getName());
-            String emailBody = ("New Achievement has been added to group" + group.getName() + "\r" +
+            String subject = ("New Achievement on Carrot to your group:" + group.getName());
+            String emailBody = ("New Achievement has been added to your group: " + group.getName() + "\r" +
                 "Achievement Title: " + temp.get().getTitle() + "\r" +
                 "Achievement Description: " + temp.get().getDescription() + "\r" +
                 "Carrot that can be achieved: " + temp.get().getCarrot()
