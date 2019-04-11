@@ -12,5 +12,5 @@ public interface BazaarRepository extends MongoRepository<Bazaar, String> {
     List<Bazaar> findBazaarByStatus (boolean status);
 
     @Query("{'owner.$id': ?0}")
-    Bazaar findBazaarByOwnerId(ObjectId id);
+    List<Bazaar> findBazaarByOwnerId(ObjectId id);
 }

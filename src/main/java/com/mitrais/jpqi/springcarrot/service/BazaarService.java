@@ -64,7 +64,7 @@ public class BazaarService {
         bazaarRepository.save(temp);
     }
 
-    public Bazaar findByOwnerId(String id) {
+    public List<Bazaar> findByOwnerId(String id) {
         return bazaarRepository.findBazaarByOwnerId(new ObjectId(id));
     }
 }

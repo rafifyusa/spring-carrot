@@ -9,6 +9,15 @@ public class Hasil {
     int donation;
     int shared;
     int reward;
+    int carrotthisMonth;
+
+    public int getCarrotthisMonth() {
+        return carrotthisMonth;
+    }
+
+    public void setCarrotthisMonth(int carrotthisMonth) {
+        this.carrotthisMonth = carrotthisMonth;
+    }
 
     public int getDonation() {
         return donation;

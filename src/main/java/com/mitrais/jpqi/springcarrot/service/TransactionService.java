@@ -621,6 +621,8 @@ public class TransactionService {
                     e.setReward(reward);
                     int sharing = this.countCarrotSpentForSharing(e.getDetail().getEmployee().getId());
                     e.setShared(sharing);
+                    int earnThisMonth = this.countCarrotEarnedThisMonth(e.getDetail().getEmployee().getId());
+                    e.setCarrotthisMonth(earnThisMonth);
                     Basket basket = basketRepository.findBasketByEmployeeId(new ObjectId(e.getDetail().getEmployee().getId()));
                     e.setDetail(basket);
                     return e;
