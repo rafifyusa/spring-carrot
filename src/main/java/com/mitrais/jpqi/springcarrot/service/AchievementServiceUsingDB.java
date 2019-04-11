@@ -1,18 +1,29 @@
 package com.mitrais.jpqi.springcarrot.service;
 
+import com.mitrais.jpqi.springcarrot.controller.EmailController;
 import com.mitrais.jpqi.springcarrot.model.Achievement;
+import com.mitrais.jpqi.springcarrot.model.Employee;
 import com.mitrais.jpqi.springcarrot.repository.AchievementRepository;
 import com.mitrais.jpqi.springcarrot.responses.AchievementResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AchievementServiceUsingDB implements AchievementService{
     @Autowired
     AchievementRepository achievementRepository;
+
+    @Autowired
+    @Lazy
+    EmployeeServiceUsingDB employeeServiceUsingDB;
+
+    @Autowired
+    EmailController emailController;
 
     public AchievementServiceUsingDB(AchievementRepository achievementRepository){ this.achievementRepository = achievementRepository;}
 
@@ -37,6 +48,15 @@ public class AchievementServiceUsingDB implements AchievementService{
 
     @Override
     public List<Achievement> createAchievement(Achievement achievement) {
+        String subject = ("Achievement " + achievement.getTitle() + " has been added");
+        String emailBody = ("Achievement " + achievement.getTitle() + " has been added \r" +
+                "Achievement Description: " + achievement.getDescription() +
+                "\r Carrot Amount: " + achievement.getCarrot() +
+                "\r Role: " + achievement.getRole()
+        );
+        List<Employee> employees = employeeServiceUsingDB.getStaffRole("MANAGER").getListEmployee();
+        List<String> emailList = employees.stream().map(employee -> employee.getEmailAddress()).collect(Collectors.toList());
+        emailController.sendMailContent(emailList, subject, emailBody);
         achievementRepository.save(achievement);
         return achievementRepository.findAll();
     }
@@ -44,6 +64,20 @@ public class AchievementServiceUsingDB implements AchievementService{
     @Override
     public List<Achievement> updateAchievement(String id, Achievement achievement) {
         achievement.setId(id);
+        Achievement temp = achievementRepository.findById(id).orElse(null);
+        try {
+            if(!temp.isStatus() && achievement.isStatus()){
+                String subject = ("Achievement " + achievement.getTitle() + " has been unavailable");
+                String emailBody = ("Achievement " + achievement.getTitle() + " has been unavailable" +
+                        "Reason: " + achievement.getReasoning()
+                        );
+                List<Employee> employees = employeeServiceUsingDB.getStaffRole(String.valueOf(achievement.getRole())).getListEmployee();
+                List<String> emailList = employees.stream().map(employee -> employee.getEmailAddress()).collect(Collectors.toList());
+                emailController.sendMailContent(emailList, subject, emailBody);
+            }
+            }
+        catch (NullPointerException e){}
+
         achievementRepository.save(achievement);
         return achievementRepository.findAll();
     }
