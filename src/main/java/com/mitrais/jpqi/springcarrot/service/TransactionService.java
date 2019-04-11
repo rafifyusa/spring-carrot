@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.service;
 
+import com.google.gson.Gson;
 import com.mitrais.jpqi.springcarrot.model.*;
 import com.mitrais.jpqi.springcarrot.model.AggregateModel.AchievementEachMonth;
 import com.mitrais.jpqi.springcarrot.model.AggregateModel.Hasil;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -612,7 +614,23 @@ public class TransactionService {
         List<Hasil> temp = groupResults.getMappedResults();
         List<Hasil> result = temp.subList(0,temp.size()-1);
         result.forEach( e -> System.out.println(e.getDetail().getName()));
-        return result.stream().sorted(Comparator.comparingLong(Hasil::getTotal).reversed()).collect(Collectors.toList());
+        return result.stream()
+                .map(e -> {
+                    e.getDetail().getId();
+                    int donation = this.countCarrotSpentForDonation(e.getDetail().getEmployee().getId());
+                    e.setDonation(donation);
+                    int reward = this.countCarrotSpentForRewardItem(e.getDetail().getEmployee().getId());
+                    e.setReward(reward);
+                    int sharing = this.countCarrotSpentForSharing(e.getDetail().getEmployee().getId());
+                    e.setShared(sharing);
+                    int earnThisMonth = this.countCarrotEarnedThisMonth(e.getDetail().getEmployee().getId());
+                    e.setCarrotthisMonth(earnThisMonth);
+                    Basket basket = basketRepository.findBasketByEmployeeId(new ObjectId(e.getDetail().getEmployee().getId()));
+                    e.setDetail(basket);
+                    return e;
+                })
+                .sorted(Comparator.comparingLong(Hasil::getTotal).reversed())
+                .collect(Collectors.toList());
     }
 
     public List<Hasil> getTotalEarnedAmt(String id) {
@@ -632,7 +650,14 @@ public class TransactionService {
                         .andExpression("foo").as("id")
                         .andExpression("kk").as("detail"));
         AggregationResults<Hasil> groupResults = this.mongoTemplate.aggregate(aggregation, Transaction.class, Hasil.class);
-        return groupResults.getMappedResults();
+        List<Hasil> hasil =  groupResults.getMappedResults().stream().map(e -> {
+            e.getDetail().getId();
+            Basket basket = basketRepository.findBasketByEmployeeId(new ObjectId(e.getDetail().getEmployee().getId()));
+            e.setDetail(basket);
+            System.out.println(basket.getCarrot_amt());
+            return e;
+        }).collect(Collectors.toList());
+        return hasil;
     }
     public static void setTimeout(Runnable runnable, int delay){
         new Thread(() -> {

@@ -55,7 +55,7 @@ public class BazaarController {
     }
 
     @GetMapping ("bazar-by-owner/{id}")
-    public Bazaar getByStatus (@PathVariable String id) {
+    public List<Bazaar> getByStatus (@PathVariable String id) {
         return bazaarService.findByOwnerId(id);
     }
 }
