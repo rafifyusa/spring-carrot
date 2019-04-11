@@ -129,7 +129,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         } else{
             res.setMessage("Employee not found");
         }
-        emailController.sendMail();
+//        emailController.sendMail();
         return res;
     }
 
