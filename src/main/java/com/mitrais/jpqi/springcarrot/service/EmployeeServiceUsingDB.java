@@ -13,6 +13,7 @@ import com.mitrais.jpqi.springcarrot.responses.AchievementResponse;
 import com.mitrais.jpqi.springcarrot.responses.BasketResponse;
 import com.mitrais.jpqi.springcarrot.responses.EmployeeResponse;
 import com.mitrais.jpqi.springcarrot.responses.Login;
+import com.mitrais.jpqi.springcarrot.controller.EmailController;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -46,6 +47,9 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
     @Autowired
     MongoTemplate mongoTemplate;
+
+    @Autowired
+    EmailController emailController;
 
     Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
             "cloud_name", "dc1lp90qy",
@@ -125,6 +129,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         } else{
             res.setMessage("Employee not found");
         }
+        emailController.sendMail();
         return res;
     }
 
@@ -201,6 +206,9 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         String date0 = localDate.toString().substring(5);
         String date1 = recentDOB1.toString().substring(5);
         String date2 = recentDOB2.toString().substring(5);
+
+        System.out.println("date0: " + date0 + "date1: " + date1 + "date2: " + date2);
+
         List<Basket> listBasket = new ArrayList<>();
         List<Employee> emp = employeeRepository.findAll()
                 .stream()
