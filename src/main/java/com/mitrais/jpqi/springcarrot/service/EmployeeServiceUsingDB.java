@@ -129,7 +129,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         } else{
             res.setMessage("Employee not found");
         }
-        emailController.sendMail();
+//        emailController.sendMail();
         return res;
     }
 
@@ -565,6 +565,7 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
         return res;
     }
+
     public List<Employee> findAllEmployeeHavingBirthdayToday(){
         LocalDate today = LocalDate.now();
         String date = today.toString().substring(5);
