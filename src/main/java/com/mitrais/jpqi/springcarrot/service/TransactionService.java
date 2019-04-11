@@ -1,16 +1,15 @@
 package com.mitrais.jpqi.springcarrot.service;
 
-import com.google.gson.Gson;
 import com.mitrais.jpqi.springcarrot.model.*;
+import com.mitrais.jpqi.springcarrot.model.AggregateModel.AchievementEachMonth;
+import com.mitrais.jpqi.springcarrot.model.AggregateModel.Hasil;
 import com.mitrais.jpqi.springcarrot.repository.*;
 import com.mitrais.jpqi.springcarrot.responses.TransactionResponse;
-import com.mongodb.WriteResult;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -18,10 +17,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import static org.springframework.data.domain.Sort.Direction.ASC;
-import static org.springframework.data.domain.Sort.Direction.DESC;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.Year;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -701,22 +700,63 @@ public class TransactionService {
         return total_spent;
     }
 
+    public List<AchievementEachMonth> findAchievedAchievementInCurrentMonth (){
+        int year = Year.now().getValue();
+        List<AchievementEachMonth> result = new ArrayList<>();
+        for (int i = 1; i < 13; i++){
+            System.out.println("NEW ITERATION");
+            LocalDateTime start = LocalDateTime.of(year, i, 1, 0,0,0 );
+            System.out.println(start);
+            int dayOfMonth = 0;
+            if (i == 1 || i==3 || i ==5 || i==7 || i ==8 || i==10 ||i==12){
+                dayOfMonth = 31;
+            }
+            else if (i == 2){
+                dayOfMonth = 28;
+            }
+            else {
+                dayOfMonth = 30;
+            }
+            LocalDateTime end = LocalDateTime.of(year, i, dayOfMonth, 23,59, 59);
+            System.out.println(end);
+            List<Transaction> currentMonthTransactions = transactionRepository.findTransactionByDate(start,end);
+            System.out.println(currentMonthTransactions.size());
+            if (!currentMonthTransactions.isEmpty()){
+                Set<Achievement> achieved = new HashSet<>();
+                currentMonthTransactions.forEach(t -> {
+                    if (!achieved.contains(t.getAchievementClaimed()) && t.getAchievementClaimed() != null) {
+                        achieved.add(t.getAchievementClaimed());
+                    }
+                });
+                AchievementEachMonth currentMonth = new AchievementEachMonth();
+                currentMonth.setAchievements(achieved);
+                currentMonth.setYear(Year.now().toString());
+                currentMonth.setMonth(Month.of(i).toString());
+                result.add(currentMonth);
+            }
+        }
+
+        return result;
+    }
+
     public void sendBirthdayCarrot(int count, Employee emp){
         Award award = awardRepository.findById("5c943ae5b73f4133b45a1da8").get();
-        Basket basket = basketRepository.findBasketByEmployeeId(new ObjectId(emp.getId()));
+        if( award.isActive()) {
+            Basket basket = basketRepository.findBasketByEmployeeId(new ObjectId(emp.getId()));
 
-        System.out.println("running sendbirthday function");
-        Transaction transaction = new Transaction();
-        transaction.setAward(award);
-        transaction.setDetail_to(basket);
-        transaction.setType(Transaction.Type.REWARD);
-        transaction.setCarrot_amt(award.getCarrot_amt());
+            System.out.println("running sendbirthday function");
+            Transaction transaction = new Transaction();
+            transaction.setAward(award);
+            transaction.setDetail_to(basket);
+            transaction.setType(Transaction.Type.REWARD);
+            transaction.setCarrot_amt(award.getCarrot_amt());
 
-        System.out.println("count =  " + count);
-        for(int i = 0; i < count; i++){
-            System.out.println("Iteration =  " + i);
-            createTransaction(transaction);
-            System.out.println("finished createing transaction iter = " + i);
+            System.out.println("count =  " + count);
+            for(int i = 0; i < count; i++){
+                System.out.println("Iteration =  " + i);
+                createTransaction(transaction);
+                System.out.println("finished createing transaction iter = " + i);
+            }
         }
     }
     @Scheduled(cron = "0 54 10 * * *")

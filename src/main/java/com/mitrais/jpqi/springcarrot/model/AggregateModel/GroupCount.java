@@ -1,4 +1,4 @@
-package com.mitrais.jpqi.springcarrot.model;
+package com.mitrais.jpqi.springcarrot.model.AggregateModel;
 
 import javax.persistence.Id;
 

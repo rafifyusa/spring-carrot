@@ -1,4 +1,6 @@
-package com.mitrais.jpqi.springcarrot.model;
+package com.mitrais.jpqi.springcarrot.model.AggregateModel;
+
+import com.mitrais.jpqi.springcarrot.model.Basket;
 
 public class Hasil {
     Basket detail;

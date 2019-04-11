@@ -1,5 +1,6 @@
 package com.mitrais.jpqi.springcarrot.controller;
 import com.mitrais.jpqi.springcarrot.model.*;
+import com.mitrais.jpqi.springcarrot.model.AggregateModel.GroupCount;
 import com.mitrais.jpqi.springcarrot.responses.AchievementResponse;
 import com.mitrais.jpqi.springcarrot.responses.BasketResponse;
 import com.mitrais.jpqi.springcarrot.responses.EmployeeResponse;
@@ -9,12 +10,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @RestController
 @CrossOrigin
 @RequestMapping("api/employees")
 public class EmployeeController {
+
     @Autowired
     private EmployeeServiceUsingDB employeeServiceUsingDB;
     // Create newupdgroup
@@ -144,6 +145,11 @@ public class EmployeeController {
     @GetMapping("achievement")
     public AchievementResponse getAnEmployeeAchivement(@RequestParam String empId) {
         return employeeServiceUsingDB.findAnEmployeeAchievement(empId);
+    }
+
+    @GetMapping("achieved")
+    public EmployeeResponse getAllEmployeeByAchievementId(@RequestParam String id) {
+        return employeeServiceUsingDB.findEmployeesByAchievementId(id);
     }
 
     //---------------------------- UPLOAD IMAGE -----------------------------//
