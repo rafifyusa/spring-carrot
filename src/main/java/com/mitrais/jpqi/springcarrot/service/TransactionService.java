@@ -437,13 +437,13 @@ public class TransactionService {
 
     //used by another method
     public void makeApprovedTransaction (Transaction transaction) {
+        System.out.println(".Making approved transaction...");
         Basket requester = transaction.getDetail_from();
         List<Carrot> pendingCarrots = carrotRepository.findByBasketId(new ObjectId(requester.getId()))
                 .stream().filter(c -> !c.isUsable()).collect(Collectors.toList());
-
+        System.out.println("Pending carrots amount = " + pendingCarrots.size());
         int count = transaction.getCarrot_amt();
-/*        requester.setCarrot_amt(requester.getCarrot_amt()-count);
-        basketRepository.save(requester);*/
+
         for (int i = 0; i<count;i++) {
             Carrot c = pendingCarrots.get(i);
             c.setType(Carrot.Type.INACTIVE);
@@ -698,6 +698,27 @@ public class TransactionService {
                 .mapToInt( a->a.getCarrot_amt()).sum();
 
         return total_spent;
+    }
+    public int countCarrotEarnedThisMonth(String id) {
+        int year = Year.now().getValue();
+        int month = LocalDate.now().getMonthValue();
+        int day = 0;
+        if (month == 9||month==4||month==6||month==11){ day = 30; }
+        else if( month==2){ day = 28; }
+        else { day=31; }
+        LocalDateTime start = LocalDateTime.of(year, month, 1, 0,0,0);
+        LocalDateTime end = LocalDateTime.of(year, month, day, 0,0,0);
+
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("type").is("REWARD")
+                        .andOperator(Criteria.where("transaction_date").gte(start)
+                                .andOperator(Criteria.where("transaction_date").lte(end)))),
+                Aggregation.match(Criteria.where("detail_to.employee.$id").is(new ObjectId(id))));
+
+        AggregationResults<Transaction> rewardTransaction = this.mongoTemplate.aggregate(aggregation,
+                Transaction.class, Transaction.class);
+        List<Transaction> rewardTransactions = rewardTransaction.getMappedResults();
+        return rewardTransactions.stream().mapToInt(Transaction::getCarrot_amt).sum();
     }
 
     public List<AchievementEachMonth> findAchievedAchievementInCurrentMonth (){
