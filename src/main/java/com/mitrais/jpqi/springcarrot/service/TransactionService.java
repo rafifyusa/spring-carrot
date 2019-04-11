@@ -164,71 +164,72 @@ public class TransactionService {
         }
 
         // For Donation or claim item in bazaar
-        else if (transaction.getType() == Transaction.Type.BAZAAR
-                || transaction.getType() == Transaction.Type.DONATION) {
+        else if (transaction.getType() == Transaction.Type.BAZAAR || transaction.getType() == Transaction.Type.DONATION) {
             Basket b_from = transaction.getDetail_from();
-            Optional<Basket> b = basketRepository.findById(b_from.getId());
-            Basket basket = b.get();
-            if (basket.getCarrot_amt() >= transaction.getCarrot_amt()) {
-                Double newAmount = basket.getCarrot_amt() - transaction.getCarrot_amt();
-                basket.setCarrot_amt(newAmount);
-                basketRepository.save(basket);
-                //update the carrots in sender's basket into recipient's basket
-                List<Carrot> carrots = carrotRepository.findByBasketId(new ObjectId(b_from.getId()));
-                int count = transaction.getCarrot_amt();
-                for (int i = 0 ; i < count ; i++) {
-                    Carrot c = carrots.get(i);
-                    c.setUsable(false);
-                    carrotRepository.save(c);
-                }
-//
-                if (transaction.getType() == Transaction.Type.BAZAAR) {
-                    Item requested_Item = transaction.getRequested_item();
-                    Optional<Item> i = itemRepository.findById(requested_Item.getId());
-                    Item item = i.get();
-                    item.setItemSold((item.getItemSold() +1));
-                    item.setTotalItem((item.getTotalItem() -1));
-                    itemRepository.save(item);
+            if (basketRepository.findById(b_from.getId()).isPresent()){
+                Basket basket = basketRepository.findById(b_from.getId()).get();
+                if (basket.getCarrot_amt() >= transaction.getCarrot_amt()) {
+                    double newAmount = basket.getCarrot_amt() - transaction.getCarrot_amt();
+                    basket.setCarrot_amt(newAmount);
+                    basketRepository.save(basket);
+                    //update the carrots in sender's basket into recipient's basket
+                    List<Carrot> carrots = carrotRepository.findByBasketId(new ObjectId(b_from.getId()))
+                            .stream().filter(Carrot::isUsable).collect(Collectors.toList());
+                    int count = transaction.getCarrot_amt();
+                    for (int i = 0 ; i < count ; i++) {
+                        Carrot c = carrots.get(i);
+                        c.setUsable(false);
+                        carrotRepository.save(c);
+                    }
+                    System.out.println("Finished updating carrot to unusable");
 
-                    transaction.setFrom(b_from.getName());
-                    transaction.setTo(item.getBazaar().getBazaarName());
-
-
-                    Notification notif = new Notification();
-                    notif.setRead(false);
-                    notif.setDetail(b_from.getEmployee().getName() + " bought an item from bazaar");
-                    this.sendNotifToAdmin(notif, "ADMIN");
-                }
-                else {
-                    SocialFoundation socialFoundation = transaction.getSocialFoundation();
-                    Optional<SocialFoundation> sfs = socialFoundationRepository.findById(socialFoundation.getId());
-                    if (sfs.isPresent()) {
-                        SocialFoundation sf = sfs.get();
-                        double newFoundationAmount = sf.getTotal_carrot() + transaction.getCarrot_amt();
-                        sf.setTotal_carrot(newFoundationAmount);
-                        if (sf.getPendingDonations() == null) {
-                            sf.setPendingDonations(new ArrayList<>());
-                        }
-                        sf.getPendingDonations().add(transaction);
-                        socialFoundationRepository.save(sf);
+                    if (transaction.getType() == Transaction.Type.BAZAAR) {
+                        Item requested_Item = transaction.getRequested_item();
+                        Optional<Item> i = itemRepository.findById(requested_Item.getId());
+                        Item item = i.get();
+                        item.setItemSold((item.getItemSold() +1));
+                        item.setTotalItem((item.getTotalItem() -1));
+                        itemRepository.save(item);
 
                         transaction.setFrom(b_from.getName());
-                        transaction.setTo(socialFoundation.getName());
+                        transaction.setTo(item.getBazaar().getBazaarName());
+
 
                         Notification notif = new Notification();
                         notif.setRead(false);
-                        notif.setDetail(b_from.getEmployee().getName() + " donate her/his carrots");
-                        this.sendNotifToAdmin(notif, "ROOT_ADMIN");
+                        notif.setDetail(b_from.getEmployee().getName() + " bought an item from bazaar");
+                        this.sendNotifToAdmin(notif, "ADMIN");
+                    }
+                    else {
+                        SocialFoundation socialFoundation = transaction.getSocialFoundation();
+                        Optional<SocialFoundation> sfs = socialFoundationRepository.findById(socialFoundation.getId());
+                        if (sfs.isPresent()) {
+                            SocialFoundation sf = sfs.get();
+                            double newFoundationAmount = sf.getTotal_carrot() + transaction.getCarrot_amt();
+                            sf.setTotal_carrot(newFoundationAmount);
+                            if (sf.getPendingDonations() == null) {
+                                sf.setPendingDonations(new ArrayList<>());
+                            }
+                            sf.getPendingDonations().add(transaction);
+                            socialFoundationRepository.save(sf);
+
+                            transaction.setFrom(b_from.getName());
+                            transaction.setTo(socialFoundation.getName());
+
+                            Notification notif = new Notification();
+                            notif.setRead(false);
+                            notif.setDetail(b_from.getEmployee().getName() + " donate her/his carrots");
+                            this.sendNotifToAdmin(notif, "ROOT_ADMIN");
+                        }
                     }
                 }
+                else {
+                    System.out.println("Insufficient amount");
+                    res.setStatus(false);
+                    res.setMessage("Insufficient amount");
+                    return res;
+                }
             }
-            else {
-                System.out.println("Insufficient amount");
-                res.setStatus(false);
-                res.setMessage("Insufficient amount");
-                return res;
-            }
-
         }
 
         else if(transaction.getType() == Transaction.Type.FUNNEL){
@@ -479,12 +480,13 @@ public class TransactionService {
                 .stream().filter(c -> !c.isUsable()).collect(Collectors.toList());
         System.out.println("Pending carrots amount = " + pendingCarrots.size());
         int count = transaction.getCarrot_amt();
-
-        for (int i = 0; i<count;i++) {
+        System.out.println("Count = " + count);
+        for (int i = 0; i < count; i++) {
             Carrot c = pendingCarrots.get(i);
             c.setType(Carrot.Type.INACTIVE);
             c.setBasket(null);
             carrotRepository.save(c);
+            System.out.println("Iterasi =" +(i+1));
         }
     }
 
