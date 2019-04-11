@@ -391,12 +391,12 @@ public class TransactionService {
 
         if (socialFoundationRepository.findById(sfId).isPresent()) {
             SocialFoundation sf = socialFoundationRepository.findById(sfId).get();
-
             List<Transaction> pendingDonations = sf.getPendingDonations();
 
             try {
                 pendingDonations.forEach(transaction -> {
                     makeApprovedTransaction(transaction);
+                    System.out.println("==Approved Transactions==");
                     transaction.setStatus(Transaction.Status.APPROVED);
                     transactionRepository.save(transaction);
                 });
@@ -775,27 +775,80 @@ public class TransactionService {
             }
         }
     }
-/*    //TODO sortbyspentcarrots
-    public List<Employee> findAllEmployeeSortedBySpentCarrotForRewards () {
 
-        Aggregation agg = Aggregation.newAggregation(
-                Aggregation.match(Criteria.where("type").is(Transaction.Type.BAZAAR)),
-                Aggregation.unwind("basket")
-        )
-        return null;
-    }*/
+    public List<Hasil> findAllEmployeeSortedByCarrotSpentForDonation() {
+        int year = Year.now().getValue();
+        LocalDateTime start = LocalDateTime.of(year, 1, 1, 0,0,0);
+        LocalDateTime end = LocalDateTime.now();
 
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("type").is("DONATION")
+                        .andOperator(Criteria.where("transaction_date").gte(start)
+                        .andOperator(Criteria.where("transaction_date").lte(end)))),
+                Aggregation.project()
+                        .andExpression("detail_from.id").as("foo")
+                        .andExpression("carrot_amt").as("carrot_amt")
+                        .andExpression("detail_from").as("kk"),
+                Aggregation.group("foo").sum("carrot_amt").as("total")
+                        .last("kk").as("kk"),
+                Aggregation.project()
+                        .andExpression("total").as("total")
+                        .andExpression("foo").as("id")
+                        .andExpression("kk").as("detail"));
+        AggregationResults<Hasil> groupResults = this.mongoTemplate.aggregate(aggregation, Transaction.class, Hasil.class);
+        List<Hasil> temp = groupResults.getMappedResults();
+/*        List<Hasil> result = temp.subList(0,temp.size()-1);
+        result.forEach( e -> System.out.println(e.getDetail().getName()));
+        return result.stream().sorted(Comparator.comparingLong(Hasil::getTotal).reversed()).collect(Collectors.toList());*/
+        return temp;
+/*        return this.mongoTemplate.aggregate(aggregation, Transaction.class, Transaction.class).getMappedResults();*/
+    }
 
-    /*public List<CarrotCount> findAllEmployeeSortedByCarrotEarned (){
-        MatchOperation getMatchOperation()
+    public List<Hasil> findAllEmployeeSortedBySpentCarrotForRewards () {
+        int year = Year.now().getValue();
+        LocalDateTime start = LocalDateTime.of(year, 1, 1, 0,0,0);
+        LocalDateTime end = LocalDateTime.now();
 
-        Aggregation agg = newAggregation(
-                group("detail_to").sum("carrot_amt").as("carrotEarned"),
-                sort(ASC, previousOperation(),"carrotEarned")
-        );
-        AggregationResults<CarrotCount> results = mongoTemplate.aggregate(agg, Transaction.class, CarrotCount.class);
-        List<CarrotCount> carrotCount = results.getMappedResults();
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("type").is("BAZAAR")
+                        .andOperator(Criteria.where("transaction_date").gte(start)
+                                .andOperator(Criteria.where("transaction_date").lte(end)))),
+                Aggregation.project()
+                        .andExpression("detail_from.id").as("foo")
+                        .andExpression("carrot_amt").as("carrot_amt")
+                        .andExpression("detail_from").as("kk"),
+                Aggregation.group("foo").sum("carrot_amt").as("total")
+                        .last("kk").as("kk"),
+                Aggregation.project()
+                        .andExpression("total").as("total")
+                        .andExpression("foo").as("id")
+                        .andExpression("kk").as("detail"));
+        AggregationResults<Hasil> groupResults = this.mongoTemplate.aggregate(aggregation, Transaction.class, Hasil.class);
+        List<Hasil> temp = groupResults.getMappedResults();
+        return temp;
+        /*        return this.mongoTemplate.aggregate(aggregation, Transaction.class, Transaction.class).getMappedResults();*/
 
-        return carrotCount;
-    }*/
+    }
+    public List<Hasil> findAllEmployeeSortedBySpentCarrotForSharing () {
+        int year = Year.now().getValue();
+        LocalDateTime start = LocalDateTime.of(year, 1, 1, 0, 0, 0);
+        LocalDateTime end = LocalDateTime.now();
+
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("type").is("SHARED")
+                        .andOperator(Criteria.where("transaction_date").gte(start)
+                                .andOperator(Criteria.where("transaction_date").lte(end)))),
+                Aggregation.project()
+                        .andExpression("detail_from.id").as("foo")
+                        .andExpression("carrot_amt").as("carrot_amt")
+                        .andExpression("detail_from").as("kk"),
+                Aggregation.group("foo").sum("carrot_amt").as("total")
+                        .last("kk").as("kk"),
+                Aggregation.project()
+                        .andExpression("total").as("total")
+                        .andExpression("foo").as("id")
+                        .andExpression("kk").as("detail"));
+        AggregationResults<Hasil> groupResults = this.mongoTemplate.aggregate(aggregation, Transaction.class, Hasil.class);
+        return groupResults.getMappedResults();
+    }
 }
