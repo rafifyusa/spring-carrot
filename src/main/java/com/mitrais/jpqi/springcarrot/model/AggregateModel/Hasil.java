@@ -9,14 +9,14 @@ public class Hasil {
     int donation;
     int shared;
     int reward;
-    int carrotthisMonth;
+    int carrotThisMonth;
 
-    public int getCarrotthisMonth() {
-        return carrotthisMonth;
+    public int getCarrotThisMonth() {
+        return carrotThisMonth;
     }
 
-    public void setCarrotthisMonth(int carrotthisMonth) {
-        this.carrotthisMonth = carrotthisMonth;
+    public void setCarrotThisMonth(int carrotThisMonth) {
+        this.carrotThisMonth = carrotThisMonth;
     }
 
     public int getDonation() {
