@@ -10,6 +10,8 @@ public class Notification {
     @Id
     private String id;
     private String detail;
+    private String type = "";
+    private boolean show = true;
     @DBRef
     private Employee owner;
     private boolean read;
@@ -20,6 +22,22 @@ public class Notification {
         this.detail = detail;
         this.owner = owner;
         this.read = read;
+    }
+
+    public boolean isShow() {
+        return show;
+    }
+
+    public void setShow(boolean show) {
+        this.show = show;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getId() { return id; }
