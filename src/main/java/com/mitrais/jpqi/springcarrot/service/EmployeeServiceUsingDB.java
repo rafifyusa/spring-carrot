@@ -391,19 +391,26 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     public EmployeeResponse changeEmployeeRole (String id, String role) {
         EmployeeResponse res = new EmployeeResponse();
         Employee emp = getEmployeeById(id).getEmployee();
+        String emailBody = null;
+        String subject = null;
         if (role.equals("ADMIN")) {
             emp.setRole(Employee.Role.ADMIN);
             res.setMessage("Employee's Role changed to ADMIN");
-        }
-        else {
+            subject = ("You are an ADMIN on Mitrais Carrot");
+            emailBody = ("You are an ADMIN on Mitrais Carrot");
+        } else {
             emp.setRole(Employee.Role.MANAGER);
             res.setMessage("Employee's Role changed to MANAGER");
+            subject = ("You are an MANAGER on Mitrais Carrot");
+            emailBody = ("You are an MANAGER on Mitrais Carrot");
         }
+        List<String> emailList = Collections.singletonList(emp.getEmailAddress());
+        emailController.sendMailContent(emailList, subject, emailBody);
         System.out.println(emp.getRole());
         try {
             employeeRepository.save(emp);
             res.setStatus(true);
-        }catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             res.setStatus(false);
             res.setMessage(e.getMessage());
         }
@@ -413,11 +420,17 @@ public class EmployeeServiceUsingDB implements EmployeeService {
     public EmployeeResponse revokeEmployeeSpecialRole(String id) {
         EmployeeResponse res = new EmployeeResponse();
         Employee emp = getEmployeeById(id).getEmployee();
+
+        String subject = ("Your role as " + emp.getRole() + " on Mitrais Carrot has been revoked");
+        String emailBody = ("Your role as " + emp.getRole() + " on Mitrais Carrot has been revoked");
+
         emp.setRole(Employee.Role.STAFF);
         try {
             employeeRepository.save(emp);
             res.setStatus(true);
             res.setMessage("Employee's Role changed back to Staff");
+            List<String> emailList = Collections.singletonList(emp.getEmailAddress());
+            emailController.sendMailContent(emailList, subject, emailBody);
         }catch (NullPointerException e) {
             res.setStatus(false);
             res.setMessage(e.getMessage());

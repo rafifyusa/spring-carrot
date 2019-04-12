@@ -3,10 +3,13 @@ package com.mitrais.jpqi.springcarrot.service;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.google.gson.Gson;
+import com.mitrais.jpqi.springcarrot.controller.EmailController;
+import com.mitrais.jpqi.springcarrot.model.Employee;
 import com.mitrais.jpqi.springcarrot.model.SocialFoundation;
 import com.mitrais.jpqi.springcarrot.repository.SocialFoundationRepository;
 import com.mitrais.jpqi.springcarrot.responses.SocialFoundationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -19,6 +22,12 @@ public class SocialFoundationServiceUsingDB implements SocialFoundationService{
     @Autowired
     SocialFoundationRepository socialFoundationRepository;
 
+    @Autowired
+    @Lazy
+    EmployeeServiceUsingDB employeeServiceUsingDB;
+
+    @Autowired
+    EmailController emailController;
 
     // Cloudinary setup
     Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
@@ -36,6 +45,15 @@ public class SocialFoundationServiceUsingDB implements SocialFoundationService{
         SocialFoundationResponse res = new SocialFoundationResponse();
         try {
             socialFoundationRepository.save(socialFoundation);
+            String subject = ("Social Foundation " + socialFoundation.getName() + " has been added");
+            String emailBody = ("Social Foundation " + socialFoundation.getName() + " has been added \r" +
+                    "Social Foundation Description: " + socialFoundation.getDescription() +
+                    "\r Carrot Needed: " + socialFoundation.getMin_carrot() +
+                    "\r" + socialFoundation.getPictureUrl()
+            );
+            List<Employee> employees = employeeServiceUsingDB.getStaffRole("STAFF").getListEmployee();
+            List<String> emailList = employees.stream().map(employee -> employee.getEmailAddress()).collect(Collectors.toList());
+            emailController.sendMailContent(emailList, subject, emailBody);
             res.setStatus(true);
             res.setMessage("social foundation successfully added");
         } catch (NullPointerException e) {
