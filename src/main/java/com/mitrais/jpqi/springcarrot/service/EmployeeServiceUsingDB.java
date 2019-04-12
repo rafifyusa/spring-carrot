@@ -247,6 +247,12 @@ public class EmployeeServiceUsingDB implements EmployeeService {
                 temp.setRole(employee.getRole());
             }
             if (employee.getPassword() != null) {
+                if(temp.getPassword() != employee.getPassword()){
+                    String subject = ("Your password to login Mitrais Carrot has been changed!");
+                    String emailBody = ("Your password to login Mitrais Carrot has been changed!");
+                    List<String> emailList = Collections.singletonList(temp.getEmailAddress());
+                    emailController.sendMailContent(emailList, subject, emailBody);
+                }
                 temp.setPassword(employee.getPassword());
             }
             if (employee.getProfilePicture() != null) {

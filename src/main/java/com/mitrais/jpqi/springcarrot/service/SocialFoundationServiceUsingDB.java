@@ -81,6 +81,15 @@ public class SocialFoundationServiceUsingDB implements SocialFoundationService{
     public SocialFoundationResponse updateSocialFoundation(String id, SocialFoundation socialFoundation) {
         SocialFoundationResponse res = new SocialFoundationResponse();
         try {
+            if (getSocialFoundationById(id).getSocialFoundation().getStatus() && !socialFoundation.getStatus()){
+                String subject = ("Social Foundation " + socialFoundation.getName() + " has been disabled");
+                String emailBody = ("Social Foundation " + socialFoundation.getName() + " has been disabled \r" +
+                        "Social Foundation Description: " + socialFoundation.getDescription() +
+                        "\r Carrot Needed: " + socialFoundation.getMin_carrot());
+                List<Employee> employees = employeeServiceUsingDB.getStaffRole("STAFF").getListEmployee();
+                List<String> emailList = employees.stream().map(employee -> employee.getEmailAddress()).collect(Collectors.toList());
+                emailController.sendMailContent(emailList, subject, emailBody);
+            }
             socialFoundation.setId(id);
             socialFoundationRepository.save(socialFoundation);
             res.setStatus(true);

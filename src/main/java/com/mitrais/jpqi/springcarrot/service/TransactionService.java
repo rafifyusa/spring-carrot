@@ -9,6 +9,7 @@ import com.mitrais.jpqi.springcarrot.repository.*;
 import com.mitrais.jpqi.springcarrot.responses.TransactionResponse;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -45,6 +46,7 @@ public class TransactionService {
     @Autowired
     private SocialFoundationRepository socialFoundationRepository;
     @Autowired
+    @Lazy
     private EmployeeServiceUsingDB employeeServiceUsingDB;
     @Autowired
     private BarnService barnService;
@@ -394,6 +396,13 @@ public class TransactionService {
                 }
                 transaction.setFrom(f_from.getName());
                 transaction.setTo(b_to.getName());
+
+                String subject = ("Your claim on achievement " + transaction.getDescription() + " success");
+                String emailBody = ("Your claim on achievement " + transaction.getDescription() + " success"
+                );
+                List<Employee> employees = Collections.singletonList(transaction.getDetail_from().getEmployee());
+                List<String> emailList = employees.stream().map(employee -> employee.getEmailAddress()).collect(Collectors.toList());
+                emailController.sendMailContent(emailList, subject, emailBody);
             }
             transaction.setStatus(Transaction.Status.APPROVED);
             try {
@@ -407,6 +416,7 @@ public class TransactionService {
                 notif.setType("update");
                 notif.setDetail("basket");
                 this.sendNotifToEmployee(notif, transaction.getDetail_from().getEmployee());
+
             } catch (NullPointerException e) {
                 res.setStatus(false);
                 res.setMessage(e.getMessage());
@@ -525,6 +535,11 @@ public class TransactionService {
             transaction.setStatus(Transaction.Status.DECLINED);
 
             try {
+                String subject = ("Your claim on achievement " + transaction.getDescription() + " is declined");
+                String emailBody = ("Your claim on achievement " + transaction.getDescription() + " is declined");
+                List<String> emailList = Collections.singletonList(transaction.getDetail_to().getEmployee().getEmailAddress());
+                emailController.sendMailContent(emailList, subject, emailBody);
+
                 transactionRepository.save(transaction);
                 res.setStatus(true);
                 res.setMessage("transaction declined");
@@ -534,6 +549,7 @@ public class TransactionService {
                 notif.setType("update");
                 notif.setDetail("basket");
                 this.sendNotifToEmployee(notif, transaction.getDetail_from().getEmployee());
+
             } catch (NullPointerException e) {
                 res.setStatus(false);
                 res.setMessage(e.getMessage());
