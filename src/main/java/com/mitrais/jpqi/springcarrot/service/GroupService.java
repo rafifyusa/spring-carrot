@@ -11,6 +11,7 @@ import com.mitrais.jpqi.springcarrot.responses.GroupResponse;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -30,9 +31,11 @@ public class GroupService {
     private MongoTemplate mongoTemplate;
 
     @Autowired
+    @Lazy
     EmployeeRepository employeeRepository;
 
     @Autowired
+    @Lazy
     private AchievementController achievementController;
 
     @Autowired

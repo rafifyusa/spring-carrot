@@ -407,6 +407,16 @@ public class TransactionService {
                 sf.setTotal_carrot(0);
                 socialFoundationRepository.save(sf);
 
+//                String subject = ("Donation to" + sf.getName() + " success");
+//                String emailBody = ("Your donation to" + sf.getName() + " success \r" +
+//                        "Achievement Description: " + achievement.getDescription() +
+//                        "\r Carrot Amount: " + achievement.getCarrot() +
+//                        "\r Role: " + achievement.getRole()
+//                );
+//                List<Employee> employees = employeeServiceUsingDB.getStaffRole("MANAGER").getListEmployee();
+//                List<String> emailList = employees.stream().map(employee -> employee.getEmailAddress()).collect(Collectors.toList());
+//                emailController.sendMailContent(emailList, subject, emailBody);
+
                 res.setStatus(true);
                 res.setMessage("Donations to this Social Foundation are all successful");
             } catch (Exception e) {
