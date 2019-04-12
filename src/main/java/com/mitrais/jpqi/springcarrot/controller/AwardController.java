@@ -26,4 +26,9 @@ public class AwardController {
     @PutMapping("{id}")
     public void update(@PathVariable String id, @RequestBody Award award) { awardService.updateAward(id, award);}
 
+    @GetMapping("today")
+    public List<Award> getAwardsWithTypeDateHappenToday (){
+        return awardService.checkAwardWithTypeDateHappenedToday();
+    }
+
 }

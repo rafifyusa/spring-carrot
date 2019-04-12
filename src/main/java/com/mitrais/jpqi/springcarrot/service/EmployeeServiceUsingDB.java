@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.mitrais.jpqi.springcarrot.model.*;
 import com.mitrais.jpqi.springcarrot.model.AggregateModel.GroupCount;
 import com.mitrais.jpqi.springcarrot.oauth2.JwtTokenProvider;
+import com.mitrais.jpqi.springcarrot.repository.AwardRepository;
 import com.mitrais.jpqi.springcarrot.repository.BasketRepository;
 import com.mitrais.jpqi.springcarrot.repository.EmployeeRepository;
 import com.mitrais.jpqi.springcarrot.repository.FreezerRepository;
@@ -44,6 +45,9 @@ public class EmployeeServiceUsingDB implements EmployeeService {
 
     @Autowired
     GroupService groupService;
+
+    @Autowired
+    AwardRepository awardRepository;
 
     @Autowired
     MongoTemplate mongoTemplate;
@@ -611,7 +615,6 @@ public class EmployeeServiceUsingDB implements EmployeeService {
                 eligibleGroup+=1;
             }
         }
-
         return eligibleGroup;
     }
 
@@ -628,6 +631,10 @@ public class EmployeeServiceUsingDB implements EmployeeService {
         }
 
         return res;
+    }
+
+    public List<Employee> findEmployeesByGroupId(String id) {
+        return employeeRepository.findByGroupId(new ObjectId(id));
     }
 }
 

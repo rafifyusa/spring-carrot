@@ -11,4 +11,7 @@ public interface GroupRepository extends MongoRepository<Group, String> {
     // Get the
     @Query("{'owner.$id': ?0}")
     List<Group> findGroupIdByOwner(ObjectId ownerId);
+
+    @Query("{'awards':{$elemMatch:{$id: ?0}}}")
+    List<Group> findGroupsByAwardsId (ObjectId awardId);
 }

@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import java.time.LocalDate;
 
 @Document("awards")
 public class Award {
@@ -17,19 +18,21 @@ public class Award {
     private int carrot_amt;
     @Enumerated(EnumType.STRING)
     private Type type;
+    private LocalDate date;
     private String note;
     private boolean active;
 
     //Constructors
     public Award(){ }
 
-    public Award(String id, String type_name, int carrot_amt, Type type, String note, boolean active) {
+    public Award(String id, String type_name, int carrot_amt, Type type, String note, boolean active, LocalDate date) {
         this.id = id;
         this.type_name = type_name;
         this.carrot_amt = carrot_amt;
         this.type = type;
         this.note = note;
         this.active = active;
+        this.date = date;
     }
 
     //Getter & Setters
@@ -78,6 +81,10 @@ public class Award {
     public void setActive(boolean active) {
         this.active = active;
     }
+
+    public LocalDate getDate() { return date; }
+
+    public void setDate(LocalDate date) { this.date = date; }
 
     @Override
     public boolean equals(Object o) {

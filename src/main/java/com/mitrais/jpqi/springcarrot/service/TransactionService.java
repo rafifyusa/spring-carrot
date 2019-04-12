@@ -47,6 +47,8 @@ public class TransactionService {
     @Autowired
     private EmployeeServiceUsingDB employeeServiceUsingDB;
     @Autowired
+    private GroupRepository groupRepository;
+    @Autowired
     private BarnService barnService;
     @Autowired
     private BarnRepository barnRepository;
@@ -54,6 +56,8 @@ public class TransactionService {
     MongoTemplate mongoTemplate;
     @Autowired
     private AwardRepository awardRepository;
+    @Autowired
+    private AwardService awardService;
     @Autowired
     private NotificationService notificationService;
     @Autowired
@@ -95,7 +99,7 @@ public class TransactionService {
             //System.out.println(new Gson().toJson(transaction));
             //Codes if the transaction is a reward (from manager freezer to employee's basket)
             if (transaction.getFreezer_from() != null) {
-                System.out.println("==== In reward manager -> employee ====");
+                System.out.println("==== In reward from manager -> employee ====");
                 Freezer f_from = transaction.getFreezer_from();
                 Basket b_to = transaction.getDetail_to();
 
@@ -108,7 +112,7 @@ public class TransactionService {
                 this.sendNotifToEmployee(notif, f_from.getEmployee());
             }
             else {
-                System.out.println("==== In reward system -> employee ====");
+                System.out.println("==== In award from system -> employee ====");
                 Barn barn = barnService.getLatestBarn().get(0);
                 long newAmount = barn.getCarrotLeft() - transaction.getCarrot_amt();
                 barn.setCarrotLeft(newAmount);
@@ -265,7 +269,9 @@ public class TransactionService {
             notif.setShow(false);
             notif.setType("update");
             notif.setDetail("basket");
-            this.sendNotifToEmployee(notif, transaction.getDetail_from().getEmployee());
+            if (transaction.getDetail_from()!= null) {
+                this.sendNotifToEmployee(notif, transaction.getDetail_from().getEmployee());
+            }
         }
         return res;
     }
@@ -860,38 +866,78 @@ public class TransactionService {
         if( award.isActive()) {
             Basket basket = basketRepository.findBasketByEmployeeId(new ObjectId(emp.getId()));
 
-            System.out.println("running sendbirthday function");
+            System.out.println("running send birthday function");
             Transaction transaction = new Transaction();
             transaction.setAward(award);
             transaction.setDetail_to(basket);
             transaction.setType(Transaction.Type.REWARD);
             transaction.setCarrot_amt(award.getCarrot_amt());
 
-            System.out.println("count =  " + count);
             for(int i = 0; i < count; i++){
-                System.out.println("Iteration =  " + i);
+                System.out.println("iteration of creating birthday transaction=  " + i);
                 createTransaction(transaction);
-                System.out.println("finished createing transaction iter = " + i);
+                System.out.println("finished creating birthday transaction iter = " + i);
             }
         }
     }
-    @Scheduled(cron = "0 54 10 * * *")
+    @Scheduled(cron = "0 28 11 * * *")
     public void scheduledBirthdayCarrot() {
-        System.out.println("Scheduler triggered");
+        System.out.println("Birthday Scheduler triggered...");
 
         List<Employee> employeeHavingBirthday = employeeServiceUsingDB.findAllEmployeeHavingBirthdayToday();
-
-        for (Employee emp: employeeHavingBirthday
-             ) {
-            int count = employeeServiceUsingDB.checkBirthdayCarrotEligibility(emp.getId());
-            if (count > 0 ){
-                System.out.println("count =  " + count);
-                sendBirthdayCarrot(count, emp);
-                System.out.println("finished sending birthday carrot");
+        if(employeeHavingBirthday.size() == 0){
+            System.out.println("No one eligible for birthday carrot today");
+        }
+        else{
+            for (Employee emp: employeeHavingBirthday) {
+                int count = employeeServiceUsingDB.checkBirthdayCarrotEligibility(emp.getId());
+                if (count > 0 ){
+                    System.out.println("count =  " + count);
+                    sendBirthdayCarrot(count, emp);
+                    System.out.println("finished sending birthday carrot");
+                }
             }
         }
     }
 
+    @Scheduled(cron = "0 1 15 * * *")
+    public void scheduledEvents(){
+        System.out.println("Running Scheduled check for Award...");
+        List<Award> awards = awardService.checkAwardWithTypeDateHappenedToday();
+        if (awards.size() > 0) {
+            System.out.println(awards.size()+" Awards found, continue creating transaction..");
+            for(Award award : awards){
+                List<Employee> eligibleEmployee = new ArrayList<>();
+                List<Group> eligibleGroup = groupRepository.findGroupsByAwardsId(new ObjectId(award.getId()));
+
+                eligibleGroup.forEach(group -> {
+                    List<Employee> emps = employeeServiceUsingDB.findEmployeesByGroupId(group.getId());
+                    eligibleEmployee.addAll(emps);
+                });
+                System.out.println(eligibleEmployee.size() + " Employee(s) are eligible for "+ award.getType_name());
+                if (!eligibleEmployee.isEmpty()){
+                    eligibleEmployee.forEach( emp -> {
+                        Basket empBasket = basketRepository.findBasketByEmployeeId(new ObjectId(emp.getId()));
+
+                        Transaction transaction = new Transaction();
+                        transaction.setFrom("System");
+                        transaction.setTo(empBasket.getEmployee().getName());
+                        transaction.setDetail_to(empBasket);
+                        transaction.setCarrot_amt(award.getCarrot_amt());
+                        transaction.setType(Transaction.Type.REWARD);
+
+                        createTransaction(transaction);
+                    });
+                }
+                else {
+                    System.out.println("Exiting function because no employee is eligible ...");
+                }
+            }
+        }
+        else{
+            System.out.println("No Awards for today...");
+        }
+    }
     public List<Hasil> findAllEmployeeSortedByCarrotSpentForDonation() {
         int year = Year.now().getValue();
         LocalDateTime start = LocalDateTime.of(year, 1, 1, 0,0,0);
