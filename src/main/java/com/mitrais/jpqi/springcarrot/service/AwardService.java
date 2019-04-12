@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,4 +47,11 @@ public class AwardService {
     }
 
     public void deleteAward (String id) { awardRepository.deleteById(id);}
+
+    public List<Award> checkAwardWithTypeDateHappenedToday(){
+        LocalDate date = LocalDate.now();
+        LocalDate dateNext = date.plusDays(1);
+        System.out.println(date);
+        return awardRepository.findAwardsByDateEqualsAndActive(date, dateNext,true);
+    }
 }
