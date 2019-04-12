@@ -645,7 +645,14 @@ public class TransactionService {
     }
 
     public List<Hasil> sortByMostEarn() {
+        int year = Year.now().getValue();
+        LocalDateTime start = LocalDateTime.of(year, 1, 1, 0,0,0);
+        LocalDateTime end = LocalDateTime.of(year, 12, 31, 0,0,0);
+
         Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("type").is("REWARD")
+                        .andOperator(Criteria.where("transaction_date").gte(start)
+                                .andOperator(Criteria.where("transaction_date").lte(end)))),
                 Aggregation.project()
                         .andExpression("detail_to.id").as("foo")
                         .andExpression("carrot_amt").as("carrot_amt")
@@ -657,8 +664,8 @@ public class TransactionService {
                         .andExpression("foo").as("id")
                         .andExpression("kk").as("detail"));
         AggregationResults<Hasil> groupResults = this.mongoTemplate.aggregate(aggregation, Transaction.class, Hasil.class);
-        List<Hasil> temp = groupResults.getMappedResults();
-        List<Hasil> result = temp.subList(0,temp.size()-1);
+        List<Hasil> result = groupResults.getMappedResults();
+        //List<Hasil> result = temp.subList(0,temp.size()-1);
         result.forEach( e -> System.out.println(e.getDetail().getName()));
         return result.stream()
                 .map(e -> {
