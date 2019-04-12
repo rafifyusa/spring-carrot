@@ -1,6 +1,7 @@
 package com.mitrais.jpqi.springcarrot.service;
 
 import com.google.gson.Gson;
+import com.mitrais.jpqi.springcarrot.controller.EmailController;
 import com.mitrais.jpqi.springcarrot.model.*;
 import com.mitrais.jpqi.springcarrot.model.AggregateModel.AchievementEachMonth;
 import com.mitrais.jpqi.springcarrot.model.AggregateModel.Hasil;
@@ -57,6 +58,8 @@ public class TransactionService {
     private NotificationService notificationService;
     @Autowired
     SimpMessagingTemplate template;
+    @Autowired
+    EmailController emailController;
 
     public TransactionResponse findAllTransactions() {
         TransactionResponse res = new TransactionResponse();
@@ -435,20 +438,18 @@ public class TransactionService {
                     notif.setType("update");
                     notif.setDetail("basket");
                     this.sendNotifToEmployee(notif, transaction.getDetail_from().getEmployee());
+
+                    String subject = ("Donation to " + sf.getName() + " success");
+                    String emailBody = ("Your donation to " + sf.getName() + " success \r" +
+                            "Your donation: " + transaction.getCarrot_amt() + "carrot(s)"
+                            );
+                    List<Employee> employees = Collections.singletonList(transaction.getDetail_from().getEmployee());
+                    List<String> emailList = employees.stream().map(employee -> employee.getEmailAddress()).collect(Collectors.toList());
+                    emailController.sendMailContent(emailList, subject, emailBody);
                 });
                 sf.setPendingDonations(null);
                 sf.setTotal_carrot(0);
                 socialFoundationRepository.save(sf);
-
-//                String subject = ("Donation to" + sf.getName() + " success");
-//                String emailBody = ("Your donation to" + sf.getName() + " success \r" +
-//                        "Achievement Description: " + achievement.getDescription() +
-//                        "\r Carrot Amount: " + achievement.getCarrot() +
-//                        "\r Role: " + achievement.getRole()
-//                );
-//                List<Employee> employees = employeeServiceUsingDB.getStaffRole("MANAGER").getListEmployee();
-//                List<String> emailList = employees.stream().map(employee -> employee.getEmailAddress()).collect(Collectors.toList());
-//                emailController.sendMailContent(emailList, subject, emailBody);
 
                 res.setStatus(true);
                 res.setMessage("Donations to this Social Foundation are all successful");
