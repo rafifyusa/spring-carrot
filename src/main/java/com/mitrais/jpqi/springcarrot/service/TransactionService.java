@@ -246,9 +246,23 @@ public class TransactionService {
             res.setStatus(true);
             res.setTransaction(transaction);
             res.setMessage("transaction successfully added");
+
+            Notification notif = new Notification();
+            notif.setRead(false);
+            notif.setShow(false);
+            notif.setType("update");
+            notif.setDetail("basket");
+            this.sendNotifToEmployee(notif, transaction.getDetail_from().getEmployee());
         } catch (NullPointerException e) {
             res.setStatus(false);
             res.setMessage(e.getMessage());
+
+            Notification notif = new Notification();
+            notif.setRead(false);
+            notif.setShow(false);
+            notif.setType("update");
+            notif.setDetail("basket");
+            this.sendNotifToEmployee(notif, transaction.getDetail_from().getEmployee());
         }
         return res;
     }
@@ -320,6 +334,12 @@ public class TransactionService {
                 transactionRepository.save(transaction);
                 res.setStatus(true);
                 res.setMessage("transaction approved");
+                Notification notif = new Notification();
+                notif.setRead(false);
+                notif.setShow(false);
+                notif.setType("update");
+                notif.setDetail("basket");
+                this.sendNotifToEmployee(notif, transaction.getDetail_from().getEmployee());
             } catch (NullPointerException e) {
                 res.setStatus(false);
                 res.setMessage(e.getMessage());
@@ -377,6 +397,13 @@ public class TransactionService {
                 transactionRepository.save(transaction);
                 res.setStatus(true);
                 res.setMessage("transaction approved");
+
+                Notification notif = new Notification();
+                notif.setRead(false);
+                notif.setShow(false);
+                notif.setType("update");
+                notif.setDetail("basket");
+                this.sendNotifToEmployee(notif, transaction.getDetail_from().getEmployee());
             } catch (NullPointerException e) {
                 res.setStatus(false);
                 res.setMessage(e.getMessage());
@@ -402,6 +429,12 @@ public class TransactionService {
                     System.out.println("==Approved Transactions==");
                     transaction.setStatus(Transaction.Status.APPROVED);
                     transactionRepository.save(transaction);
+                    Notification notif = new Notification();
+                    notif.setRead(false);
+                    notif.setShow(false);
+                    notif.setType("update");
+                    notif.setDetail("basket");
+                    this.sendNotifToEmployee(notif, transaction.getDetail_from().getEmployee());
                 });
                 sf.setPendingDonations(null);
                 sf.setTotal_carrot(0);
@@ -439,6 +472,7 @@ public class TransactionService {
                 pendingDonations.forEach(transaction -> makeDeclinedTransaction(transaction));
                 res.setStatus(true);
                 res.setMessage("Donations to this Social Foundation are all successful");
+
             } catch (Exception e) {
                 res.setStatus(false);
                 res.setMessage(e.getMessage());
@@ -493,6 +527,12 @@ public class TransactionService {
                 transactionRepository.save(transaction);
                 res.setStatus(true);
                 res.setMessage("transaction declined");
+                Notification notif = new Notification();
+                notif.setRead(false);
+                notif.setShow(false);
+                notif.setType("update");
+                notif.setDetail("basket");
+                this.sendNotifToEmployee(notif, transaction.getDetail_from().getEmployee());
             } catch (NullPointerException e) {
                 res.setStatus(false);
                 res.setMessage(e.getMessage());
@@ -518,6 +558,12 @@ public class TransactionService {
             c.setUsable(true);
             carrotRepository.save(c);
         }
+        Notification notif = new Notification();
+        notif.setRead(false);
+        notif.setShow(false);
+        notif.setType("update");
+        notif.setDetail("basket");
+        this.sendNotifToEmployee(notif, transaction.getDetail_from().getEmployee());
     }
 
     public TransactionResponse findTransactionByEmployee (String id) {
@@ -634,7 +680,9 @@ public class TransactionService {
                     int sharing = this.countCarrotSpentForSharing(e.getDetail().getEmployee().getId());
                     e.setShared(sharing);
                     int earnThisMonth = this.countCarrotEarnedThisMonth(e.getDetail().getEmployee().getId());
-                    e.setCarrotthisMonth(earnThisMonth);
+                    System.out.println(e.getDetail().getEmployee().getId());
+                    System.out.println(earnThisMonth + "");
+                    e.setCarrotThisMonth(earnThisMonth);
                     Basket basket = basketRepository.findBasketByEmployeeId(new ObjectId(e.getDetail().getEmployee().getId()));
                     e.setDetail(basket);
                     return e;
@@ -708,7 +756,9 @@ public class TransactionService {
         System.out.println(employee.getId());
         notification.setOwner(employee);
         template.convertAndSend("/topic/reply", notification);
-        notificationService.createNotif(notification);
+        if (notification.isShow()) {
+            notificationService.createNotif(notification);
+        }
     }
 
     public int countCarrotSpentForRewardItem (String id) {

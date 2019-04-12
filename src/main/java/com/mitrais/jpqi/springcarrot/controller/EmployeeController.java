@@ -30,14 +30,14 @@ public class EmployeeController {
         return employeeServiceUsingDB.updateEmployee(id, employee);
     }
 
-    @PatchMapping("admin")
-    public EmployeeResponse makeAdmin(@RequestParam String id) {
-        return employeeServiceUsingDB.makeEmployeeAsAdmin(id);
+    @PatchMapping("change-role")
+    public EmployeeResponse changeRole(@RequestParam String id, @RequestParam String role) {
+        return employeeServiceUsingDB.changeEmployeeRole(id,role);
     }
 
     @PatchMapping("revoke")
     public EmployeeResponse revokeAdmin(@RequestParam String id) {
-        return employeeServiceUsingDB.revokeEmployeefromAdmin(id);
+        return employeeServiceUsingDB.revokeEmployeeSpecialRole(id);
     }
 
     // Delete employee
