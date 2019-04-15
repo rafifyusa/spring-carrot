@@ -884,6 +884,8 @@ public class TransactionService {
 
             System.out.println("running send birthday function");
             Transaction transaction = new Transaction();
+            transaction.setFrom("System");
+            transaction.setDescription("Happy Birthday!!");
             transaction.setAward(award);
             transaction.setDetail_to(basket);
             transaction.setType(Transaction.Type.REWARD);
@@ -896,7 +898,7 @@ public class TransactionService {
             }
         }
     }
-    @Scheduled(cron = "0 28 11 * * *")
+    @Scheduled(cron = "0 54 10 * * *")
     public void scheduledBirthdayCarrot() {
         System.out.println("Birthday Scheduler triggered...");
 
@@ -916,7 +918,7 @@ public class TransactionService {
         }
     }
 
-    @Scheduled(cron = "0 1 15 * * *")
+    @Scheduled(cron = "0 54 10 * * *")
     public void scheduledEvents(){
         System.out.println("Running Scheduled check for Award...");
         List<Award> awards = awardService.checkAwardWithTypeDateHappenedToday();
@@ -941,6 +943,7 @@ public class TransactionService {
                         transaction.setDetail_to(empBasket);
                         transaction.setCarrot_amt(award.getCarrot_amt());
                         transaction.setType(Transaction.Type.REWARD);
+                        transaction.setDescription(award.getType_name());
 
                         createTransaction(transaction);
                     });
