@@ -60,10 +60,10 @@ public class NewsletterService {
 
         try {
             for(String eAddress: emailAddress){
-                System.out.println("eAddress: " + eAddress);
+                System.out.println("Sending To: " + eAddress);
                 helper.setTo(eAddress);
-                helper.setText("Greetings :) \n" + contentBody);
                 helper.setSubject(subject);
+                helper.setText(contentBody);
                 sender.send(message);
             }
         } catch (MessagingException e) {
