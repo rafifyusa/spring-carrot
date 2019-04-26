@@ -13,7 +13,7 @@ import static org.testng.Assert.assertTrue;
 
 public class TestSelenium2 {
     WebDriver driver;
-    @Test (priority = 2)
+    @Test (priority = 9)
     public void loginWrong(){
         System.setProperty("webdriver.chrome.driver","D:\\Master\\chromedriver_win32\\chromedriver.exe");
         driver = new ChromeDriver();
@@ -23,12 +23,12 @@ public class TestSelenium2 {
         WebElement elementUsername = driver.findElement(By.id("username"));
         WebElement elementPassword = driver.findElement(By.id("password"));
         WebElement buttonSubmit = driver.findElement(By.id("loginSubmit"));
-        elementUsername.sendKeys("someones@rocketmail.com");
+        elementUsername.sendKeys("someoneas@rocketmail.com");
         elementPassword.sendKeys("passwordsomeones");
         buttonSubmit.click();
         Reporter.log("Incorrect credential submitted");
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        WebElement header = driver.findElement(By.id("homeLogo"));
+        WebElement header = driver.findElement(By.xpath("//*[@id=\"loginSubmit\"]"));
         assertTrue((header.isDisplayed()));
         driver.close();
 //        WebElement socialFoundationTab = driver.findElement(By.xpath("//*[@id=\"ngb-tab-3\"]/text()"));

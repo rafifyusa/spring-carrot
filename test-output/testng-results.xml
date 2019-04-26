@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results ignored="0" total="4" passed="4" failed="0" skipped="0">
+  <reporter-output>
+    <line>
+      <![CDATA[browser is opened now 
+]]>
+    </line>
+    <line>
+      <![CDATA[browser is opening login page 
+]]>
+    </line>
+    <line>
+      <![CDATA[login page opened 
+]]>
+    </line>
+    <line>
+      <![CDATA[correct credential submitted
+]]>
+    </line>
+    <line>
+      <![CDATA[reach the farmer screen
+]]>
+    </line>
+    <line>
+      <![CDATA[modal for new barn clicked]]>
+    </line>
+    <line>
+      <![CDATA[modal for new barn opened]]>
+    </line>
+    <line>
+      <![CDATA[all forms are filled]]>
+    </line>
+    <line>
+      <![CDATA[click submit new barn]]>
+    </line>
+    <line>
+      <![CDATA[new barn found]]>
+    </line>
+    <line>
+      <![CDATA[browser is opened now]]>
+    </line>
+    <line>
+      <![CDATA[browser is opening localhost:4200]]>
+    </line>
+    <line>
+      <![CDATA[Incorrect credential submitted]]>
+    </line>
+  </reporter-output>
+  <suite started-at="2019-04-26T08:09:10Z" name="Exercise" finished-at="2019-04-26T08:10:41Z" duration-ms="91003">
+    <groups>
+    </groups>
+    <test started-at="2019-04-26T08:09:10Z" name="testSelenium1" finished-at="2019-04-26T08:09:59Z" duration-ms="49335">
+      <class name="com.mitrais.jpqi.springcarrot.TestSelenium">
+        <test-method signature="loginCorrect()[pri:1, instance:com.mitrais.jpqi.springcarrot.TestSelenium@6adbc9d]" started-at="2019-04-26T08:09:10Z" name="loginCorrect" finished-at="2019-04-26T08:09:52Z" duration-ms="41952" status="PASS">
+          <reporter-output>
+            <line>
+              <![CDATA[browser is opened now 
+]]>
+            </line>
+            <line>
+              <![CDATA[browser is opening login page 
+]]>
+            </line>
+            <line>
+              <![CDATA[login page opened 
+]]>
+            </line>
+            <line>
+              <![CDATA[correct credential submitted
+]]>
+            </line>
+            <line>
+              <![CDATA[reach the farmer screen
+]]>
+            </line>
+          </reporter-output>
+        </test-method> <!-- loginCorrect -->
+        <test-method signature="openBarnForm()[pri:2, instance:com.mitrais.jpqi.springcarrot.TestSelenium@6adbc9d]" started-at="2019-04-26T08:09:52Z" name="openBarnForm" finished-at="2019-04-26T08:09:52Z" duration-ms="314" status="PASS">
+          <reporter-output>
+            <line>
+              <![CDATA[modal for new barn clicked]]>
+            </line>
+            <line>
+              <![CDATA[modal for new barn opened]]>
+            </line>
+          </reporter-output>
+        </test-method> <!-- openBarnForm -->
+        <test-method signature="createNewBarn()[pri:3, instance:com.mitrais.jpqi.springcarrot.TestSelenium@6adbc9d]" started-at="2019-04-26T08:09:52Z" name="createNewBarn" finished-at="2019-04-26T08:09:59Z" duration-ms="6988" status="PASS">
+          <reporter-output>
+            <line>
+              <![CDATA[all forms are filled]]>
+            </line>
+            <line>
+              <![CDATA[click submit new barn]]>
+            </line>
+            <line>
+              <![CDATA[new barn found]]>
+            </line>
+          </reporter-output>
+        </test-method> <!-- createNewBarn -->
+      </class> <!-- com.mitrais.jpqi.springcarrot.TestSelenium -->
+    </test> <!-- testSelenium1 -->
+    <test started-at="2019-04-26T08:09:59Z" name="testSelenium2" finished-at="2019-04-26T08:10:41Z" duration-ms="41504">
+      <class name="com.mitrais.jpqi.springcarrot.TestSelenium2">
+        <test-method signature="loginWrong()[pri:2, instance:com.mitrais.jpqi.springcarrot.TestSelenium2@34a3d150]" started-at="2019-04-26T08:09:59Z" name="loginWrong" finished-at="2019-04-26T08:10:41Z" duration-ms="41503" status="PASS">
+          <reporter-output>
+            <line>
+              <![CDATA[browser is opened now]]>
+            </line>
+            <line>
+              <![CDATA[browser is opening localhost:4200]]>
+            </line>
+            <line>
+              <![CDATA[Incorrect credential submitted]]>
+            </line>
+          </reporter-output>
+        </test-method> <!-- loginWrong -->
+      </class> <!-- com.mitrais.jpqi.springcarrot.TestSelenium2 -->
+    </test> <!-- testSelenium2 -->
+  </suite> <!-- Exercise -->
+</testng-results>

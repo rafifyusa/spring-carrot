@@ -1,8 +1,12 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="Exercise">
-    <test name="testngTestExercise">
+<suite name="Exercise" thread-count="1">
+    <test name="testSelenium1">
         <classes>
             <class name="com.mitrais.jpqi.springcarrot.TestSelenium" />
+        </classes>
+    </test>
+    <test name="testSelenium2">
+        <classes>
             <class name="com.mitrais.jpqi.springcarrot.TestSelenium2" />
         </classes>
     </test>

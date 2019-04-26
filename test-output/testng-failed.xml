@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Failed suite [Exercise]" guice-stage="DEVELOPMENT">
+  <test thread-count="5" name="testSelenium2(failed)">
+    <classes>
+      <class name="com.mitrais.jpqi.springcarrot.TestSelenium2">
+        <methods>
+          <include name="loginWrong"/>
+        </methods>
+      </class> <!-- com.mitrais.jpqi.springcarrot.TestSelenium2 -->
+    </classes>
+  </test> <!-- testSelenium2(failed) -->
+</suite> <!-- Failed suite [Exercise] -->

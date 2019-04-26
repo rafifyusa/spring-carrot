@@ -1,21 +1,19 @@
 package com.mitrais.jpqi.springcarrot;
+
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.Reporter;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import javax.validation.constraints.AssertTrue;
 import java.util.concurrent.TimeUnit;
 
 import static org.testng.Assert.assertTrue;
 
-public class TestSelenium {
+public class LoginAsStaff {
     WebDriver driver;
 
 //    @BeforeClass
@@ -26,7 +24,7 @@ public class TestSelenium {
 //        Reporter.log("browser is going to localhost:4200");
 //    }
 
-    @Test (priority = 1)
+    @Test(priority = 1)
     public void loginCorrect(){
         System.setProperty("webdriver.chrome.driver","D:\\Master\\chromedriver_win32\\chromedriver.exe");
         driver = new ChromeDriver();
@@ -40,22 +38,22 @@ public class TestSelenium {
         WebElement buttonSubmit = driver.findElement(By.id("loginSubmit"));
         Reporter.log("login page opened \n");
 
-        elementUsername.sendKeys("anofial@getnada.com");
+        elementUsername.sendKeys("lukas@getnada.com");
         elementPassword.sendKeys("password");
         buttonSubmit.click();
         Reporter.log("correct credential submitted\n");
 
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         WebElement header = driver.findElement(By.id("homeLogo"));
-        Reporter.log("reach the farmer screen\n");
-
         assertTrue((header.isDisplayed())); //validation: after logged in, there is header displayed.
-        }
+        Assert.assertEquals(driver.getCurrentUrl(), "localhost:4200/employee");
+        Reporter.log("reach the employee screen \n");
+    }
 
     @Test (priority = 2)
     public void openBarnForm() {
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS); //delay to access db
-        driver.findElement(By.xpath("//*[@id=\"ngb-tab-0-panel\"]/div/div/div[2]/div/button")).click();
+        driver.findElement(By.id("linkReward")).click();
         Reporter.log("modal for new barn clicked");
 
         assertTrue(driver.findElement(By.xpath("/html/body/ngb-modal-window/div/div/form/div[1]/div[1]/input")).isEnabled());

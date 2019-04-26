@@ -8,8 +8,8 @@ public class TestRunner {
     public static void main(String[] args){
         Result result = JUnitCore.runClasses(TestSelenium.class);
         for(Failure failure: result.getFailures()){
-            System.out.println(failure.toString());
+            System.out.println("fail fail: "+ failure.toString());
         }
-        System.out.println(result.wasSuccessful());
+        System.out.println("pass pass: "+result.wasSuccessful());
     }
 }
