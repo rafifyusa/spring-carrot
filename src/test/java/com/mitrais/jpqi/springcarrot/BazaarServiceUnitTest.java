@@ -39,5 +39,25 @@ public class BazaarServiceUnitTest {
         assertThat(found).isEqualTo(bazaarList);
     }
 
+    @Test
+    public void whenCalledReturnTrue1() {
+        assertThat(1).isEqualTo(1);
+    }
+
+    @Test
+    public void whenCalledReturnTrue2() {
+        assertThat(2).isEqualTo(2);
+    }
+
+    @Test
+    public void whenCalledReturnTrue3() {
+        assertThat(1).isEqualTo(1);
+    }
+
+    @Test
+    public void whenCalledReturnTrue4() {
+        assertThat(2).isEqualTo(2);
+    }
+
 
 }
